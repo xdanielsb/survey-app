@@ -26,12 +26,13 @@
 
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { fetchSurveyById, submitSurveyResponse } from '@/services/surveyService'
 import type { SurveyResponseDTO } from '@/types/survey-response-dto.ts'
 import type { Survey } from '@/types/survey.ts'
 
 const route = useRoute()
+const router = useRouter()
 const survey = ref<Survey | null>(null)
 const answers = ref<Record<number, string>>({})
 
@@ -51,6 +52,7 @@ onMounted(async () => {
 const submitResponse = async () => {
   if (!survey.value) return
 
+
   const response: SurveyResponseDTO = {
     surveyId: survey.value.id,
     answers: Object.entries(answers.value).map(([qId, answer]) => ({
@@ -61,6 +63,7 @@ const submitResponse = async () => {
 
   await submitSurveyResponse(survey.value.id, response)
   alert('Survey submitted!')
+  router.push('/')
 }
 </script>
 
