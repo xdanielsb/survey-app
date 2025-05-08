@@ -3,7 +3,7 @@
     <h1>Available Surveys</h1>
     <ul v-if="surveys.length">
       <li v-for="survey in surveys" :key="survey.id">
-        <router-link :to="`/survey/${survey.id}`">
+        <router-link :to="`/surveys/${survey.id}`">
           {{ survey.title }}
         </router-link>
       </li>
