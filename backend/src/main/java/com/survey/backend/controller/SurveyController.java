@@ -37,7 +37,7 @@ public class SurveyController {
     }
 
     // 3. Get survey results
-    @GetMapping("/api/{id}/results")
+    @GetMapping("/{id}/results")
     public ResponseEntity<SurveyResultDTO> getResults(@PathVariable Long id) {
         return surveyService.getSurveyResults(id)
                 .map(ResponseEntity::ok)

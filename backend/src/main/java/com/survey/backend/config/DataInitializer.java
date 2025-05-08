@@ -3,6 +3,7 @@ package com.survey.backend.config;
 
 import com.survey.backend.entity.Question;
 import com.survey.backend.entity.Survey;
+import com.survey.backend.respository.AnswerRepository;
 import com.survey.backend.respository.QuestionRepository;
 import com.survey.backend.respository.SurveyRepository;
 import jakarta.annotation.PostConstruct;
@@ -17,14 +18,13 @@ import java.util.List;
 public class DataInitializer {
 
     private final SurveyRepository surveyRepository;
+    private final AnswerRepository answerRepository;
     private final QuestionRepository questionRepository;
 
     @PostConstruct
     public void init() {
         // Clean existing data
-        questionRepository.deleteAll();
-        surveyRepository.deleteAll();
-
+        if( surveyRepository.count() > 0) return;
         // Survey 1
         Survey customerSurvey = Survey.builder()
                 .title("Customer Satisfaction Survey")

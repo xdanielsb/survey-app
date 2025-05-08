@@ -99,7 +99,7 @@ class SurveyControllerTest {
 
         when(surveyService.getSurveyResults(1L)).thenReturn(Optional.of(result));
 
-        mockMvc.perform(get("/surveys/api/1/results"))
+        mockMvc.perform(get("/surveys/1/results"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.surveyTitle").value("Team Survey"))
                 .andExpect(jsonPath("$.questionResults[0].questionText").value("How do you feel?"));

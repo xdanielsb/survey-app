@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Builder
+@Table(name="responses")
 public class Response {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
