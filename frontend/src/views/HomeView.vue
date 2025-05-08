@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1>📋 Available Surveys</h1>
+    <h1>Available Surveys</h1>
     <ul v-if="surveys.length" class="survey-list">
       <li v-for="survey in surveys" :key="survey.id" class="survey-item">
         <span class="title">{{ survey.title }}</span>
