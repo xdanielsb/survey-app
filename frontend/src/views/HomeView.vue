@@ -1,14 +1,16 @@
 <template>
   <div class="container">
-    <h1>Available Surveys</h1>
-    <ul v-if="surveys.length">
-      <li v-for="survey in surveys" :key="survey.id">
-        <router-link :to="`/surveys/${survey.id}`">
-          {{ survey.title }}
-        </router-link>
+    <h1>📋 Available Surveys</h1>
+    <ul v-if="surveys.length" class="survey-list">
+      <li v-for="survey in surveys" :key="survey.id" class="survey-item">
+        <span class="title">{{ survey.title }}</span>
+        <div class="actions">
+          <router-link :to="`/surveys/${survey.id}`" class="btn primary">Answer</router-link>
+          <router-link :to="`/surveys/${survey.id}/results`" class="btn secondary">Results</router-link>
+        </div>
       </li>
     </ul>
-    <p v-else>Loading surveys...</p>
+    <p v-else class="loading">Loading surveys...</p>
   </div>
 </template>
 
@@ -26,8 +28,84 @@ onMounted(async () => {
 
 <style scoped>
 .container {
-  max-width: 600px;
-  margin: auto;
-  padding: 1rem;
+  max-width: 700px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h1 {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #333;
+}
+
+.survey-list {
+  list-style: none;
+  padding: 0;
+}
+
+.survey-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  transition: box-shadow 0.2s;
+}
+
+.survey-item:hover {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.title {
+  font-weight: 500;
+  font-size: 1.1rem;
+  color: #222;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn {
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.btn.primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn.primary:hover {
+  background-color: #0056b3;
+}
+
+.btn.secondary {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.btn.secondary:hover {
+  background-color: #e0e0e0;
+}
+
+.loading {
+  text-align: center;
+  color: #666;
+  font-style: italic;
 }
 </style>
