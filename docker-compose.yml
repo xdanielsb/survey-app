@@ -6,7 +6,7 @@ services:
     image: postgres:16
     restart: always
     environment:
-      POSTGRES_DB: postgres
+      POSTGRES_DB: survey 
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: secret
       PGDATA: /var/lib/postgresql/data
@@ -22,7 +22,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin@surveyapp.com
       PGADMIN_DEFAULT_PASSWORD: secret
     ports:
-      - "8080:80"
+      - "8081:80"
     volumes:
       - pgadmin-data:/var/lib/pgadmin
     depends_on:
