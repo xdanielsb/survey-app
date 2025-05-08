@@ -1,0 +1,105 @@
+package com.survey.backend;
+
+
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.survey.backend.controller.SurveyController;
+import com.survey.backend.dto.SurveyDTO;
+import com.survey.backend.dto.SurveyResponseDTO;
+import com.survey.backend.dto.SurveyResultDTO;
+import com.survey.backend.service.SurveyService;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+
+@WebMvcTest(SurveyController.class)
+class SurveyControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private SurveyService surveyService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Test
+    void testGetSurveyById() throws Exception {
+        SurveyDTO dto = SurveyDTO.builder()
+                .id(1L)
+                .title("Team Survey")
+                .questions(List.of(
+                        SurveyDTO.QuestionDTO.builder()
+                                .id(1L).position(1).questionText("How do you feel?").build()
+                ))
+                .build();
+
+        when(surveyService.getSurveyById(1L)).thenReturn(Optional.of(dto));
+
+        mockMvc.perform(get("/surveys/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Team Survey"))
+                .andExpect(jsonPath("$.questions[0].questionText").value("How do you feel?"));
+    }
+
+    @Test
+    void testSubmitSurveyResponse() throws Exception {
+        SurveyResponseDTO request = SurveyResponseDTO.builder()
+                .surveyId(1L)
+                .answers(List.of(
+                        SurveyResponseDTO.AnswerDTO.builder()
+                                .questionId(1L)
+                                .answer("AGREE")
+                                .build()
+                ))
+                .build();
+
+        when(surveyService.saveSurveyResponse(Mockito.eq(1L), any())).thenReturn(true);
+
+        mockMvc.perform(post("/surveys/1/responses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testGetSurveyResults() throws Exception {
+        SurveyResultDTO result = SurveyResultDTO.builder()
+                .surveyId(1L)
+                .surveyTitle("Team Survey")
+                .questionResults(List.of(
+                        SurveyResultDTO.QuestionResultDTO.builder()
+                                .questionId(1L)
+                                .questionText("How do you feel?")
+                                .totalResponses(5)
+                                .averageScore(4.2)
+                                .distribution(SurveyResultDTO.QuestionResultDTO.LikertDistribution.builder()
+                                        .agree(3).neutral(1).disagree(1)
+                                        .fullyAgree(0).totallyDisagree(0)
+                                        .build())
+                                .build()
+                ))
+                .build();
+
+        when(surveyService.getSurveyResults(1L)).thenReturn(Optional.of(result));
+
+        mockMvc.perform(get("/surveys/api/1/results"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.surveyTitle").value("Team Survey"))
+                .andExpect(jsonPath("$.questionResults[0].questionText").value("How do you feel?"));
+    }
+}
