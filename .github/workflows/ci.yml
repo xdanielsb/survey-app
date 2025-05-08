@@ -1,4 +1,5 @@
-name: Run Backend Tests
+
+name: Run Full Stack Tests
 
 on:
   push:
@@ -7,7 +8,8 @@ on:
     branches: [ master ]
 
 jobs:
-  build-and-test:
+  backend-tests:
+    name: Run Spring Boot Tests
     runs-on: ubuntu-latest
 
     defaults:
@@ -32,5 +34,37 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Run tests
-        run: ./mvnw test
+      - name: Run backend tests
+        run: ./mvnw clean verify
+
+  frontend-tests:
+    name: Run Vue + Vitest Frontend Tests
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Vitest
+        run: npx vitest run
+
