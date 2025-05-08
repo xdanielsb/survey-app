@@ -1,6 +1,8 @@
-import type { SurveyResultQuestion } from '@/types/survey-resutls-question.ts'
+
+import type { QuestionResult } from '@/types/question-result.ts'
 
 export interface SurveyResults {
-  title: string;
-  questions: SurveyResultQuestion[];
+  surveyId: number;
+  surveyTitle: string;
+  questionResults: QuestionResult[];
 }
