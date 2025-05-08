@@ -104,4 +104,20 @@ class SurveyControllerTest {
                 .andExpect(jsonPath("$.surveyTitle").value("Team Survey"))
                 .andExpect(jsonPath("$.questionResults[0].questionText").value("How do you feel?"));
     }
+
+
+    @Test
+    void shouldReturnListOfSurveys() throws Exception {
+        SurveyDTO survey1 = new SurveyDTO(1L, "Team Feedback", null);
+        SurveyDTO survey2 = new SurveyDTO(2L, "Sprint Review", null);
+
+        Mockito.when(surveyService.getAllSurveys()).thenReturn(List.of(survey1, survey2));
+
+        mockMvc.perform(get("/surveys"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].title").value("Team Feedback"))
+                .andExpect(jsonPath("$[1].title").value("Sprint Review"));
+    }
 }

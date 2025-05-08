@@ -33,6 +33,12 @@ public class SurveyService {
         return surveyRepo.findById(id).map(SurveyMapper::toDTO);
     }
 
+    public List<SurveyDTO> getAllSurveys() {
+        return surveyRepo.findAll().stream()
+                .map(SurveyMapper::toDTO) // assuming you have a mapper
+                .collect(Collectors.toList());
+    }
+
     // ✅ 2. Store an anonymous response
     public boolean saveSurveyResponse(Long surveyId, SurveyResponseDTO dto) {
         return surveyRepo.findById(surveyId).map(survey -> {

@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/surveys")
 @RequiredArgsConstructor
@@ -40,5 +42,11 @@ public class SurveyController {
         return surveyService.getSurveyResults(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping
+    public ResponseEntity<List<SurveyDTO>> getAllSurveys() {
+        List<SurveyDTO> surveys = surveyService.getAllSurveys();
+        return ResponseEntity.ok(surveys);
     }
 }
