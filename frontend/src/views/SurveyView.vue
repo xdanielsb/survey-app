@@ -19,7 +19,7 @@
           </option>
         </select>
       </div>
-      <button type="submit">Submit</button>
+      <button type="submit" class="btn primary">Submit</button>
     </form>
   </div>
 </template>
@@ -81,16 +81,4 @@ label {
   font-weight: bold;
 }
 
-select {
-  width: 100%;
-  padding: 0.5rem;
-  font-size: 1rem;
-}
-
-button {
-  margin-top: 1rem;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  cursor: pointer;
-}
 </style>

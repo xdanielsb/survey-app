@@ -50,12 +50,4 @@ onMounted(async () => {
   margin-bottom: 1.5rem;
 }
 
-h2 {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-h3 {
-  margin-bottom: 0.5rem;
-}
 </style>

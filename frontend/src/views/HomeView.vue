@@ -75,37 +75,4 @@ h1 {
   display: flex;
   gap: 0.5rem;
 }
-
-.btn {
-  padding: 0.4rem 0.9rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  text-decoration: none;
-  font-weight: 500;
-  transition: background 0.2s;
-}
-
-.btn.primary {
-  background-color: #007bff;
-  color: white;
-}
-
-.btn.primary:hover {
-  background-color: #0056b3;
-}
-
-.btn.secondary {
-  background-color: #f0f0f0;
-  color: #333;
-}
-
-.btn.secondary:hover {
-  background-color: #e0e0e0;
-}
-
-.loading {
-  text-align: center;
-  color: #666;
-  font-style: italic;
-}
 </style>
