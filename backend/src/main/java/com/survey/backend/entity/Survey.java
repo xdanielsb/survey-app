@@ -3,10 +3,7 @@ package com.survey.backend.entity;
 import jakarta.persistence.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name="surveys")
 @Entity
+@Builder
 public class Survey {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
