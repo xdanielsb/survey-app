@@ -1,5 +1,4 @@
-
 export interface AnswerDTO {
-  questionId: number;
-  answer: string;
+  questionId: number
+  answer: string
 }

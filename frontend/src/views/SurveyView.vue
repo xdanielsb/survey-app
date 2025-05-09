@@ -2,47 +2,36 @@
   <div class="survey-container" v-if="survey">
     <h2>{{ survey.title }}</h2>
     <form @submit.prevent="submitResponse">
-      <div
-        class="question"
+      <SurveyQuestionInput
         v-for="question in survey.questions"
         :key="question.id"
-      >
-        <label :for="'q-' + question.id">{{ question.questionText }}</label>
-        <select
-          v-model="answers[question.id]"
-          :id="'q-' + question.id"
-          required
-        >
-          <option disabled value="">Select</option>
-          <option v-for="option in likertOptions" :key="option" :value="option">
-            {{ option }}
-          </option>
-        </select>
+        v-model="answers[question.id]"
+        :question="question"
+        :likertOptions="likertOptions"
+      />
+
+      <div class="actions">
+        <button type="submit" class="btn primary">Submit</button>
+        <RouterLink to="/" class="btn secondary">Return to Home</RouterLink>
       </div>
-      <button type="submit" class="btn primary">Submit</button>
     </form>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { fetchSurveyById, submitSurveyResponse } from '@/services/surveyService'
-import type { SurveyResponseDTO } from '@/types/survey-response-dto.ts'
-import type { Survey } from '@/types/survey.ts'
+import SurveyQuestionInput from '@/components/SurveyQuestionInput.vue'
+import type { SurveyResponseDTO } from '@/types/survey-response-dto'
+import type { Survey } from '@/types/survey'
 
 const route = useRoute()
 const router = useRouter()
 const survey = ref<Survey | null>(null)
 const answers = ref<Record<number, string>>({})
 
-const likertOptions = [
-  'Totally disagree',
-  'Disagree',
-  'Neutral',
-  'Agree',
-  'Fully agree'
-]
+const likertOptions = ['Totally disagree', 'Disagree', 'Neutral', 'Agree', 'Fully agree']
 
 onMounted(async () => {
   const id = Number(route.params.id)
@@ -52,13 +41,12 @@ onMounted(async () => {
 const submitResponse = async () => {
   if (!survey.value) return
 
-
   const response: SurveyResponseDTO = {
     surveyId: survey.value.id,
     answers: Object.entries(answers.value).map(([qId, answer]) => ({
       questionId: Number(qId),
-      answer
-    }))
+      answer,
+    })),
   }
 
   await submitSurveyResponse(survey.value.id, response)
@@ -69,19 +57,7 @@ const submitResponse = async () => {
 
 <style scoped>
 .survey-container {
-  max-width: 600px;
   margin: auto;
   padding: 1rem;
 }
-
-.question {
-  margin-bottom: 1.5rem;
-}
-
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-}
-
 </style>

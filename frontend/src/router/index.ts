@@ -6,12 +6,12 @@ import SurveyResultsView from '@/views/SurveyResultsView.vue'
 export const routes = [
   { path: '/', component: HomeView },
   { path: '/surveys/:id', component: SurveyView },
-  { path: '/surveys/:id/results', component: SurveyResultsView }
+  { path: '/surveys/:id/results', component: SurveyResultsView },
 ]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
 })
 
 export default router

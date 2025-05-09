@@ -7,10 +7,3 @@ import { RouterView } from 'vue-router'
     <RouterView />
   </main>
 </template>
-
-<style scoped>
-/* Optional basic styles */
-body {
-  font-family: 'Inter', sans-serif;
-}
-</style>
