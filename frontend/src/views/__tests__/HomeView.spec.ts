@@ -11,6 +11,13 @@ createRouter({
 })
 
 vi.mock('axios')
+vi.mock('@/services/surveyService', () => ({
+  fetchSurveys: vi.fn().mockResolvedValue([
+    { id: 1, title: 'Customer Feedback' },
+    { id: 2, title: 'Product Satisfaction' },
+  ]),
+}))
+
 const mockedAxios = vi.mocked(axios, true)
 
 describe('HomeView', () => {
