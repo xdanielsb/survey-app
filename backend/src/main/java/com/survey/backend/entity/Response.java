@@ -1,10 +1,9 @@
 package com.survey.backend.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.*;
 
 @Getter
 @Setter
@@ -12,19 +11,19 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Builder
-@Table(name="responses")
+@Table(name = "responses")
 public class Response {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "survey_id")
-    private Survey survey;
+  @ManyToOne
+  @JoinColumn(name = "survey_id")
+  private Survey survey;
 
-    @Column(name="submitted_at")
-    private LocalDateTime submittedAt = LocalDateTime.now();
+  @Column(name = "submitted_at")
+  private LocalDateTime submittedAt = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "response", cascade = CascadeType.ALL)
-    private List<Answer> answers;
+  @OneToMany(mappedBy = "response", cascade = CascadeType.ALL)
+  private List<Answer> answers;
 }

@@ -1,9 +1,7 @@
 package com.survey.backend.dto;
 
-
-import lombok.*;
-
 import java.util.List;
+import lombok.*;
 
 @Getter
 @Setter
@@ -11,16 +9,16 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class SurveyResponseDTO {
-    private Long surveyId;
-    private List<AnswerDTO> answers;
+  private Long surveyId;
+  private List<AnswerDTO> answers;
 
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class AnswerDTO {
-        private Long questionId;
-        private String answer;
-    }
+  @Getter
+  @Setter
+  @NoArgsConstructor
+  @AllArgsConstructor
+  @Builder
+  public static class AnswerDTO {
+    private Long questionId;
+    private String answer;
+  }
 }
