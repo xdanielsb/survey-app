@@ -37,8 +37,11 @@ jobs:
       - name: Run backend tests
         run: ./mvnw clean verify
 
+      - name: Check code format with Spotless
+        run: ./mvnw spotless:check
+
   frontend-tests:
-    name: Run Vue + Vitest Frontend Tests
+    name: Run Vue + Vitest Frontend Tests + Linter
     runs-on: ubuntu-latest
 
     defaults:
@@ -68,3 +71,5 @@ jobs:
       - name: Run Vitest
         run: npx vitest run
 
+      - name: Run Linter
+        run: npm run lint
