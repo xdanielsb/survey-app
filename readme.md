@@ -118,7 +118,7 @@ GitHub Actions workflow runs on every push & pull request to:
 
 - `GET /surveys/{id}` – Fetch survey questions
 - `POST /surveys/{id}/responses` – Submit survey answers
-- `GET /api/surveys/{id}/results` – View aggregated results
+- `GET /surveys/{id}/results` – View aggregated results
 
 ---
 

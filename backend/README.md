@@ -6,7 +6,7 @@ This is the backend API for the Survey application, built with **Spring Boot** a
 
 - Expose surveys via `/surveys/:id`
 - Submit anonymous responses
-- Retrieve aggregated survey results at `/api/surveys/:id/results`
+- Retrieve aggregated survey results at `/surveys/:id/results`
 - Auto-creates 3 default surveys on application startup
 - PostgreSQL persistence using Spring Data JPA
 

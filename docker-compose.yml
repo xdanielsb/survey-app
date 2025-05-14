@@ -46,7 +46,7 @@ services:
     build:
       context: ./frontend
       args:
-        VITE_BACKEND_URL: http://localhost:8080
+        VITE_BACKEND_URL: http://0.0.0.0:8080
     container_name: survey-frontend
     restart: always
     depends_on:
