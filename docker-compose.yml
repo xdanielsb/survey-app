@@ -56,6 +56,15 @@ services:
     environment:
       - NODE_ENV=production
 
+  caddy:
+    image: caddy:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+    depends_on:
+      - frontend
+
 volumes:
   db-data:
   pgadmin-data:
