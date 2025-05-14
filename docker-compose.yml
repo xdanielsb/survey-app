@@ -46,7 +46,7 @@ services:
     build:
       context: ./frontend
       args:
-        VITE_BACKEND_URL: http://0.0.0.0:8080
+        VITE_BACKEND_URL: https://0.0.0.0:8080
     container_name: survey-frontend
     restart: always
     depends_on:
@@ -60,12 +60,15 @@ services:
     image: caddy:alpine
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy-data:/data
     depends_on:
       - frontend
 
 volumes:
   db-data:
   pgadmin-data:
+  caddy-data:
 
