@@ -3,7 +3,7 @@ import type { Survey } from '@/types/survey'
 import type { SurveyResults } from '@/types/survey-results'
 import type { SurveyResponseDTO } from '@/types/survey-response-dto'
 
-const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://0.0.0.0:8080'
+const baseUrl = import.meta.env.VITE_BACKEND_URL
 const api = axios.create({
   baseURL: baseUrl,
 })

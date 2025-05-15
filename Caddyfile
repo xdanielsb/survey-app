@@ -1,4 +1,4 @@
-http://localhost {
+{$DOMAIN} {
     handle_path /api/* {
         reverse_proxy backend:8080
     }

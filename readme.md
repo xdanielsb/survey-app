@@ -37,10 +37,11 @@ This repository contains a full-stack **Survey App** built with:
 - Node.js (>= 18)
 - Docker & Docker Compose
 
-###  Run With Docker
+###  Dev development
 
 ```bash
-docker-compose up --build
+ docker compose --env-file .env up
+ // the .env file 
 ```
 
 Frontend: http://localhost:5173  
