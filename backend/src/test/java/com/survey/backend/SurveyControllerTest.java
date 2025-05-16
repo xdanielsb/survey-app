@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.survey.backend.controller.SurveyController;
+import com.survey.backend.dto.CreateSurveyDTO;
 import com.survey.backend.dto.SurveyDTO;
 import com.survey.backend.dto.SurveyResponseDTO;
 import com.survey.backend.dto.SurveyResultDTO;
@@ -123,5 +124,55 @@ class SurveyControllerTest {
         .andExpect(jsonPath("$.length()").value(2))
         .andExpect(jsonPath("$[0].title").value("Team Feedback"))
         .andExpect(jsonPath("$[1].title").value("Sprint Review"));
+  }
+
+  @Test
+  void shouldReturnsCreatedSurvey() throws Exception {
+    // Arrange
+    CreateSurveyDTO dto =
+        CreateSurveyDTO.builder()
+            .title("User Feedback")
+            .questions(
+                List.of(
+                    CreateSurveyDTO.QuestionDTO.builder()
+                        .questionText("What do you like?")
+                        .position(1)
+                        .build(),
+                    CreateSurveyDTO.QuestionDTO.builder()
+                        .questionText("Any suggestions?")
+                        .position(2)
+                        .build()))
+            .build();
+
+    SurveyDTO mockSurveyDTO =
+        SurveyDTO.builder()
+            .id(1L)
+            .title(dto.getTitle())
+            .questions(
+                List.of(
+                    SurveyDTO.QuestionDTO.builder()
+                        .id(100L)
+                        .questionText("What do you like?")
+                        .position(1)
+                        .build(),
+                    SurveyDTO.QuestionDTO.builder()
+                        .id(101L)
+                        .questionText("Any suggestions?")
+                        .position(2)
+                        .build()))
+            .build();
+
+    Mockito.when(surveyService.createSurvey(Mockito.any())).thenReturn(mockSurveyDTO);
+
+    // Act & Assert
+    mockMvc
+        .perform(
+            post("/surveys/create")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(1L))
+        .andExpect(jsonPath("$.title").value("User Feedback"))
+        .andExpect(jsonPath("$.questions.length()").value(2));
   }
 }

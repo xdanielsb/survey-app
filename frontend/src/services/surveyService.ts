@@ -2,8 +2,9 @@ import axios from 'axios'
 import type { Survey } from '@/types/survey'
 import type { SurveyResults } from '@/types/survey-results'
 import type { SurveyResponseDTO } from '@/types/survey-response-dto'
+import type { CreateSurveyInput } from '@/types/create-question-input.ts'
 
-const baseUrl = import.meta.env.VITE_BACKEND_URL
+const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080'
 const api = axios.create({
   baseURL: baseUrl,
 })
@@ -27,5 +28,10 @@ export const submitSurveyResponse = async (
 
 export const fetchSurveyResults = async (id: number): Promise<SurveyResults> => {
   const response = await api.get(`/surveys/${id}/results`)
+  return response.data
+}
+
+export const createSurvey = async (data: CreateSurveyInput): Promise<void> => {
+  const response = await api.post('/surveys/create', data)
   return response.data
 }

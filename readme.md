@@ -40,20 +40,12 @@ This repository contains a full-stack **Survey App** built with:
 ###  Dev development
 
 ```bash
- docker compose --env-file .env up
+ docker compose -f docker-compose.dev.yml --env-file .env up --build --force-recreate -d
+ // then start front and back
+ // docker compose --env-file .env up
  // the .env file 
-```
-
-Frontend: http://localhost:5173  
-Backend: http://localhost:8080
-
----
 
 ##  Backend
-
-📁 `./backend`
-
-### Run locally
 
 ```bash
 ./mvnw spring-boot:run
@@ -78,7 +70,6 @@ More details: [`backend/README.md`](./backend/README.md)
 
 ## 🖥️ Frontend
 
-📁 `./frontend`
 
 ### Run locally
 
@@ -131,4 +122,4 @@ Demo survey data is automatically seeded on backend startup (only if DB is empty
 
 ## 📄 License
 
-MIT
+BSD 3-Clause

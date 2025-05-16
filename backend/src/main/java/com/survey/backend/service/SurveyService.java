@@ -1,5 +1,6 @@
 package com.survey.backend.service;
 
+import com.survey.backend.dto.CreateSurveyDTO;
 import com.survey.backend.dto.SurveyDTO;
 import com.survey.backend.dto.SurveyResponseDTO;
 import com.survey.backend.dto.SurveyResultDTO;
@@ -27,7 +28,6 @@ public class SurveyService {
   private final ResponseRepository responseRepo;
   private final AnswerRepository answerRepo;
 
-  // ✅ 1. Return a survey with questions
   public Optional<SurveyDTO> getSurveyById(Long id) {
     return surveyRepo.findById(id).map(SurveyMapper::toDTO);
   }
@@ -38,7 +38,6 @@ public class SurveyService {
         .collect(Collectors.toList());
   }
 
-  // ✅ 2. Store an anonymous response
   public boolean saveSurveyResponse(Long surveyId, SurveyResponseDTO dto) {
     return surveyRepo
         .findById(surveyId)
@@ -124,7 +123,26 @@ public class SurveyService {
     return Optional.of(result);
   }
 
-  // Helper: map Likert scale to numeric for average score
+  public SurveyDTO createSurvey(CreateSurveyDTO dto) {
+    Survey survey = Survey.builder().title(dto.getTitle()).build();
+
+    List<Question> questions =
+        dto.getQuestions().stream()
+            .map(
+                q ->
+                    Question.builder()
+                        .questionText(q.getQuestionText())
+                        .position(q.getPosition())
+                        .survey(survey)
+                        .build())
+            .collect(Collectors.toList());
+
+    survey.setQuestions(questions);
+
+    Survey s = this.surveyRepo.save(survey);
+    return SurveyMapper.toDTO(s);
+  }
+
   private int mapLikertToScore(LikertScale scale) {
     return switch (scale) {
       case TOTALLY_DISAGREE -> 1;

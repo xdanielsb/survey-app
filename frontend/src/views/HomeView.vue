@@ -1,6 +1,10 @@
 <template>
   <div class="container">
-    <h1>Available Surveys</h1>
+    <div class="header">
+      <h1>Available Surveys</h1>
+      <router-link to="/create-survey" class="create-btn">+ Create Survey</router-link>
+    </div>
+
     <ul v-if="surveys.length" class="survey-list">
       <SurveyListItem v-for="survey in surveys" :key="survey.id" :survey="survey" />
     </ul>
@@ -30,6 +34,27 @@ onMounted(async () => {
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.create-btn {
+  background-color: #007aff;
+  color: white;
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.create-btn:hover {
+  background-color: #0063cc;
 }
 
 .survey-list {
