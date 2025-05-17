@@ -1,9 +1,10 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
-import firebase from 'firebase/auth'
+import type { FirebaseApp } from 'firebase/app'
+import type { Auth } from 'firebase/auth'
 
-let app
-let auth: firebase.Auth | null
+let app: FirebaseApp | null = null
+let auth: Auth | null = null
 
 try {
   const firebaseConfig = {
@@ -15,12 +16,11 @@ try {
     appId: import.meta.env.VITE_FIREBASE_APP_ID,
     measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
   }
+
   app = initializeApp(firebaseConfig)
   auth = getAuth(app)
 } catch (error) {
   console.error('🔥 Failed to initialize Firebase:', error)
-  app = null
-  auth = null
 }
 
 export { app, auth }
