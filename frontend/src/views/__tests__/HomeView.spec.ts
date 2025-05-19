@@ -10,7 +10,24 @@ createRouter({
   routes,
 })
 
-vi.mock('axios')
+vi.mock('axios', () => {
+  const mockAxiosInstance = {
+    get: vi.fn(),
+    post: vi.fn(),
+    interceptors: {
+      request: { use: vi.fn() },
+      response: { use: vi.fn() },
+    },
+  }
+
+  return {
+    default: {
+      create: vi.fn(() => mockAxiosInstance),
+      ...mockAxiosInstance,
+    },
+  }
+})
+
 vi.mock('@/services/surveyService', () => ({
   fetchSurveys: vi.fn().mockResolvedValue([
     { id: 1, title: 'Customer Feedback' },

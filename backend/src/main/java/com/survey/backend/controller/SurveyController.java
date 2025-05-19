@@ -4,6 +4,7 @@ import com.survey.backend.dto.CreateSurveyDTO;
 import com.survey.backend.dto.SurveyDTO;
 import com.survey.backend.dto.SurveyResponseDTO;
 import com.survey.backend.dto.SurveyResultDTO;
+import com.survey.backend.security.RequireAuth;
 import com.survey.backend.service.SurveyService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,7 @@ public class SurveyController {
         .orElse(ResponseEntity.notFound().build());
   }
 
+  @RequireAuth
   @PostMapping("/create")
   public ResponseEntity<SurveyDTO> createSurvey(@RequestBody CreateSurveyDTO dto) {
     SurveyDTO created = surveyService.createSurvey(dto);

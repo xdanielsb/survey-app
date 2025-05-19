@@ -42,6 +42,15 @@ jobs:
           script: |
             echo '${{ secrets.CADDY_FILE }}' > /root/survey-app/Caddyfile
 
+      - name: Upload Firebase Service Account
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > /root/survey-app/backend/src/main/resources/
+
       - name: Deploy with Docker Compose
         uses: appleboy/ssh-action@v1
         with:

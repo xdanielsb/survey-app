@@ -1,12 +1,7 @@
 import { auth } from '@/firebase'
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
-import axios from 'axios'
 import { toastService } from '@/services/toastService'
-
-const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080'
-const api = axios.create({
-  baseURL: baseUrl,
-})
+import api from '@/services/api'
 
 export async function loginUser(email: string, password: string): Promise<string | null> {
   if (!auth) {
@@ -39,12 +34,7 @@ export async function signUpUser(email: string, password: string): Promise<strin
       email: userCred.user.email,
     }
 
-    await api.post('/users/create', userPayload, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    })
+    await api.post('/users/create', userPayload)
 
     return token
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

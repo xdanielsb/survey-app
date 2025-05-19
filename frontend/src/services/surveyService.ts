@@ -1,13 +1,8 @@
-import axios from 'axios'
 import type { Survey } from '@/types/survey'
 import type { SurveyResults } from '@/types/survey-results'
 import type { SurveyResponseDTO } from '@/types/survey-response-dto'
 import type { CreateSurveyInput } from '@/types/create-question-input.ts'
-
-const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080'
-const api = axios.create({
-  baseURL: baseUrl,
-})
+import api from '@/services/api'
 
 export const fetchSurveys = async (): Promise<Survey[]> => {
   const response = await api.get<Survey[]>('/surveys')
