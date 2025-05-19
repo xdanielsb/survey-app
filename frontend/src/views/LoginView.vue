@@ -1,35 +1,55 @@
 <template>
   <div class="login-container">
-    <h1>Sign In</h1>
-    <form @submit.prevent="handleLogin">
+    <h1>{{ isSignUp ? 'Sign Up' : 'Sign In' }}</h1>
+
+    <form @submit.prevent="isSignUp ? handleSignUp() : handleLogin()">
       <input v-model="email" type="email" placeholder="Email" required />
       <input v-model="password" type="password" placeholder="Password" required />
-      <button type="submit">Login</button>
+      <button type="submit">{{ isSignUp ? 'Create Account' : 'Login' }}</button>
       <p v-if="error" class="error">{{ error }}</p>
     </form>
+
+    <p class="toggle-text">
+      <span v-if="isSignUp">Already have an account?</span>
+      <span v-else>Don't have an account?</span>
+      <a @click="toggleMode">{{ isSignUp ? 'Login here' : 'Sign up here' }}</a>
+    </p>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { auth } from '@/firebase'
-import { signInWithEmailAndPassword } from 'firebase/auth'
+import { loginUser, signUpUser } from '@/services/authService.ts'
 
 const email = ref('')
 const password = ref('')
 const error = ref('')
+const isSignUp = ref(false)
 const router = useRouter()
 
+const toggleMode = () => {
+  error.value = ''
+  isSignUp.value = !isSignUp.value
+}
+
 const handleLogin = async () => {
-  if (!auth) return
   try {
-    const userCred = await signInWithEmailAndPassword(auth, email.value, password.value)
-    const token = await userCred.user.getIdToken()
-    localStorage.setItem('token', token)
-    router.push('/')
+    const token = await loginUser(email.value, password.value)
+    if (token) {
+      localStorage.setItem('token', token)
+      router.push('/')
+    }
   } catch {
     error.value = 'Login failed'
+  }
+}
+
+const handleSignUp = async () => {
+  const token = await signUpUser(email.value, password.value)
+  localStorage.setItem('token', token || '')
+  if (token) {
+    router.push('/')
   }
 }
 </script>
@@ -88,5 +108,17 @@ button:hover {
   color: #b00020;
   font-size: 0.85rem;
   margin-top: 0.5rem;
+}
+
+.toggle-text {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.toggle-text a {
+  color: #007aff;
+  margin-left: 0.25rem;
+  cursor: pointer;
+  text-decoration: underline;
 }
 </style>

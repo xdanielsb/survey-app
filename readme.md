@@ -41,9 +41,10 @@ This repository contains a full-stack **Survey App** built with:
 
 ```bash
  docker compose -f docker-compose.dev.yml --env-file .env up --build --force-recreate -d
- // then start front and back
- // docker compose --env-file .env up
- // the .env file 
+ // backend
+ ./mvnw --debug spring-boot:run
+ // frontend
+ npm run dev
 
 ##  Backend
 

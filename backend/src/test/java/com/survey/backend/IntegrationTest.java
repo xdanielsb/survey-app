@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -12,6 +13,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @SpringBootTest
 @Testcontainers
+@ActiveProfiles("test")
 public abstract class IntegrationTest {
 
   @Container
@@ -33,6 +35,6 @@ public abstract class IntegrationTest {
   @BeforeEach
   void cleanDatabase() {
     jdbcTemplate.execute(
-        "TRUNCATE TABLE answers, responses, questions, surveys RESTART IDENTITY CASCADE;");
+        "TRUNCATE TABLE answers, responses, questions, surveys, users RESTART IDENTITY CASCADE;");
   }
 }
