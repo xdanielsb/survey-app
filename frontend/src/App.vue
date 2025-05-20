@@ -1,42 +1,31 @@
 <script setup lang="ts">
 import { RouterView, useRouter } from 'vue-router'
-import { ref, onMounted } from 'vue'
-import { auth } from '@/firebase'
-import { onAuthStateChanged, signOut } from 'firebase/auth'
-import firebase from 'firebase/auth'
+import { computed } from 'vue'
+import { useAuthStore } from '@/stores/authStore'
 
 const mode = import.meta.env.MODE
 const router = useRouter()
-const user = ref<firebase.User | null>(null)
+const authStore = useAuthStore()
 
-onMounted(() => {
-  if (!auth) {
-    console.error('Firebase not initialized. Auth is unavailable.')
-    return
-  }
+// Computed user email from store
+const userEmail = computed(() => (authStore.isAuthenticated ? authStore.email : null))
 
-  onAuthStateChanged(auth, (u) => {
-    user.value = u
-  })
-})
-
-const logout = async () => {
-  if (!auth) return
-  await signOut(auth)
-  user.value = null
+// Logout: clears store, localStorage, and redirects
+const logout = () => {
+  authStore.logout()
   router.push('/login')
 }
 </script>
 
 <template>
   <main class="container mx-auto p-6">
-    <div class="env-indicator">
+    <div class="env-indicator" :class="mode">
       Environment: <strong>{{ mode }}</strong>
     </div>
 
     <div class="auth-bar">
-      <span v-if="user">👋 {{ user.email }}</span>
-      <router-link v-if="!user" to="/login" class="auth-btn">Login</router-link>
+      <span v-if="userEmail"> {{ userEmail }}</span>
+      <router-link v-if="!userEmail" to="/login" class="auth-btn">Login</router-link>
       <button v-else @click="logout" class="auth-btn logout">Logout</button>
     </div>
 
@@ -56,17 +45,14 @@ const logout = async () => {
   z-index: 1000;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
 }
-
 .env-indicator.development {
   background-color: #007aff;
   color: white;
 }
-
 .env-indicator.production {
   background-color: #e53935;
   color: white;
 }
-
 .env-indicator.test {
   background-color: #ff9800;
   color: white;

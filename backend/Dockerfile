@@ -7,5 +7,9 @@ FROM eclipse-temurin:17-jdk
 WORKDIR /app
 COPY --from=builder /app/target/*.jar app.jar
 
+
+ARG FIREBASE_API_KEY
+ENV FIREBASE_API_KEY=$FIREBASE_API_KEY
+
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]

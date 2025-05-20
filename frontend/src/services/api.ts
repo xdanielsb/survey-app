@@ -1,6 +1,7 @@
 import axios from 'axios'
-import { getAuthToken } from './tokenService'
 import { toastService } from '@/services/toastService'
+import { useAuthStore } from '@/stores/authStore'
+import router from '@/router'
 
 const baseURL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080'
 
@@ -9,12 +10,13 @@ const api = axios.create({
   timeout: 10000,
 })
 
+// Request interceptor: inject JWT token
 api.interceptors.request.use(
-  async (config) => {
-    const token = await getAuthToken()
+  (config) => {
+    const authStore = useAuthStore()
+    const token = authStore.token
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
-      console.log(config.headers)
     }
     return config
   },
@@ -22,13 +24,15 @@ api.interceptors.request.use(
 )
 
 api.interceptors.response.use(
-  (res) => res,
-  (err) => {
-    if (err.response?.status === 401) {
-      toastService.warning('[Auth] Token expired or unauthorized')
-      // TODO: redirect to login, or dispatch logout
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      const authStore = useAuthStore()
+      toastService.warning('[Auth] Session expired, please login again.')
+      authStore.logout()
+      router.push('/login')
     }
-    return Promise.reject(err)
+    return Promise.reject(error)
   },
 )
 

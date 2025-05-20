@@ -35,9 +35,8 @@ const toggleMode = () => {
 
 const handleLogin = async () => {
   try {
-    const token = await loginUser(email.value, password.value)
-    if (token) {
-      localStorage.setItem('token', token)
+    const { success } = await loginUser(email.value, password.value)
+    if (success) {
       router.push('/')
     }
   } catch {

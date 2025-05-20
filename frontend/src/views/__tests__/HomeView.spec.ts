@@ -3,9 +3,10 @@ import { mount } from '@vue/test-utils'
 import HomeView from '../HomeView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { routes } from '@/router/index.ts'
+import { createTestingPinia } from '@pinia/testing'
 import axios from 'axios' // adjust if your route definitions are elsewhere
 
-createRouter({
+const router = createRouter({
   history: createWebHistory(),
   routes,
 })
@@ -50,6 +51,12 @@ describe('HomeView', () => {
   it('displays surveys from API', async () => {
     const wrapper = mount(HomeView, {
       global: {
+        plugins: [
+          createTestingPinia({
+            createSpy: vi.fn,
+          }),
+          router,
+        ],
         stubs: {
           RouterLink: true,
         },

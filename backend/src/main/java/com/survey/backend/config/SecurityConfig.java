@@ -18,19 +18,32 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http, FirebaseAuthFilter firebaseAuthFilter)
       throws Exception {
-    http.securityMatcher("/**") // optional, defaults to all
+    http.securityMatcher("/**")
         .authorizeHttpRequests(
             auth ->
-                auth.requestMatchers(
-                        "/surveys", "/surveys/*", "/surveys/*/results", "/surveys/*/responses")
+                auth
+                    // Public routes (auth and some surveys)
+                    .requestMatchers(
+                        "/auth/login",
+                        "/users/**",
+                        "/surveys",
+                        "/surveys/*",
+                        "/surveys/*/results",
+                        "/surveys/*/responses")
                     .permitAll()
-                    .requestMatchers("/auth/**", "/users/**")
-                    .permitAll()
+
+                    // Authenticated-only routes
                     .requestMatchers("/surveys/create")
                     .authenticated()
+
+                    // Everything else is denied
                     .anyRequest()
                     .denyAll())
+
+        // Add Firebase filter before username-password filter
         .addFilterBefore(firebaseAuthFilter, UsernamePasswordAuthenticationFilter.class)
+
+        // Disable CSRF for API use (enable for forms)
         .csrf(AbstractHttpConfigurer::disable);
 
     return http.build();

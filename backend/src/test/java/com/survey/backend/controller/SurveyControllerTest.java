@@ -1,4 +1,4 @@
-package com.survey.backend;
+package com.survey.backend.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.survey.backend.controller.SurveyController;
 import com.survey.backend.dto.CreateSurveyDTO;
 import com.survey.backend.dto.SurveyDTO;
 import com.survey.backend.dto.SurveyResponseDTO;

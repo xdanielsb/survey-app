@@ -1,21 +1,23 @@
 import { auth } from '@/firebase'
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
+import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { toastService } from '@/services/toastService'
 import api from '@/services/api'
+import { useAuthStore } from '@/stores/authStore'
 
-export async function loginUser(email: string, password: string): Promise<string | null> {
-  if (!auth) {
-    toastService.error('Firebase not initialized')
-    return null
-  }
+export async function loginUser(email: string, password: string) {
   try {
-    const userCred = await signInWithEmailAndPassword(auth, email, password)
-    return await userCred.user.getIdToken()
+    const response = await api.post('/auth/login', { email, password })
+    const { token, roles } = response.data
+    const authStore = useAuthStore()
+    authStore.login(email, token, roles)
+    return { success: true }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
-    const firebaseError = err?.code || err?.message
-    toastService.error('Firebase sign-up failed:' + firebaseError)
-    return null
+    const backendError = err?.code || err?.message
+    toastService.error('Backend error during login:' + backendError)
+    return {
+      success: false,
+    }
   }
 }
 

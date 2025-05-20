@@ -33,7 +33,6 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
                       null,
                       Collections.emptyList() // or extract roles from token if using custom claims
                       );
-              System.out.println(token);
               SecurityContextHolder.getContext().setAuthentication(authentication);
             });
 

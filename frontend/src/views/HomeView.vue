@@ -2,7 +2,9 @@
   <div class="container">
     <div class="header">
       <h1>Available Surveys</h1>
-      <router-link to="/create-survey" class="create-btn">+ Create Survey</router-link>
+      <router-link v-if="isManager" to="/create-survey" class="create-btn">
+        + Create Survey
+      </router-link>
     </div>
 
     <ul v-if="surveys.length" class="survey-list">
@@ -13,16 +15,21 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { fetchSurveys } from '@/services/surveyService'
 import type { Survey } from '@/types/survey'
 import SurveyListItem from '@/components/SurveyListItem.vue'
+import { useAuthStore } from '@/stores/authStore'
 
 const surveys = ref<Survey[]>([])
 
 onMounted(async () => {
   surveys.value = await fetchSurveys()
 })
+
+const authStore = useAuthStore()
+
+const isManager = computed(() => authStore.roles.includes('MANAGER'))
 </script>
 
 <style scoped>
