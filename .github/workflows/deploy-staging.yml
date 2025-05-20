@@ -1,8 +1,10 @@
 
-name: Deploy to Server
+name: Deploy to staging 
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - master
 
 jobs:
   deploy:
@@ -12,10 +14,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Copy project files to server
+      - name: Copy project files to production server
         uses: appleboy/scp-action@v1
         with:
-          host: ${{ secrets.HOST }}
+          host: ${{ secrets.STAGING_HOST }}
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "."
@@ -27,34 +29,34 @@ jobs:
       - name: Upload .env file
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.HOST }}
+          host: ${{ secrets.STAGING_HOST }}
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            echo '${{ secrets.ENV_FILE }}' > /root/survey-app/.env
+            echo '${{ secrets.ENV_FILE_STAGING }}' > /root/survey-app/.env
 
       - name: Upload Caddyfile
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.HOST }}
+          host: ${{ secrets.STAGING_HOST }}
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            echo '${{ secrets.CADDY_FILE }}' > /root/survey-app/Caddyfile
+            echo '${{ secrets.CADDY_FILE_STAGING }}' > /root/survey-app/Caddyfile
 
       - name: Upload Firebase Service Account
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.HOST }}
+          host: ${{ secrets.STAGING_HOST }}
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > /root/survey-app/backend/src/main/resources/
+            echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > /root/survey-app/backend/src/main/resources/firebase-service-account.json
 
       - name: Deploy with Docker Compose
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.HOST }}
+          host: ${{ secrets.STAGING_HOST }}
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
