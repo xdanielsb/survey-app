@@ -26,6 +26,8 @@ import SurveyQuestionInput from '@/components/SurveyQuestionInput.vue'
 import type { SurveyResponseDTO } from '@/types/survey-response-dto'
 import type { Survey } from '@/types/survey'
 
+import { toastService } from '@/services/toastService'
+
 const route = useRoute()
 const router = useRouter()
 const survey = ref<Survey | null>(null)
@@ -50,7 +52,8 @@ const submitResponse = async () => {
   }
 
   await submitSurveyResponse(survey.value.id, response)
-  alert('Survey submitted!')
+  toastService.success('Survey has been submitted')
+
   router.push('/')
 }
 </script>

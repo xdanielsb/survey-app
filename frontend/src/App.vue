@@ -2,6 +2,8 @@
 import { RouterView, useRouter } from 'vue-router'
 import { computed } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
+import { onMounted } from 'vue'
+import { logger } from './plugins/logger'
 
 const mode = import.meta.env.MODE
 const router = useRouter()
@@ -15,6 +17,13 @@ const logout = () => {
   authStore.logout()
   router.push('/login')
 }
+
+// Logger
+onMounted(() => {
+  logger.info('App mounted successfully.')
+})
+
+defineExpose({ logger })
 </script>
 
 <template>

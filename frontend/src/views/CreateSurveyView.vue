@@ -34,6 +34,8 @@
 <script lang="ts">
 import { ref } from 'vue'
 import { createSurvey } from '@/services/surveyService'
+import { logger } from '@/plugins/logger'
+import { toastService } from '@/services/toastService'
 
 export default {
   name: 'CreateSurveyView',
@@ -55,12 +57,12 @@ export default {
 
       try {
         await createSurvey(payload)
-        alert('Survey created!')
+        toastService.success('Survey has been created successfully!')
         surveyTitle.value = ''
         questions.value = [{ text: '' }]
       } catch (err) {
-        alert('Error creating survey')
-        console.error(err)
+        toastService.error('Error creating survey')
+        logger.error(JSON.stringify(err))
       }
     }
 

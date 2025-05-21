@@ -7,11 +7,13 @@ import jakarta.annotation.PostConstruct;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
 @Profile("!test")
+@Slf4j
 public class FirebaseConfig {
 
   @PostConstruct
@@ -22,6 +24,7 @@ public class FirebaseConfig {
             getClass().getClassLoader().getResourceAsStream("firebase-service-account.json");
 
         if (serviceAccount == null) {
+          log.error("firebase-service-account.json not found in classpath");
           throw new FileNotFoundException("firebase-service-account.json not found in classpath");
         }
 
@@ -31,10 +34,10 @@ public class FirebaseConfig {
                 .build();
 
         FirebaseApp.initializeApp(options);
-        System.out.println("Firebase initialized successfully.");
+        log.info("Firebase initialized successfully.");
       }
     } catch (IOException e) {
-      System.err.println("Failed to initialize Firebase: " + e.getMessage());
+      log.error("Failed to initialize Firebase: " + e.getMessage());
       e.printStackTrace();
       throw new IllegalStateException("Firebase initialization error", e);
     }

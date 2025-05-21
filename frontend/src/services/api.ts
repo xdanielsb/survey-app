@@ -2,6 +2,7 @@ import axios from 'axios'
 import { toastService } from '@/services/toastService'
 import { useAuthStore } from '@/stores/authStore'
 import router from '@/router'
+import { logger } from '@/plugins/logger'
 
 const baseURL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080'
 
@@ -31,6 +32,12 @@ api.interceptors.response.use(
       toastService.warning('[Auth] Session expired, please login again.')
       authStore.logout()
       router.push('/login')
+    }
+
+    if (error.response) {
+      logger.error(`HTTP ${error.response.status}:`, error.response.data)
+    } else {
+      logger.error('Axios network/server error:', error)
     }
     return Promise.reject(error)
   },

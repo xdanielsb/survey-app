@@ -34,3 +34,6 @@ build/
 
 ### Config files
 firebase-service-account.json
+
+### logs
+logs/

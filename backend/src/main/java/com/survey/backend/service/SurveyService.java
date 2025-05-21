@@ -11,14 +11,13 @@ import com.survey.backend.respository.AnswerRepository;
 import com.survey.backend.respository.QuestionRepository;
 import com.survey.backend.respository.ResponseRepository;
 import com.survey.backend.respository.SurveyRepository;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SurveyService {
@@ -39,88 +38,124 @@ public class SurveyService {
   }
 
   public boolean saveSurveyResponse(Long surveyId, SurveyResponseDTO dto) {
-    return surveyRepo
-        .findById(surveyId)
+    Optional<Survey> surveyOpt = surveyRepo.findById(surveyId);
+    if (surveyOpt.isEmpty()) {
+      log.warn("Survey ID {} not found", surveyId);
+      return false;
+    }
+
+    try {
+      Survey survey = surveyOpt.get();
+      Response response = createSurveyResponseRecord(survey);
+      List<Answer> answers = convertDtoToAnswers(dto, response);
+
+      answerRepo.saveAll(answers);
+      return true;
+    } catch (IllegalArgumentException ex) {
+      log.warn("Invalid data while saving survey response: {}", ex.getMessage());
+      return false;
+    } catch (Exception ex) {
+      log.error(
+          "Unexpected error saving survey response for surveyId {}: {}",
+          surveyId,
+          ex.getMessage(),
+          ex);
+      return false;
+    }
+  }
+
+  private Response createSurveyResponseRecord(Survey survey) {
+    return responseRepo.save(Response.builder().survey(survey).build());
+  }
+
+  private List<Answer> convertDtoToAnswers(SurveyResponseDTO dto, Response response) {
+    return dto.getAnswers().stream()
         .map(
-            survey -> {
-              Response response = responseRepo.save(Response.builder().survey(survey).build());
-
-              List<Answer> answers =
-                  dto.getAnswers().stream()
-                      .map(
-                          dtoAnswer -> {
-                            Question question =
-                                questionRepo
-                                    .findById(dtoAnswer.getQuestionId())
-                                    .orElseThrow(
-                                        () ->
-                                            new IllegalArgumentException(
-                                                "Invalid question ID: "
-                                                    + dtoAnswer.getQuestionId()));
-                            return AnswerMapper.fromDTO(dtoAnswer, question, response);
-                          })
-                      .toList();
-
-              answerRepo.saveAll(answers);
-              return true;
+            dtoAnswer -> {
+              Long questionId = dtoAnswer.getQuestionId();
+              Question question =
+                  questionRepo
+                      .findById(questionId)
+                      .orElseThrow(
+                          () -> {
+                            log.error("Invalid question ID: " + questionId);
+                            return new IllegalArgumentException(
+                                "Invalid question ID: " + questionId);
+                          });
+              return AnswerMapper.fromDTO(dtoAnswer, question, response);
             })
-        .orElse(false);
+        .toList();
   }
 
   public Optional<SurveyResultDTO> getSurveyResults(Long surveyId) {
     Optional<Survey> surveyOpt = surveyRepo.findById(surveyId);
-    if (surveyOpt.isEmpty()) return Optional.empty();
+    if (surveyOpt.isEmpty()) {
+      log.warn("Survey ID {} not found for result generation", surveyId);
+      return Optional.empty();
+    }
 
-    Survey survey = surveyOpt.get();
+    try {
+      Survey survey = surveyOpt.get();
+      List<SurveyResultDTO.QuestionResultDTO> questionResults = generateResultsForSurvey(survey);
+      SurveyResultDTO result = buildSurveyResultDTO(survey, questionResults);
+      return Optional.of(result);
+    } catch (Exception ex) {
+      log.error(
+          "Failed to compute survey results for surveyId {}: {}", surveyId, ex.getMessage(), ex);
+      return Optional.empty();
+    }
+  }
 
-    List<SurveyResultDTO.QuestionResultDTO> results =
-        survey.getQuestions().stream()
-            .map(
-                question -> {
-                  List<Answer> answers = answerRepo.findByQuestionId(question.getId());
+  private List<SurveyResultDTO.QuestionResultDTO> generateResultsForSurvey(Survey survey) {
+    return survey.getQuestions().stream()
+        .map(this::computeQuestionResult)
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
+  }
 
-                  Map<LikertScale, Long> distribution =
-                      Arrays.stream(LikertScale.values())
-                          .collect(
-                              Collectors.toMap(
-                                  scale -> scale,
-                                  scale ->
-                                      answers.stream()
-                                          .filter(a -> a.getAnswer() == scale)
-                                          .count()));
+  private SurveyResultDTO.QuestionResultDTO computeQuestionResult(Question question) {
+    try {
+      List<Answer> answers = answerRepo.findByQuestionId(question.getId());
 
-                  double averageScore =
-                      answers.stream()
-                          .mapToInt(a -> mapLikertToScore(a.getAnswer()))
-                          .average()
-                          .orElse(0.0);
+      Map<LikertScale, Long> distribution =
+          Arrays.stream(LikertScale.values())
+              .collect(
+                  Collectors.toMap(
+                      scale -> scale,
+                      scale -> answers.stream().filter(a -> a.getAnswer() == scale).count()));
 
-                  return SurveyResultDTO.QuestionResultDTO.builder()
-                      .questionId(question.getId())
-                      .questionText(question.getQuestionText())
-                      .totalResponses(answers.size())
-                      .averageScore(averageScore)
-                      .distribution(
-                          SurveyResultDTO.QuestionResultDTO.LikertDistribution.builder()
-                              .totallyDisagree(
-                                  distribution.getOrDefault(LikertScale.TOTALLY_DISAGREE, 0L))
-                              .disagree(distribution.getOrDefault(LikertScale.DISAGREE, 0L))
-                              .neutral(distribution.getOrDefault(LikertScale.NEUTRAL, 0L))
-                              .agree(distribution.getOrDefault(LikertScale.AGREE, 0L))
-                              .fullyAgree(distribution.getOrDefault(LikertScale.FULLY_AGREE, 0L))
-                              .build())
-                      .build();
-                })
-            .collect(Collectors.toList());
+      double averageScore =
+          answers.stream().mapToInt(a -> mapLikertToScore(a.getAnswer())).average().orElse(0.0);
 
-    SurveyResultDTO result =
-        SurveyResultDTO.builder()
-            .surveyId(survey.getId())
-            .surveyTitle(survey.getTitle())
-            .questionResults(results)
-            .build();
+      return SurveyResultDTO.QuestionResultDTO.builder()
+          .questionId(question.getId())
+          .questionText(question.getQuestionText())
+          .totalResponses(answers.size())
+          .averageScore(averageScore)
+          .distribution(
+              SurveyResultDTO.QuestionResultDTO.LikertDistribution.builder()
+                  .totallyDisagree(distribution.getOrDefault(LikertScale.TOTALLY_DISAGREE, 0L))
+                  .disagree(distribution.getOrDefault(LikertScale.DISAGREE, 0L))
+                  .neutral(distribution.getOrDefault(LikertScale.NEUTRAL, 0L))
+                  .agree(distribution.getOrDefault(LikertScale.AGREE, 0L))
+                  .fullyAgree(distribution.getOrDefault(LikertScale.FULLY_AGREE, 0L))
+                  .build())
+          .build();
 
-    return Optional.of(result);
+    } catch (Exception ex) {
+      log.error(
+          "Failed to compute result for questionId {}: {}", question.getId(), ex.getMessage(), ex);
+      return null;
+    }
+  }
+
+  private SurveyResultDTO buildSurveyResultDTO(
+      Survey survey, List<SurveyResultDTO.QuestionResultDTO> questionResults) {
+    return SurveyResultDTO.builder()
+        .surveyId(survey.getId())
+        .surveyTitle(survey.getTitle())
+        .questionResults(questionResults)
+        .build();
   }
 
   public SurveyDTO createSurvey(CreateSurveyDTO dto) {

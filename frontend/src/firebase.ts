@@ -2,6 +2,7 @@ import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
 import type { FirebaseApp } from 'firebase/app'
 import type { Auth } from 'firebase/auth'
+import { logger } from '@/plugins/logger'
 
 let app: FirebaseApp | null = null
 let auth: Auth | null = null
@@ -20,7 +21,7 @@ try {
   app = initializeApp(firebaseConfig)
   auth = getAuth(app)
 } catch (error) {
-  console.error('🔥 Failed to initialize Firebase:', error)
+  logger.error('🔥 Failed to initialize Firebase:' + JSON.stringify(error))
 }
 
 export { app, auth }
