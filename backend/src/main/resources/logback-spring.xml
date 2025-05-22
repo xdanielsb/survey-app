@@ -1,0 +1,79 @@
+<configuration>
+
+    <springProperty name="APP_NAME" source="spring.application.name" defaultValue="survey-app"/>
+    <springProperty name="LOG_LEVEL" source="logging.level.root" defaultValue="INFO"/>
+    <property name="LOGSTASH_HOST" value="${LOGSTASH_HOST:-localhost}"/>
+    <property name="LOGSTASH_PORT" value="${LOGSTASH_PORT:-5000}"/>
+
+    <!-- Console JSON Logging (Always Safe Fallback) -->
+    <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp>
+                    <timeZone>UTC</timeZone>
+                </timestamp>
+                <pattern>
+                    <pattern>
+                        {
+                        "timestamp": "%date",
+                        "level": "%level",
+                        "logger": "%logger",
+                        "thread": "%thread",
+                        "message": "%message",
+                        "traceId": "%X{traceId}",
+                        "spanId": "%X{spanId}",
+                        "userId": "%X{userId:-}",
+                        "app": "${APP_NAME}"
+                        }
+                    </pattern>
+                </pattern>
+                <arguments/>
+                <stackTrace/>
+            </providers>
+        </encoder>
+    </appender>
+
+    <!-- Logstash TCP Forwarding with Console Fallback -->
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>${LOGSTASH_HOST}:${LOGSTASH_PORT}</destination>
+        <keepAliveDuration>2 minutes</keepAliveDuration>
+        <reconnectionDelay>10000</reconnectionDelay>
+
+        <!-- Fallback if Logstash is down/unreachable -->
+        <connectionFailureHandler class="net.logstash.logback.appender.FailoverConnectionFailureHandler">
+            <failoverAppender-ref ref="JSON_CONSOLE"/>
+        </connectionFailureHandler>
+
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp>
+                    <timeZone>UTC</timeZone>
+                </timestamp>
+                <pattern>
+                    <pattern>
+                        {
+                        "timestamp": "%date",
+                        "level": "%level",
+                        "logger": "%logger",
+                        "thread": "%thread",
+                        "message": "%message",
+                        "traceId": "%X{traceId}",
+                        "spanId": "%X{spanId}",
+                        "userId": "%X{userId:-}",
+                        "app": "${APP_NAME}"
+                        }
+                    </pattern>
+                </pattern>
+                <arguments/>
+                <stackTrace/>
+            </providers>
+        </encoder>
+    </appender>
+
+    <!-- Log Routing -->
+    <root level="${LOG_LEVEL}">
+        <appender-ref ref="LOGSTASH"/>
+        <appender-ref ref="JSON_CONSOLE"/>
+    </root>
+
+</configuration>
