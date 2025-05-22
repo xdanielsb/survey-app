@@ -1,5 +1,6 @@
 # Survey Application (Full Stack)
-![CI](https://github.com/xdanielsb/survey-app/actions/workflows/ci.yml/badge.svg)
+![Backend CI](https://github.com/xdanielsb/survey-app/actions/workflows/ci-backend.yml/badge.svg)
+![Frontend CI](https://github.com/xdanielsb/survey-app/actions/workflows/ci-frontend.yml/badge.svg)
 
 This repository contains a full-stack **Survey App** built with:
 
