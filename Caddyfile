@@ -2,5 +2,8 @@ http://localhost {
     handle_path /api/* {
         reverse_proxy backend:8080
     }
+    handle /monitoring* {
+        reverse_proxy kibana:5601
+    }
     reverse_proxy /* frontend:5173
 }
