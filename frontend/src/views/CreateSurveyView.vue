@@ -11,6 +11,7 @@
         class="text-input"
         placeholder="Enter the survey title"
       />
+      <p v-if="errors.title" class="error-text">{{ errors.title }}</p>
     </div>
 
     <div class="form-group">
@@ -23,6 +24,9 @@
           placeholder="Enter question"
         />
         <button class="remove-btn" @click="removeQuestion(index)">Remove</button>
+        <p v-if="errors.questions && errors.questions[index]" class="error-text">
+          {{ errors.questions[index] }}
+        </p>
       </div>
       <button class="add-btn" @click="addQuestion">+ Add Question</button>
     </div>
@@ -32,21 +36,73 @@
 </template>
 
 <script lang="ts">
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import { createSurvey } from '@/services/surveyService'
 import { logger } from '@/plugins/logger'
 import { toastService } from '@/services/toastService'
+import { typedSurveySchema } from '@/validation/surveySchema.ts'
+import { ValidationError } from 'yup'
+import type { SurveyForm } from '@/validation/surveySchema.ts'
 
 export default {
   name: 'CreateSurveyView',
   setup() {
     const surveyTitle = ref('')
     const questions = ref([{ text: '' }])
+    const errors = reactive<{ title?: string; questions: (string | undefined)[] }>({
+      title: undefined,
+      questions: [],
+    })
 
-    const addQuestion = () => questions.value.push({ text: '' })
-    const removeQuestion = (index: number) => questions.value.splice(index, 1)
+    const addQuestion = () => {
+      questions.value.push({ text: '' })
+      errors.questions.push(undefined)
+    }
+
+    const removeQuestion = (index: number) => {
+      questions.value.splice(index, 1)
+      errors.questions.splice(index, 1)
+    }
+
+    const validateSurvey = async (): Promise<boolean> => {
+      const input: SurveyForm = {
+        title: surveyTitle.value,
+        questions: questions.value,
+      }
+
+      try {
+        await typedSurveySchema.validate(input, { abortEarly: false })
+        errors.title = undefined
+        errors.questions = []
+        return true
+      } catch (err) {
+        if (err instanceof ValidationError) {
+          errors.title = undefined
+          errors.questions = []
+
+          err.inner.forEach((issue) => {
+            if (issue.path === 'title') {
+              errors.title = issue.message
+            } else if (issue.path?.startsWith('questions')) {
+              const match = issue.path.match(/questions\[(\d+)\]\.text/)
+              if (match) {
+                const index = Number(match[1])
+                errors.questions[index] = issue.message
+              }
+            }
+          })
+        }
+        return false
+      }
+    }
 
     const submitSurvey = async () => {
+      const isValid = await validateSurvey()
+      if (!isValid) {
+        toastService.error('Please fix the errors before submitting.')
+        return
+      }
+
       const payload = {
         title: surveyTitle.value,
         questions: questions.value.map((q, index) => ({
@@ -60,6 +116,8 @@ export default {
         toastService.success('Survey has been created successfully!')
         surveyTitle.value = ''
         questions.value = [{ text: '' }]
+        errors.title = undefined
+        errors.questions = []
       } catch (err) {
         toastService.error('Error creating survey')
         logger.error(JSON.stringify(err))
@@ -69,6 +127,7 @@ export default {
     return {
       surveyTitle,
       questions,
+      errors,
       addQuestion,
       removeQuestion,
       submitSurvey,
@@ -154,5 +213,11 @@ export default {
 
 .submit-btn:hover {
   background-color: #0063cc;
+}
+
+.error-text {
+  color: #d93025;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
 }
 </style>

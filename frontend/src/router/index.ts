@@ -4,7 +4,7 @@ import SurveyView from '@/views/SurveyView.vue'
 import SurveyResultsView from '@/views/SurveyResultsView.vue'
 import CreateSurveyView from '@/views/CreateSurveyView.vue'
 import LoginView from '@/views/LoginView.vue'
-import { auth } from '@/firebase'
+import { useAuthStore } from '@/stores/authStore.ts'
 
 export const routes = [
   { path: '/', component: HomeView },
@@ -21,9 +21,9 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.meta.requiresAuth
-  const user = auth?.currentUser
+  const authStore = useAuthStore()
 
-  if (requiresAuth && !user) {
+  if (requiresAuth && !authStore.isAuthenticated) {
     return next('/login')
   }
 
