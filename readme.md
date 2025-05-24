@@ -1,127 +1,44 @@
-# Survey Application (Full Stack)
+# Survey 
+_Cloud‑native survey engine with end‑to‑end observability._
+
 ![Backend CI](https://github.com/xdanielsb/survey-app/actions/workflows/ci-backend.yml/badge.svg)
 ![Frontend CI](https://github.com/xdanielsb/survey-app/actions/workflows/ci-frontend.yml/badge.svg)
+![License](https://img.shields.io/github/license/xdanielsb/survey-app)
+![Release](https://img.shields.io/github/v/tag/xdanielsb/survey-app)
 
 This repository contains a full-stack **Survey App** built with:
 
 -  **Spring Boot** (Java 17) for the backend API  
 -  **Vue 3 + TypeScript** for the frontend UI  
--  PostgreSQL as the database  
--  Docker for local development
-
-
-
-## Demo
-
-![Survey App Demo](./video.gif)
-
----
-
-##  Project Structure
-
-```
-.
-├── backend/        # Spring Boot API
-├── frontend/       # Vue 3 + TS client
-├── .github/        # CI workflows
-├── docker-compose.yml
-└── readme.md
-```
-
----
-
-##  Quick Start
-
-###  Prerequisites
-
-- Java 17
-- Node.js (>= 18)
-- Docker & Docker Compose
+-  **Security** | Firebase Auth ⤳ JWT gateway
+-  **Seamless CI / CD** | Independent pipelines for UI & API, auto‑promote from staging to prod 
+-  **PostgreSQL as the database** with flyway to version the database 
+-  **Docker for local development** 
 
 ###  Dev development
 
 ```bash
+ # db + api + ui + elk
  docker compose -f docker-compose.dev.yml --env-file .env up --build --force-recreate -d
- // backend
+
+ # backend
  ./mvnw --debug spring-boot:run
- // frontend
+
+ # frontend
  npm run dev
-
-##  Backend
-
-```bash
-./mvnw spring-boot:run
-```
-
-### Run tests
-
-```bash
-./mvnw test
-```
-
-### Lint & format
-
-```bash
-./mvnw spotless:check      # Check formatting
-./mvnw spotless:apply      # Format code
 ```
 
 More details: [`backend/README.md`](./backend/README.md)
-
----
-
-## 🖥️ Frontend
-
-
-### Run locally
-
-```bash
-npm install
-npm run dev
-```
-
-### Run tests
-
-```bash
-npm run test
-```
-
-### Lint & format
-
-```bash
-npm run lint
-npm run format
-```
-
 More details: [`frontend/README.md`](./frontend/README.md)
 
----
-
-## ✅ CI Pipeline
-
-GitHub Actions workflow runs on every push & pull request to:
-
-- Run backend tests (`mvnw verify`)
-- Check Java code format (`mvnw spotless:check`)
-- Run frontend unit tests (`Vitest`)
-- Lint frontend code (`npm run lint`)
 
 ---
-
-## 📬 API Overview
-
-- `GET /surveys/{id}` – Fetch survey questions
-- `POST /surveys/{id}/responses` – Submit survey answers
-- `GET /surveys/{id}/results` – View aggregated results
-
+##  Stack
+* **Backend:** Spring Boot 17 · Postgres · Flyway · Testcontainers  
+* **Frontend:** Vue 3 · Vite · TypeScript · Pinia  
+* **Observability:** Logstash → Elasticsearch → Kibana · Grafana  
+* **Delivery:** GitHub Actions · Docker · Caddy reverse‑proxy  
 ---
 
-## 🧪 Demo Surveys
-
-Demo survey data is automatically seeded on backend startup (only if DB is empty).
-
----
-
-## 📄 License
-
+## License
 BSD 3-Clause
