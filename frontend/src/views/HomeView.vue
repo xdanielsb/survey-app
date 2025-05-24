@@ -7,7 +7,7 @@
       </router-link>
     </div>
 
-    <ul v-if="surveys.length" class="survey-list">
+    <ul v-if="surveys && surveys.length" class="survey-list">
       <SurveyListItem v-for="survey in surveys" :key="survey.id" :survey="survey" />
     </ul>
     <p v-else class="loading">Loading surveys...</p>
