@@ -1,6 +1,7 @@
 package com.survey.backend;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import io.sentry.Sentry;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -10,6 +11,7 @@ public class BackendApplication {
   public static void main(String[] args) {
     Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
     dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
+    Sentry.captureMessage("Sentry initialized with environment variables");
     SpringApplication.run(BackendApplication.class, args);
   }
 }

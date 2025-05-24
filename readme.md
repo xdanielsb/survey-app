@@ -15,6 +15,7 @@ This repository contains a full-stack **Survey App** built with:
 -  **PostgreSQL as the database** with flyway to version the database 
 -  **Docker for local development** 
 -  **Periodic rotating backups**
+-  **Instrumentation**| Sentry frontend & backend
 
 ###  Dev development
 

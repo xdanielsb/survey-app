@@ -31,6 +31,11 @@
 	</properties>
 	<dependencies>
 		<dependency>
+			<groupId>io.sentry</groupId>
+			<artifactId>sentry-opentelemetry-agent</artifactId>
+			<version>8.12.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.shell</groupId>
 			<artifactId>spring-shell-starter</artifactId>
 			<version>3.2.3</version>
@@ -111,6 +116,19 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>io.sentry</groupId>
+				<artifactId>sentry-maven-plugin</artifactId>
+				<version>0.4.0</version>
+				<extensions>true</extensions>
+				<configuration>
+					<debugSentryCli>true</debugSentryCli>
+					<org>daniel-1v</org>
+					<project>java-spring-boot-survey</project>
+					<!-- in case you're self hosting  -->
+					<!--<url>http://localhost:8000/</url>-->
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
