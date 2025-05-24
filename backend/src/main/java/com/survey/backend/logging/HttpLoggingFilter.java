@@ -6,9 +6,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Enumeration;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -21,6 +20,27 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
 
   private static final Logger log = LoggerFactory.getLogger(HttpLoggingFilter.class);
   private static final int MAX_BODY_LOG_LENGTH = 2000;
+  private static final List<String> SENSITIVE_KEYS = List.of("password", "token", "secret");
+  private static final Set<String> SENSITIVE_HEADERS = Set.of("authorization");
+
+  private String sanitizeBody(String body) {
+    for (String key : SENSITIVE_KEYS) {
+      body =
+          body.replaceAll("(?i)\"" + key + "\"\\s*:\\s*\".*?\"", "\"" + key + "\":\"[REDACTED]\"");
+    }
+    return body;
+  }
+
+  private Map<String, String> sanitizeHeaders(Map<String, String> headers) {
+    return headers.entrySet().stream()
+        .collect(
+            Collectors.toMap(
+                Map.Entry::getKey,
+                entry ->
+                    SENSITIVE_HEADERS.contains(entry.getKey().toLowerCase())
+                        ? "[REDACTED]"
+                        : entry.getValue()));
+  }
 
   @Override
   protected void doFilterInternal(
@@ -50,16 +70,17 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
       String header = headerNames.nextElement();
       headers.put(header, request.getHeader(header));
     }
-    logMap.put("headers", headers);
+    logMap.put("headers", sanitizeHeaders(headers));
 
     // Request body
     String requestBody = new String(wrappedRequest.getContentAsByteArray(), StandardCharsets.UTF_8);
+    String subRequestBody =
+        requestBody.length() > MAX_BODY_LOG_LENGTH
+            ? requestBody.substring(0, MAX_BODY_LOG_LENGTH) + "...(truncated)"
+            : requestBody;
+
     if (!requestBody.isBlank()) {
-      logMap.put(
-          "body",
-          requestBody.length() > MAX_BODY_LOG_LENGTH
-              ? requestBody.substring(0, MAX_BODY_LOG_LENGTH) + "...(truncated)"
-              : requestBody);
+      logMap.put("body", sanitizeBody(subRequestBody));
     }
 
     log.info("HTTP Request Log: {}", logMap);
