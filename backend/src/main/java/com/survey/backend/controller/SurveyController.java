@@ -4,7 +4,8 @@ import com.survey.backend.dto.CreateSurveyDTO;
 import com.survey.backend.dto.SurveyDTO;
 import com.survey.backend.dto.SurveyResponseDTO;
 import com.survey.backend.dto.SurveyResultDTO;
-import com.survey.backend.security.RequireAuth;
+import com.survey.backend.security.RequireRole;
+import com.survey.backend.security.RoleType;
 import com.survey.backend.service.SurveyService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,7 @@ public class SurveyController {
         .orElse(ResponseEntity.notFound().build());
   }
 
-  @RequireAuth
+  @RequireRole({RoleType.MANAGER, RoleType.ADMIN})
   @PostMapping("/create")
   public ResponseEntity<SurveyDTO> createSurvey(@RequestBody CreateSurveyDTO dto) {
     SurveyDTO created = surveyService.createSurvey(dto);
@@ -53,5 +54,12 @@ public class SurveyController {
   public ResponseEntity<List<SurveyDTO>> getAllSurveys() {
     List<SurveyDTO> surveys = surveyService.getAllSurveys();
     return ResponseEntity.ok(surveys);
+  }
+
+  @RequireRole({RoleType.ADMIN})
+  @DeleteMapping("/delete/{id}")
+  public ResponseEntity<Void> deleteSurvey(@PathVariable Long id) {
+    surveyService.deleteSurvey(id);
+    return ResponseEntity.noContent().build();
   }
 }

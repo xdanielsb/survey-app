@@ -11,6 +11,7 @@ import com.survey.backend.respository.AnswerRepository;
 import com.survey.backend.respository.QuestionRepository;
 import com.survey.backend.respository.ResponseRepository;
 import com.survey.backend.respository.SurveyRepository;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,19 @@ public class SurveyService {
     return surveyRepo.findAll().stream()
         .map(SurveyMapper::toDTO) // assuming you have a mapper
         .collect(Collectors.toList());
+  }
+
+  public void deleteSurvey(Long surveyId) {
+    surveyRepo
+        .findById(surveyId)
+        .ifPresentOrElse(
+            survey -> {
+              surveyRepo.delete(survey);
+            },
+            () -> {
+              log.warn("Attempted to delete non-existent survey: id={}", surveyId);
+              throw new EntityNotFoundException("Survey not found with ID: " + surveyId);
+            });
   }
 
   public boolean saveSurveyResponse(Long surveyId, SurveyResponseDTO dto) {

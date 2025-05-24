@@ -38,7 +38,9 @@ class SecurityConfigTest {
   }
 
   @Test
-  @WithMockUser
+  @WithMockUser(
+      username = "admin-user",
+      authorities = {"ADMIN"})
   void protectedEndpointShouldAllowAccessWhenAuthenticated() throws Exception {
     mockMvc
         .perform(

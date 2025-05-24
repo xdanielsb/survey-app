@@ -10,6 +10,7 @@ import com.survey.backend.dto.CreateSurveyDTO;
 import com.survey.backend.dto.SurveyDTO;
 import com.survey.backend.dto.SurveyResponseDTO;
 import com.survey.backend.dto.SurveyResultDTO;
+import com.survey.backend.respository.UserRepository;
 import com.survey.backend.service.SurveyService;
 import java.util.List;
 import java.util.Optional;
@@ -17,20 +18,22 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(SurveyController.class)
-@AutoConfigureMockMvc(addFilters = false)
+@AutoConfigureMockMvc
 @ActiveProfiles("test")
+@SpringBootTest
 class SurveyControllerTest {
 
   @Autowired private MockMvc mockMvc;
 
   @MockBean private SurveyService surveyService;
+  @MockBean private UserRepository userRepository;
 
   @Autowired private ObjectMapper objectMapper;
 
@@ -128,6 +131,9 @@ class SurveyControllerTest {
   }
 
   @Test
+  @WithMockUser(
+      username = "user",
+      authorities = {"CUSTOMER", "MANAGER"})
   void shouldReturnsCreatedSurvey() throws Exception {
     // Arrange
     CreateSurveyDTO dto =
@@ -175,5 +181,25 @@ class SurveyControllerTest {
         .andExpect(jsonPath("$.id").value(1L))
         .andExpect(jsonPath("$.title").value("User Feedback"))
         .andExpect(jsonPath("$.questions.length()").value(2));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "admin-user",
+      authorities = {"ADMIN"})
+  void deleteSurvey_shouldSucceed_withAdminRole() throws Exception {
+    mockMvc.perform(delete("/surveys/delete/1")).andExpect(status().isNoContent());
+
+    Mockito.verify(surveyService).deleteSurvey(1L);
+  }
+
+  @Test
+  @WithMockUser(
+      username = "customer-user",
+      authorities = {"CUSTOMER"})
+  void deleteSurvey_shouldFail_withCustomerRole() throws Exception {
+    mockMvc.perform(delete("/surveys/delete/1")).andExpect(status().isForbidden());
+
+    Mockito.verifyNoInteractions(surveyService);
   }
 }

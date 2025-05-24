@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
+import com.survey.backend.respository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,10 +23,12 @@ class FirebaseAuthFilterTest {
   private HttpServletRequest request;
   private HttpServletResponse response;
   private FilterChain chain;
+  private UserRepository userRepository;
 
   @BeforeEach
   void setUp() {
-    filter = new FirebaseAuthFilter();
+    userRepository = mock(UserRepository.class);
+    filter = new FirebaseAuthFilter(userRepository);
     request = mock(HttpServletRequest.class);
     response = mock(HttpServletResponse.class);
     chain = mock(FilterChain.class);

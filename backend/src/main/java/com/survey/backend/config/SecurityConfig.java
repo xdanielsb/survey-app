@@ -33,7 +33,7 @@ public class SecurityConfig {
                     .permitAll()
 
                     // Authenticated-only routes
-                    .requestMatchers("/surveys/create")
+                    .requestMatchers("/surveys/create", "/surveys/delete/**")
                     .authenticated()
 
                     // Everything else is denied
