@@ -1,6 +1,6 @@
 <template>
   <li class="survey-item">
-    <span class="title">{{ survey.title }}</span>
+    <span class="title truncate">{{ survey.title }}</span>
 
     <div class="actions">
       <router-link :to="`/surveys/${survey.id}`" class="btn primary">Answer</router-link>
@@ -79,5 +79,14 @@ const handleDelete = async () => {
 
 .danger:hover {
   background-color: #d62828;
+}
+
+.truncate {
+  display: inline-block;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
 }
 </style>
