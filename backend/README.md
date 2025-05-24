@@ -25,6 +25,14 @@ This is the backend API for the Survey application, built with **Spring Boot** a
 ./mvnw clean verify
 ```
 
+## Run the CLI
+```bash
+    ./mvnw spring-boot:run -Dspring-boot.run.profiles=shell
+    ## write help to see available commands
+    ## or in the server
+    java -jar app.jar --spring.profiles.active=shell
+```
+
 ##  Format the code
 ```
 ./mvnw spotless:apply

@@ -37,3 +37,4 @@ firebase-service-account.json
 
 ### logs
 logs/
+backend.log
