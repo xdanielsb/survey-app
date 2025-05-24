@@ -2,7 +2,7 @@
   <div class="container">
     <div class="header">
       <h1>Available Surveys</h1>
-      <router-link v-if="isManager" to="/create-survey" class="create-btn">
+      <router-link v-role="['MANAGER', 'ADMIN']" to="/create-survey" class="create-btn">
         + Create Survey
       </router-link>
     </div>
@@ -11,25 +11,30 @@
       <SurveyListItem v-for="survey in surveys" :key="survey.id" :survey="survey" />
     </ul>
     <p v-else class="loading">Loading surveys...</p>
+
+    <div class="pagination">
+      <button @click="page--" :disabled="page === 0">Previous</button>
+      <span>Page {{ page + 1 }} of {{ totalPages }}</span>
+      <button @click="page++" :disabled="page + 1 >= totalPages">Next</button>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, watchEffect } from 'vue'
 import { fetchSurveys } from '@/services/surveyService'
 import type { Survey } from '@/types/survey'
 import SurveyListItem from '@/components/SurveyListItem.vue'
-import { useAuthStore } from '@/stores/authStore'
 
 const surveys = ref<Survey[]>([])
+const page = ref(0)
+const totalPages = ref(0)
 
-onMounted(async () => {
-  surveys.value = await fetchSurveys()
+watchEffect(async () => {
+  const result = await fetchSurveys(page.value, 5)
+  surveys.value = result.content
+  totalPages.value = result.totalPages
 })
-
-const authStore = useAuthStore()
-
-const isManager = computed(() => authStore.roles.includes('MANAGER'))
 </script>
 
 <style scoped>
@@ -67,5 +72,28 @@ const isManager = computed(() => authStore.roles.includes('MANAGER'))
 .survey-list {
   list-style: none;
   padding: 0;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+  gap: 1rem;
+}
+
+.pagination button {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: #007aff;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.pagination button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
 }
 </style>

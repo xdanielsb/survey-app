@@ -23,7 +23,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { fetchSurveyById, submitSurveyResponse } from '@/services/surveyService'
 import SurveyQuestionInput from '@/components/SurveyQuestionInput.vue'
-import type { SurveyResponseDTO } from '@/types/survey-response-dto'
+import type { SurveyResponse } from '@/types/survey-response.ts'
 import type { Survey } from '@/types/survey'
 
 import { toastService } from '@/services/toastService'
@@ -43,7 +43,7 @@ onMounted(async () => {
 const submitResponse = async () => {
   if (!survey.value) return
 
-  const response: SurveyResponseDTO = {
+  const response: SurveyResponse = {
     surveyId: survey.value.id,
     answers: Object.entries(answers.value).map(([qId, answer]) => ({
       questionId: Number(qId),

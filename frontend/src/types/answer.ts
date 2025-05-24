@@ -1,4 +1,4 @@
-export interface AnswerDTO {
+export interface Answer {
   questionId: number
   answer: string
 }

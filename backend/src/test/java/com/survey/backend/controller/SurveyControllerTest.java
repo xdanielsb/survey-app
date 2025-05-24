@@ -20,6 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -115,19 +118,20 @@ class SurveyControllerTest {
   }
 
   @Test
-  void shouldReturnListOfSurveys() throws Exception {
+  void shouldReturnPagedListOfSurveys() throws Exception {
     SurveyDTO survey1 = new SurveyDTO(1L, "Team Feedback", null);
     SurveyDTO survey2 = new SurveyDTO(2L, "Sprint Review", null);
+    Page<SurveyDTO> page = new PageImpl<>(List.of(survey1, survey2));
 
-    Mockito.when(surveyService.getAllSurveys()).thenReturn(List.of(survey1, survey2));
+    Mockito.when(surveyService.getAllSurveys(Mockito.any(Pageable.class))).thenReturn(page);
 
     mockMvc
-        .perform(get("/surveys"))
+        .perform(get("/surveys?page=0&size=10"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.length()").value(2))
-        .andExpect(jsonPath("$[0].title").value("Team Feedback"))
-        .andExpect(jsonPath("$[1].title").value("Sprint Review"));
+        .andExpect(jsonPath("$.content.length()").value(2))
+        .andExpect(jsonPath("$.content[0].title").value("Team Feedback"))
+        .andExpect(jsonPath("$.content[1].title").value("Sprint Review"));
   }
 
   @Test

@@ -7,8 +7,9 @@ import com.survey.backend.dto.SurveyResultDTO;
 import com.survey.backend.security.RequireRole;
 import com.survey.backend.security.RoleType;
 import com.survey.backend.service.SurveyService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,9 +52,8 @@ public class SurveyController {
   }
 
   @GetMapping
-  public ResponseEntity<List<SurveyDTO>> getAllSurveys() {
-    List<SurveyDTO> surveys = surveyService.getAllSurveys();
-    return ResponseEntity.ok(surveys);
+  public ResponseEntity<Page<SurveyDTO>> getSurveys(Pageable pageable) {
+    return ResponseEntity.ok(surveyService.getAllSurveys(pageable));
   }
 
   @RequireRole({RoleType.ADMIN})

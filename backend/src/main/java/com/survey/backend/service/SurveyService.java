@@ -16,6 +16,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -32,10 +34,8 @@ public class SurveyService {
     return surveyRepo.findById(id).map(SurveyMapper::toDTO);
   }
 
-  public List<SurveyDTO> getAllSurveys() {
-    return surveyRepo.findAll().stream()
-        .map(SurveyMapper::toDTO) // assuming you have a mapper
-        .collect(Collectors.toList());
+  public Page<SurveyDTO> getAllSurveys(Pageable pageable) {
+    return surveyRepo.findAll(pageable).map(SurveyMapper::toDTO);
   }
 
   public void deleteSurvey(Long surveyId) {
