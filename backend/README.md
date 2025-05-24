@@ -19,6 +19,12 @@ This is the backend API for the Survey application, built with **Spring Boot** a
 - Maven
 - Spotless (code formatting)
 
+# Backups
+Backup script that runs daily at 3 AM. Backups are saved 31 days in the past.
+```sh
+docker compose exec db-backup /backup.sh
+```
+
 ## Running Tests
 
 ```bash
