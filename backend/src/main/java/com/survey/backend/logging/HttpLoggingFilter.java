@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,16 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
 
   private static final Logger log = LoggerFactory.getLogger(HttpLoggingFilter.class);
   private static final int MAX_BODY_LOG_LENGTH = 2000;
+
+  private static final List<String> SENSITIVE_KEYS = List.of("password", "token", "secret");
+
+  private String sanitize(String body) {
+    for (String key : SENSITIVE_KEYS) {
+      body =
+          body.replaceAll("(?i)\"" + key + "\"\\s*:\\s*\".*?\"", "\"" + key + "\":\"[REDACTED]\"");
+    }
+    return body;
+  }
 
   @Override
   protected void doFilterInternal(
@@ -54,12 +65,13 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
 
     // Request body
     String requestBody = new String(wrappedRequest.getContentAsByteArray(), StandardCharsets.UTF_8);
+    String subRequestBody =
+        requestBody.length() > MAX_BODY_LOG_LENGTH
+            ? requestBody.substring(0, MAX_BODY_LOG_LENGTH) + "...(truncated)"
+            : requestBody;
+
     if (!requestBody.isBlank()) {
-      logMap.put(
-          "body",
-          requestBody.length() > MAX_BODY_LOG_LENGTH
-              ? requestBody.substring(0, MAX_BODY_LOG_LENGTH) + "...(truncated)"
-              : requestBody);
+      logMap.put("body", sanitize(subRequestBody));
     }
 
     log.info("HTTP Request Log: {}", logMap);
