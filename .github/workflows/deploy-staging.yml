@@ -9,6 +9,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: staging
 
     steps:
       - name: Checkout code
@@ -17,7 +18,7 @@ jobs:
       - name: Copy project files to production server
         uses: appleboy/scp-action@v1
         with:
-          host: ${{ secrets.STAGING_HOST }}
+          host: ${{ secrets.HOST }}
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "."
@@ -29,25 +30,25 @@ jobs:
       - name: Upload .env file
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.STAGING_HOST }}
+          host: ${{ secrets.HOST }}
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            echo '${{ secrets.ENV_FILE_STAGING }}' > /root/survey-app/.env
+            echo '${{ secrets.ENV_FILE }}' > /root/survey-app/.env
 
       - name: Upload Caddyfile
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.STAGING_HOST }}
+          host: ${{ secrets.HOST }}
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            echo '${{ secrets.CADDY_FILE_STAGING }}' > /root/survey-app/Caddyfile
+            echo '${{ secrets.CADDY_FILE }}' > /root/survey-app/Caddyfile
 
       - name: Upload Firebase Service Account
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.STAGING_HOST }}
+          host: ${{ secrets.HOST }}
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
@@ -56,7 +57,7 @@ jobs:
       - name: Deploy with Docker Compose
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.STAGING_HOST }}
+          host: ${{ secrets.HOST }}
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
