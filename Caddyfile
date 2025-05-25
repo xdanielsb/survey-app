@@ -3,6 +3,9 @@ http://localhost {
         reverse_proxy backend:8080
     }
     handle /monitoring* {
+      basic_auth {
+        {$KIBANA_USER} {$KIBANA_PASS_HASH}
+      }
         reverse_proxy kibana:5601
     }
     reverse_proxy /* frontend:5173

@@ -34,7 +34,9 @@ jobs:
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            echo '${{ secrets.ENV_FILE }}' > /root/survey-app/.env
+            cat << 'EOF' > /root/survey-app/.env
+              ${{ secrets.ENV_FILE }}
+            EOF
 
       - name: Upload Caddyfile
         uses: appleboy/ssh-action@v1
@@ -43,7 +45,9 @@ jobs:
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            echo '${{ secrets.CADDY_FILE }}' > /root/survey-app/Caddyfile
+            cat << 'EOF' > /root/survey-app/Caddyfile
+              ${{ secrets.CADDY_FILE }}
+            EOF
 
       - name: Upload Firebase Service Account
         uses: appleboy/ssh-action@v1
@@ -52,7 +56,9 @@ jobs:
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > /root/survey-app/backend/src/main/resources/firebase-service-account.json
+            cat << 'EOF' > /root/survey-app/backend/src/main/resources/firebase-service-account.json
+             ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+            EOF
 
       - name: Deploy with Docker Compose
         uses: appleboy/ssh-action@v1
