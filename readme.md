@@ -14,8 +14,8 @@ This repository contains a full-stack **Survey App** built with:
 -  **Seamless CI / CD** | Independent pipelines for UI & API, auto‑promote from staging to prod 
 -  **PostgreSQL as the database** with flyway to version the database 
 -  **Docker for local development** 
--  **Periodic rotating backups**
--  **Instrumentation**| Sentry frontend & backend
+-  **Periodic rotating backups** Till 30 days
+-  **Instrumentation**| Sentry frontend & backend (error tracking)
 
 ###  Dev development
 
