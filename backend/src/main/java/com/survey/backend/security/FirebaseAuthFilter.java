@@ -6,7 +6,7 @@ import com.google.firebase.auth.FirebaseToken;
 import com.survey.backend.entity.Role;
 import com.survey.backend.entity.User;
 import com.survey.backend.logging.HttpLoggingFilter;
-import com.survey.backend.respository.UserRepository;
+import com.survey.backend.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

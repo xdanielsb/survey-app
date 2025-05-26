@@ -57,7 +57,8 @@ public class AuthControllerTest {
     String email = "test@example.com";
 
     Role customerRole = new Role(1L, "CUSTOMER");
-    User mockUser = new User(1L, firebaseUid, email, Set.of(customerRole));
+    User mockUser =
+        User.builder().uid(firebaseUid).roles(Set.of(customerRole)).email("x@test.com").build();
 
     Mockito.when(userService.saveUser(firebaseUid, email)).thenReturn(mockUser);
 

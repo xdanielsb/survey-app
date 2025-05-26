@@ -16,6 +16,7 @@ This repository contains a full-stack **Survey App** built with:
 -  **Docker for local development** 
 -  **Periodic rotating backups** Till 30 days
 -  **Instrumentation**| Sentry frontend & backend (error tracking)
+-  **Payment**| Stripe
 
 ###  Dev development
 

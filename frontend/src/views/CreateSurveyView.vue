@@ -1,7 +1,8 @@
 <template>
-  <div class="create-container">
-    <h1 class="title">Create New Survey</h1>
+  <div v-if="surveyCredits === null">Loading your survey credits...</div>
 
+  <div v-else-if="surveyCredits > 0">
+    <!-- Existing form and create button -->
     <div class="form-group">
       <label for="survey-title">Survey Title</label>
       <input
@@ -33,16 +34,25 @@
 
     <button class="submit-btn" @click="submitSurvey">Create Survey</button>
   </div>
+
+  <div v-else>
+    <p class="text-red-700 mb-4">
+      ⚠️ You have 0 survey credits. Please buy one to create a survey.
+    </p>
+    <button class="submit-btn" @click="buyCredit">Buy a Survey Credit</button>
+  </div>
 </template>
 
 <script lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { createSurvey } from '@/services/surveyService'
 import { logger } from '@/plugins/logger'
 import { toastService } from '@/services/toastService'
 import { typedSurveySchema } from '@/validation/surveySchema.ts'
 import { ValidationError } from 'yup'
 import type { SurveyForm } from '@/validation/surveySchema.ts'
+import { getUserCredits } from '@/services/creditService.ts'
+import { buySurveyCredit } from '@/services/stripeService.ts'
 
 export default {
   name: 'CreateSurveyView',
@@ -53,6 +63,7 @@ export default {
       title: undefined,
       questions: [],
     })
+    const surveyCredits = ref<number | null>(null)
 
     const addQuestion = () => {
       questions.value.push({ text: '' })
@@ -63,6 +74,24 @@ export default {
       questions.value.splice(index, 1)
       errors.questions.splice(index, 1)
     }
+
+    const fetchCredits = async () => {
+      try {
+        const { credits } = await getUserCredits()
+        surveyCredits.value = credits
+      } catch (err) {
+        toastService.error('Could not fetch your credits')
+        logger.error(JSON.stringify(err))
+      }
+    }
+
+    const buyCredit = () => {
+      buySurveyCredit()
+    }
+
+    onMounted(() => {
+      fetchCredits()
+    })
 
     const validateSurvey = async (): Promise<boolean> => {
       const input: SurveyForm = {
@@ -128,9 +157,11 @@ export default {
       surveyTitle,
       questions,
       errors,
+      surveyCredits,
       addQuestion,
       removeQuestion,
       submitSurvey,
+      buyCredit,
     }
   },
 }

@@ -1,4 +1,4 @@
-package com.survey.backend.respository;
+package com.survey.backend.repository;
 
 import com.survey.backend.entity.Role;
 import java.util.Optional;

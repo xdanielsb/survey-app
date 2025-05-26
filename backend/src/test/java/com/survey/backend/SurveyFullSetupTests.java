@@ -3,7 +3,7 @@ package com.survey.backend;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.survey.backend.entity.*;
-import com.survey.backend.respository.*;
+import com.survey.backend.repository.*;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -10,7 +10,7 @@ import com.survey.backend.dto.CreateSurveyDTO;
 import com.survey.backend.dto.SurveyDTO;
 import com.survey.backend.dto.SurveyResponseDTO;
 import com.survey.backend.dto.SurveyResultDTO;
-import com.survey.backend.respository.UserRepository;
+import com.survey.backend.repository.UserRepository;
 import com.survey.backend.service.SurveyService;
 import java.util.List;
 import java.util.Optional;

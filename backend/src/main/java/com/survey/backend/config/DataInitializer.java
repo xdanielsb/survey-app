@@ -2,7 +2,7 @@ package com.survey.backend.config;
 
 import com.survey.backend.entity.Question;
 import com.survey.backend.entity.Survey;
-import com.survey.backend.respository.SurveyRepository;
+import com.survey.backend.repository.SurveyRepository;
 import jakarta.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.List;

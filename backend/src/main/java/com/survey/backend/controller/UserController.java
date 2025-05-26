@@ -1,6 +1,7 @@
 package com.survey.backend.controller;
 
 import com.survey.backend.entity.User;
+import com.survey.backend.security.RequireAuth;
 import com.survey.backend.service.UserService;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -26,5 +27,12 @@ public class UserController {
 
     User saved = userService.saveUser(uid, email);
     return ResponseEntity.ok(saved);
+  }
+
+  @GetMapping("/credits")
+  @RequireAuth
+  public ResponseEntity<Map<String, Integer>> getCredits() {
+    User user = userService.getCurrentUser();
+    return ResponseEntity.ok(Map.of("credits", user.getSurveyCredits()));
   }
 }

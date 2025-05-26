@@ -2,7 +2,7 @@ package com.survey.backend.commands;
 
 import com.survey.backend.entity.Question;
 import com.survey.backend.entity.Survey;
-import com.survey.backend.respository.SurveyRepository;
+import com.survey.backend.repository.SurveyRepository;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.IntStream;

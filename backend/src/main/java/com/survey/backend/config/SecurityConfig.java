@@ -28,6 +28,11 @@ public class SecurityConfig {
                     .requestMatchers(
                         "/auth/login",
                         "/users/**",
+                        "/payments/session",
+                        "/payments/webhook",
+                        "/payments/verify",
+                        "/payments/webhook/**",
+                        "/payments/verify/**",
                         "/surveys",
                         "/surveys/*",
                         "/surveys/*/results",
@@ -35,10 +40,10 @@ public class SecurityConfig {
                     .permitAll()
 
                     // Authenticated-only routes
-                    .requestMatchers("/surveys/create", "/surveys/delete/**")
+                    .requestMatchers("/surveys/create", "/surveys/delete/**", "/users/credits")
                     .authenticated()
 
-                    // Everything else is denied
+                    // Everything else is permitted
                     .anyRequest()
                     .denyAll())
 

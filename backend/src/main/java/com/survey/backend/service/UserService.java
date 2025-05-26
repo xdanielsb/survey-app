@@ -2,10 +2,14 @@ package com.survey.backend.service;
 
 import com.survey.backend.entity.Role;
 import com.survey.backend.entity.User;
-import com.survey.backend.respository.RoleRepository;
-import com.survey.backend.respository.UserRepository;
+import com.survey.backend.repository.RoleRepository;
+import com.survey.backend.repository.UserRepository;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,5 +35,28 @@ public class UserService {
               User user = User.builder().uid(uid).email(email).roles(Set.of(customerRole)).build();
               return userRepository.save(user);
             });
+  }
+
+  public User getCurrentUser() {
+    var auth = SecurityContextHolder.getContext().getAuthentication();
+    if (auth == null || !auth.isAuthenticated()) {
+      throw new AccessDeniedException("Not authenticated");
+    }
+
+    String uid;
+
+    Object principal = auth.getPrincipal();
+
+    if (principal instanceof String) {
+      uid = (String) principal;
+    } else if (principal instanceof UserDetails userDetails) {
+      uid = userDetails.getUsername();
+    } else {
+      throw new IllegalStateException("Unexpected principal type: " + principal.getClass());
+    }
+
+    return userRepository
+        .findByUid(uid)
+        .orElseThrow(() -> new UsernameNotFoundException("User not found for uid: " + uid));
   }
 }

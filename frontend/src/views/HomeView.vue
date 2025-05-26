@@ -2,9 +2,7 @@
   <div class="container">
     <div class="header">
       <h1>Available Surveys</h1>
-      <router-link v-role="['MANAGER', 'ADMIN']" to="/create-survey" class="create-btn">
-        + Create Survey
-      </router-link>
+      <router-link to="/create-survey" class="create-btn"> + Create Survey </router-link>
     </div>
 
     <ul v-if="surveys && surveys.length" class="survey-list">

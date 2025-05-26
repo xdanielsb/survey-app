@@ -3,3 +3,4 @@
 Caddyfile
 .env
 backups/
+secrets/
