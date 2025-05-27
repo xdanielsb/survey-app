@@ -7,10 +7,7 @@ import com.survey.backend.dto.SurveyResultDTO;
 import com.survey.backend.entity.*;
 import com.survey.backend.helper.AnswerMapper;
 import com.survey.backend.helper.SurveyMapper;
-import com.survey.backend.repository.AnswerRepository;
-import com.survey.backend.repository.QuestionRepository;
-import com.survey.backend.repository.ResponseRepository;
-import com.survey.backend.repository.SurveyRepository;
+import com.survey.backend.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -29,6 +27,8 @@ public class SurveyService {
   private final QuestionRepository questionRepo;
   private final ResponseRepository responseRepo;
   private final AnswerRepository answerRepo;
+  private final UserRepository userRepo;
+  private final UserService userService;
 
   public Optional<SurveyDTO> getSurveyById(Long id) {
     return surveyRepo.findById(id).map(SurveyMapper::toDTO);
@@ -172,7 +172,17 @@ public class SurveyService {
         .build();
   }
 
-  public SurveyDTO createSurvey(CreateSurveyDTO dto) {
+  @Transactional
+  public Survey createSurvey(CreateSurveyDTO dto) {
+    // Get current user from the security context
+    User user = userService.getCurrentUser();
+
+    // Check if user has credits
+    if (user.getSurveyCredits() < 1) {
+      throw new IllegalStateException("Not enough survey credits to create a survey.");
+    }
+
+    // Build survey and questions
     Survey survey = Survey.builder().title(dto.getTitle()).build();
 
     List<Question> questions =
@@ -188,8 +198,13 @@ public class SurveyService {
 
     survey.setQuestions(questions);
 
-    Survey s = this.surveyRepo.save(survey);
-    return SurveyMapper.toDTO(s);
+    // Save survey first (questions are cascaded), then deduct credits
+    Survey savedSurvey = surveyRepo.save(survey);
+
+    user.setSurveyCredits(user.getSurveyCredits() - 1);
+    userRepo.save(user);
+
+    return savedSurvey;
   }
 
   private int mapLikertToScore(LikertScale scale) {

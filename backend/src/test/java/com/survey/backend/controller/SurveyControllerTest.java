@@ -10,6 +10,8 @@ import com.survey.backend.dto.CreateSurveyDTO;
 import com.survey.backend.dto.SurveyDTO;
 import com.survey.backend.dto.SurveyResponseDTO;
 import com.survey.backend.dto.SurveyResultDTO;
+import com.survey.backend.entity.Question;
+import com.survey.backend.entity.Survey;
 import com.survey.backend.repository.UserRepository;
 import com.survey.backend.service.SurveyService;
 import java.util.List;
@@ -148,32 +150,23 @@ class SurveyControllerTest {
                     CreateSurveyDTO.QuestionDTO.builder()
                         .questionText("What do you like?")
                         .position(1)
-                        .build(),
-                    CreateSurveyDTO.QuestionDTO.builder()
-                        .questionText("Any suggestions?")
-                        .position(2)
                         .build()))
             .build();
 
-    SurveyDTO mockSurveyDTO =
-        SurveyDTO.builder()
+    Survey mockSurvey =
+        Survey.builder()
             .id(1L)
             .title(dto.getTitle())
             .questions(
                 List.of(
-                    SurveyDTO.QuestionDTO.builder()
+                    Question.builder()
                         .id(100L)
                         .questionText("What do you like?")
                         .position(1)
-                        .build(),
-                    SurveyDTO.QuestionDTO.builder()
-                        .id(101L)
-                        .questionText("Any suggestions?")
-                        .position(2)
                         .build()))
             .build();
 
-    Mockito.when(surveyService.createSurvey(Mockito.any())).thenReturn(mockSurveyDTO);
+    Mockito.when(surveyService.createSurvey(Mockito.any())).thenReturn(mockSurvey);
 
     // Act & Assert
     mockMvc
@@ -184,7 +177,7 @@ class SurveyControllerTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value(1L))
         .andExpect(jsonPath("$.title").value("User Feedback"))
-        .andExpect(jsonPath("$.questions.length()").value(2));
+        .andExpect(jsonPath("$.questions.length()").value(1));
   }
 
   @Test

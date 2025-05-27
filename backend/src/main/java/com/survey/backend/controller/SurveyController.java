@@ -4,6 +4,8 @@ import com.survey.backend.dto.CreateSurveyDTO;
 import com.survey.backend.dto.SurveyDTO;
 import com.survey.backend.dto.SurveyResponseDTO;
 import com.survey.backend.dto.SurveyResultDTO;
+import com.survey.backend.helper.SurveyMapper;
+import com.survey.backend.security.RequireAuth;
 import com.survey.backend.security.RequireRole;
 import com.survey.backend.security.RoleType;
 import com.survey.backend.service.SurveyService;
@@ -44,10 +46,10 @@ public class SurveyController {
         .orElse(ResponseEntity.notFound().build());
   }
 
-  @RequireRole({RoleType.MANAGER, RoleType.ADMIN})
+  @RequireAuth
   @PostMapping("/create")
   public ResponseEntity<SurveyDTO> createSurvey(@RequestBody CreateSurveyDTO dto) {
-    SurveyDTO created = surveyService.createSurvey(dto);
+    SurveyDTO created = SurveyMapper.toDTO(surveyService.createSurvey(dto));
     return ResponseEntity.ok(created);
   }
 

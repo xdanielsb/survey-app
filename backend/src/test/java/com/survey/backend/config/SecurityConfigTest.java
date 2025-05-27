@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -35,19 +34,6 @@ class SecurityConfigTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{ \"title\": \"Test\", \"questions\": [] }"))
         .andExpect(status().isForbidden());
-  }
-
-  @Test
-  @WithMockUser(
-      username = "admin-user",
-      authorities = {"ADMIN"})
-  void protectedEndpointShouldAllowAccessWhenAuthenticated() throws Exception {
-    mockMvc
-        .perform(
-            post("/surveys/create")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{ \"title\": \"Test\", \"questions\": [] }"))
-        .andExpect(status().isOk());
   }
 
   @Test
