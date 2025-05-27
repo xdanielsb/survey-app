@@ -37,7 +37,8 @@ export async function signUpUser(email: string, password: string): Promise<strin
     }
 
     await api.post('/users/create', userPayload)
-
+    const authStore = useAuthStore()
+    authStore.login(email, token, [])
     return token
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
