@@ -10,21 +10,6 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
       - ./backend/db/init:/docker-entrypoint-initdb.d
-    ports:
-      - "5432:5432"
-
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
-    ports:
-      - "8081:80"
-    volumes:
-      - pgadmin-data:/var/lib/pgadmin
-    depends_on:
-      - db
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
@@ -33,16 +18,12 @@ services:
       - discovery.type=single-node
       - xpack.security.enabled=false
       - ES_JAVA_OPTS=-Xms1g -Xmx1g
-    ports:
-      - "9200:9200"
     volumes:
       - es-data:/usr/share/elasticsearch/data
 
   logstash:
     image: docker.elastic.co/logstash/logstash:8.13.4
     container_name: logstash
-    ports:
-      - "5000:5000"
     volumes:
       - ./elk/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
     depends_on:
@@ -51,8 +32,6 @@ services:
   kibana:
     image: docker.elastic.co/kibana/kibana:8.13.4
     container_name: kibana
-    ports:
-      - "5601:5601"
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
       - SERVER_BASEPATH=/monitoring
@@ -81,8 +60,6 @@ services:
       - LOGSTASH_PORT=5000
       - SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
       - SENTRY_AUTH_DSN=${SENTRY_AUTH_DSN}
-    ports:
-      - "8080:8080"
 
   frontend:
     build:
@@ -101,8 +78,6 @@ services:
     restart: always
     depends_on:
       - backend
-    ports:
-      - "5173:5173"
     environment:
       - NODE_ENV=production
 
@@ -141,7 +116,6 @@ services:
 
 volumes:
   db-data:
-  pgadmin-data:
   caddy-data:
   es-data:
 
