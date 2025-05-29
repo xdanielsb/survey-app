@@ -176,9 +176,8 @@ public class SurveyService {
   public Survey createSurvey(CreateSurveyDTO dto) {
     // Get current user from the security context
     User user = userService.getCurrentUser();
-
-    // Check if user has credits
-    if (user.getSurveyCredits() < 1) {
+    int updated = userRepo.decrementCreditIfAvailable(user.getId());
+    if (updated == 0) {
       throw new IllegalStateException("Not enough survey credits to create a survey.");
     }
 
@@ -197,14 +196,8 @@ public class SurveyService {
             .collect(Collectors.toList());
 
     survey.setQuestions(questions);
-
-    // Save survey first (questions are cascaded), then deduct credits
-    Survey savedSurvey = surveyRepo.save(survey);
-
-    user.setSurveyCredits(user.getSurveyCredits() - 1);
-    userRepo.save(user);
-
-    return savedSurvey;
+    userRepo.save(user); // Save user to update credits
+    return surveyRepo.save(survey);
   }
 
   private int mapLikertToScore(LikertScale scale) {

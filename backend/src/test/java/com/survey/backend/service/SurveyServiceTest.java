@@ -9,10 +9,13 @@ import com.survey.backend.entity.Survey;
 import com.survey.backend.entity.User;
 import com.survey.backend.repository.SurveyRepository;
 import com.survey.backend.repository.UserRepository;
+import jakarta.persistence.EntityManager;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
@@ -24,15 +27,19 @@ class SurveyServiceTest {
 
   @InjectMocks private SurveyService surveyService;
 
+  @Autowired private EntityManager entityManager;
+
   @BeforeEach
   void setup() {
     MockitoAnnotations.openMocks(this);
   }
 
   @Test
+  @WithMockUser(username = "admin-user", roles = "ADMIN")
   void createSurvey_shouldSucceedAndDecreaseCredits() {
     // Arrange
     User user = new User();
+    user.setId(1L);
     user.setUid("admin-user");
     user.setEmail("user@example.com");
     user.setSurveyCredits(1);
@@ -46,16 +53,24 @@ class SurveyServiceTest {
     savedSurvey.setTitle("Test Survey");
 
     when(userService.getCurrentUser()).thenReturn(user);
+    when(userRepository.decrementCreditIfAvailable(user.getId()))
+        .thenAnswer(
+            invocation -> {
+              user.setSurveyCredits(user.getSurveyCredits() - 1);
+              return 1;
+            });
     when(surveyRepository.save(any(Survey.class))).thenReturn(savedSurvey);
     when(userRepository.save(any(User.class))).thenReturn(user);
 
     // Act
-    surveyService.createSurvey(dto);
+    Survey result = surveyService.createSurvey(dto);
 
     // Assert
     assertEquals(0, user.getSurveyCredits(), "User credits should decrease by 1");
-    verify(surveyRepository, times(1)).save(any(Survey.class));
-    verify(userRepository, times(1)).save(user);
+    assertEquals(savedSurvey.getId(), result.getId());
+    verify(userRepository).decrementCreditIfAvailable(user.getId());
+    verify(userRepository).save(user);
+    verify(surveyRepository).save(any(Survey.class));
   }
 
   @Test
