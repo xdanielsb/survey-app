@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -32,6 +33,7 @@ class PaymentControllerTest {
   @MockBean private UserService userService;
 
   @Test
+  @WithMockUser(username = "abc123", roles = "CUSTOMER")
   void testCreateSession_returnsSessionId() throws Exception {
     // Arrange
     User mockUser = new User();
