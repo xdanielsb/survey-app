@@ -28,22 +28,27 @@ public class SecurityConfig {
                     .requestMatchers(
                         "/auth/login",
                         "/users/**",
-                        "/payments/session",
                         "/payments/webhook",
                         "/payments/verify",
                         "/payments/webhook/**",
                         "/payments/verify/**",
                         "/surveys",
+                        "/surveys/create",
                         "/surveys/*",
                         "/surveys/*/results",
-                        "/surveys/*/responses")
+                        "/surveys/**/responses")
                     .permitAll()
 
                     // Authenticated-only routes
-                    .requestMatchers("/surveys/create", "/surveys/delete/**", "/users/credits")
+                    .requestMatchers(
+                        "/surveys/create",
+                        "/surveys/delete/**",
+                        "/payments/session",
+                        "/payments/verify",
+                        "/users/credits")
                     .authenticated()
 
-                    // Everything else is permitted
+                    // Everything else is denied
                     .anyRequest()
                     .denyAll())
 

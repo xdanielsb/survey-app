@@ -21,23 +21,28 @@ class SecurityConfigTest {
 
   @Test
   void publicEndpointsShouldBeAccessibleWithoutAuthentication() throws Exception {
+    mockMvc.perform(get("/surveys")).andExpect(status().isOk());
     mockMvc.perform(get("/surveys/1")).andExpect(status().isOk());
     mockMvc.perform(get("/surveys/1/results")).andExpect(status().isOk());
-    mockMvc.perform(get("/surveys")).andExpect(status().isOk());
   }
 
   @Test
-  void protectedEndpointShouldReturnUnauthorizedWhenNotAuthenticated() throws Exception {
+  void protectedEndpointsShouldReturnUnauthorizedWhenNotAuthenticated() throws Exception {
     mockMvc
         .perform(
             post("/surveys/create")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{ \"title\": \"Test\", \"questions\": [] }"))
         .andExpect(status().isForbidden());
+
+    mockMvc.perform(post("/surveys/delete/1")).andExpect(status().isForbidden());
+    mockMvc.perform(post("/payments/session")).andExpect(status().isForbidden());
+    mockMvc.perform(get("/users/credits")).andExpect(status().isForbidden());
   }
 
   @Test
   void unknownEndpointsShouldBeDenied() throws Exception {
     mockMvc.perform(get("/admin")).andExpect(status().isForbidden());
+    mockMvc.perform(get("/secret/hidden")).andExpect(status().isForbidden());
   }
 }
