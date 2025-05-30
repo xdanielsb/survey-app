@@ -2,7 +2,6 @@
   <div
     class="group relative overflow-hidden flex flex-col md:flex-row items-center gap-6 p-6 rounded-[var(--radius-lg)] bg-white border border-[color:var(--color-neutral-200)] shadow-[var(--shadow-card)] transition-transform duration-300 ease-[var(--ease-snappy)] hover:shadow-lg hover:-translate-y-1"
   >
-    <!-- Donut Chart -->
     <div class="relative w-44 h-44 flex-shrink-0">
       <div ref="chartRef" class="absolute inset-0" />
 

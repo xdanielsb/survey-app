@@ -1,11 +1,7 @@
 <template>
-  <!-- Decorative backdrop -->
   <div class="relative">
-    <!-- Page container -->
     <main class="mx-auto px-6 py-16 space-y-10">
-      <!-- Header row -->
       <section class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
-        <!-- Title & credits -->
         <div>
           <h1
             class="text-3xl font-display font-semibold text-[color:var(--color-neutral-900)] mb-2"
@@ -50,7 +46,6 @@
             class="flex-1 sm:w-56 px-4 py-2 text-sm rounded-[var(--radius-sm)] border border-[color:var(--color-neutral-300)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-primary-500)] bg-white"
           />
 
-          <!-- Floating action button -->
           <router-link
             to="/create-survey"
             class="relative inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-white bg-[color:var(--color-primary-600)] shadow-[var(--shadow-soft)] hover:bg-[color:var(--color-primary-700)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-primary-500)] transition"
@@ -63,13 +58,11 @@
         </div>
       </section>
 
-      <!-- Surveys grid / skeleton -->
       <section>
         <ul v-if="surveys" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <SurveyListItem v-for="survey in filteredSurveys" :key="survey.id" :survey="survey" />
         </ul>
 
-        <!-- Skeleton while loading -->
         <div v-else class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <div
             v-for="n in 6"
@@ -79,7 +72,6 @@
         </div>
       </section>
 
-      <!-- Pagination -->
       <section v-if="surveys && totalPages > 1" class="flex justify-center items-center gap-6 pt-6">
         <button
           @click="page--"
@@ -120,7 +112,6 @@ const totalPages = ref(0)
 const search = ref('')
 const credits = ref<number | null>(null)
 
-/* ---------- fetch data ---------- */
 watchEffect(async () => {
   const { content, totalPages: tp } = await fetchSurveys(page.value, 4)
   surveys.value = content
@@ -136,7 +127,6 @@ onMounted(async () => {
   }
 })
 
-/* ---------- computed ---------- */
 const filteredSurveys = computed(() =>
   surveys.value
     ? surveys.value.filter((s) => s.title.toLowerCase().includes(search.value.toLowerCase()))

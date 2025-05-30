@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import HomeView from '../HomeView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
-import { routes } from '@/router'
+import { routes } from '@/router/routes.ts'
 import { createTestingPinia } from '@pinia/testing'
 import { fetchSurveys } from '@/services/surveyService'
 

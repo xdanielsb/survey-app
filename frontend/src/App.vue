@@ -1,20 +1,18 @@
-<script setup lang="ts">
+<script setup lang="ts" strict>
+import { computed, onMounted, ref } from 'vue'
 import { RouterView, useRouter } from 'vue-router'
-import { computed, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import { logger } from '@/plugins/logger'
+import { defineAsyncComponent } from 'vue'
 
-/* ──────────────────────────────────
-   stores & env
-────────────────────────────────── */
-const mode = import.meta.env.MODE
+const LoginView = defineAsyncComponent(() => import('@/views/LoginView.vue'))
+
+const mode = import.meta.env.MODE as 'development' | 'test' | 'production'
 const router = useRouter()
 const authStore = useAuthStore()
 
-/* user email (reactive) */
 const userEmail = computed(() => (authStore.isAuthenticated ? authStore.email : null))
 
-/* env-pill colour */
 const envClass = computed(() => {
   switch (mode) {
     case 'development':
@@ -27,22 +25,30 @@ const envClass = computed(() => {
   }
 })
 
+const showLogin = ref(false)
+
 /* logout */
-const logout = () => {
+function logout() {
   authStore.logout()
-  router.push('/login')
+  router.push('/')
 }
 
-/* mount log */
-onMounted(() => logger.info('App mounted successfully.'))
+/* first-mount halo (optional) */
+onMounted(() => {
+  logger.info('App shell mounted.')
+  const halo = document.createElement('span')
+  halo.className =
+    'pointer-events-none fixed inset-0 z-50 animate-burst ' +
+    'bg-[radial-gradient(circle_at_center,rgba(59,130,246,.25)_0%,rgba(59,130,246,0)_60%)]'
+  document.body.appendChild(halo)
+  halo.addEventListener('animationend', () => halo.remove())
+})
 </script>
 
 <template>
-  <!-- Frosted top bar -->
   <header
     class="sticky top-0 z-40 flex items-center justify-between gap-4 backdrop-blur-sm bg-white/75 border-b border-[color:var(--color-neutral-200)] px-6 py-2 shadow-sm"
   >
-    <!-- Env pill -->
     <span
       class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold shadow-[var(--shadow-card)]"
       :class="envClass"
@@ -50,19 +56,18 @@ onMounted(() => logger.info('App mounted successfully.'))
       Env: {{ mode }}
     </span>
 
-    <!-- Auth controls -->
     <div class="flex items-center gap-4 text-sm">
-      <span v-if="userEmail" class="text-[color:var(--color-neutral-700)]">
+      <span v-if="userEmail" class="text-[color:var(--color-neutral-700)] truncate max-w-[14rem]">
         {{ userEmail }}
       </span>
 
-      <router-link
+      <button
         v-if="!userEmail"
-        to="/login"
+        @click="showLogin = true"
         class="px-3 py-1.5 rounded-[var(--radius-sm)] bg-[color:var(--color-primary-600)] text-white hover:bg-[color:var(--color-primary-700)] transition"
       >
         Login
-      </router-link>
+      </button>
 
       <button
         v-else
@@ -74,8 +79,44 @@ onMounted(() => logger.info('App mounted successfully.'))
     </div>
   </header>
 
-  <!-- Routed pages -->
   <main class="max-w-6xl mx-auto px-6 py-10">
-    <RouterView />
+    <Transition name="page" mode="out-in" appear>
+      <RouterView />
+    </Transition>
   </main>
+
+  <LoginView v-model="showLogin" />
 </template>
+
+<style>
+/* Page transition */
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(12px) scale(0.98);
+}
+.page-enter-active,
+.page-leave-active {
+  transition: all 340ms var(--ease-snappy);
+}
+.page-leave-from,
+.page-enter-to {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Burst halo */
+@keyframes burst {
+  from {
+    opacity: 0.9;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2);
+  }
+}
+.animate-burst {
+  animation: burst 700ms var(--ease-snappy) forwards;
+}
+</style>

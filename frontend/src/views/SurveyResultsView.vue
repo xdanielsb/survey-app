@@ -1,6 +1,5 @@
 <template>
   <div class="relative">
-    <!-- Sticky insight bar -->
     <header
       v-if="results"
       class="sticky top-0 z-20 backdrop-blur-sm bg-white/70 border-b border-[color:var(--color-neutral-200)] py-3 px-6 flex items-center justify-between"
@@ -9,7 +8,6 @@
         {{ results.surveyTitle }}
       </h1>
 
-      <!-- Quick metric -->
       <span
         class="px-3 py-1 rounded-full bg-[color:var(--color-neutral-100)] text-[color:var(--color-neutral-700)] text-sm font-medium"
       >
@@ -17,15 +15,12 @@
       </span>
     </header>
 
-    <!-- Main content -->
     <main class="max-w-6xl mx-auto px-6 py-12 space-y-10">
-      <!-- Loading state -->
       <template v-if="!results">
         <h2 class="text-xl font-display font-semibold text-[color:var(--color-neutral-600)] mb-6">
           Loading results…
         </h2>
 
-        <!-- Skeleton grid -->
         <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <div
             v-for="n in 6"
@@ -35,9 +30,7 @@
         </div>
       </template>
 
-      <!-- Rendered insights -->
       <template v-else>
-        <!-- Hero title (desktop) -->
         <h2
           class="hidden md:block text-3xl font-display font-semibold text-[color:var(--color-neutral-900)]"
         >
