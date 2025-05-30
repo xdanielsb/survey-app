@@ -1,22 +1,51 @@
-<script setup lang="ts">
+<script setup lang="ts" strict>
 import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { loginUser } from '@/services/authService'
+import { loginUser, signUpUser } from '@/services/authService'
 import { toastService } from '@/services/toastService'
 
-/* -------- props / v-model -------- */
+/* v-model from parent */
 const show = defineModel<boolean>({ required: true })
 
-/* -------- form state -------- */
+/* form state */
 const email = ref('')
 const password = ref('')
 const errorMsg = ref('')
+const isSignUp = ref(false)
 const router = useRouter()
 
-/* close on success */
-watch(show, (v) => !v && (email.value = password.value = errorMsg.value = ''))
+/* reset when modal closes */
+watch(show, (v) => {
+  if (!v) {
+    email.value = ''
+    password.value = ''
+    errorMsg.value = ''
+    isSignUp.value = false
+  }
+})
 
-async function handlePasswordLogin() {
+async function handleSubmit() {
+  errorMsg.value = ''
+
+  /* Sign Up */
+  if (isSignUp.value) {
+    try {
+      const token = await signUpUser(email.value, password.value)
+      if (token) {
+        localStorage.setItem('token', token)
+        toastService.success('Account created!')
+        router.push('/')
+        show.value = false
+      } else {
+        errorMsg.value = 'Could not create account'
+      }
+    } catch {
+      errorMsg.value = 'Sign-up failed'
+    }
+    return
+  }
+
+  /* Sign In */
   const { success } = await loginUser(email.value, password.value)
   if (success) {
     router.push('/')
@@ -24,6 +53,11 @@ async function handlePasswordLogin() {
   } else {
     errorMsg.value = 'Invalid credentials'
   }
+}
+
+function toggleMode() {
+  errorMsg.value = ''
+  isSignUp.value = !isSignUp.value
 }
 
 function googleSoon() {
@@ -42,9 +76,13 @@ function googleSoon() {
         <div
           class="relative flex w-full max-w-3xl overflow-hidden rounded-[var(--radius-lg)] bg-white shadow-[var(--shadow-soft)]"
         >
+          <!-- Form side -->
           <div class="w-full lg:w-1/2 p-10 space-y-6">
-            <h1 class="text-2xl font-display font-semibold text-center">Welcome back</h1>
+            <h1 class="text-2xl font-display font-semibold text-center">
+              {{ isSignUp ? 'Create Account' : 'Welcome back' }}
+            </h1>
 
+            <!-- Google -->
             <button
               @click="googleSoon"
               class="w-full inline-flex items-center justify-center gap-3 rounded-[var(--radius-sm)] border border-[color:var(--color-neutral-300)] py-2.5 text-sm font-medium hover:bg-[color:var(--color-neutral-100)] transition"
@@ -56,13 +94,15 @@ function googleSoon() {
               Continue with Google
             </button>
 
+            <!-- Divider -->
             <div class="flex items-center gap-4">
               <span class="flex-1 h-px bg-[color:var(--color-neutral-200)]" />
               <span class="text-xs text-[color:var(--color-neutral-500)] uppercase">or</span>
               <span class="flex-1 h-px bg-[color:var(--color-neutral-200)]" />
             </div>
 
-            <form @submit.prevent="handlePasswordLogin" class="space-y-4">
+            <!-- Email / Password -->
+            <form @submit.prevent="handleSubmit" class="space-y-4">
               <input
                 v-model="email"
                 type="email"
@@ -77,16 +117,32 @@ function googleSoon() {
                 placeholder="Password"
                 class="w-full rounded-[var(--radius-sm)] border border-[color:var(--color-neutral-300)] bg-[color:var(--color-neutral-50)] px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[color:var(--color-primary-500)]"
               />
+
               <button
                 type="submit"
                 class="w-full rounded-[var(--radius-sm)] bg-[color:var(--color-primary-600)] py-2.5 text-sm font-semibold text-white hover:bg-[color:var(--color-primary-700)] transition"
               >
-                Login
+                {{ isSignUp ? 'Create Account' : 'Login' }}
               </button>
+
               <p v-if="errorMsg" class="text-xs text-red-600 text-center">{{ errorMsg }}</p>
             </form>
+
+            <!-- Toggle -->
+            <p class="text-center text-sm">
+              <span v-if="isSignUp">Already have an account?</span>
+              <span v-else>Don't have an account?</span>
+              <button
+                @click="toggleMode"
+                type="button"
+                class="ml-1 text-[color:var(--color-primary-600)] hover:underline"
+              >
+                {{ isSignUp ? 'Sign in' : 'Sign up' }}
+              </button>
+            </p>
           </div>
 
+          <!-- Hero image -->
           <div
             class="hidden lg:block lg:w-1/2 bg-cover bg-center"
             style="
@@ -100,7 +156,6 @@ function googleSoon() {
 </template>
 
 <style>
-/* Modal animation */
 .fade-scale-enter-from,
 .fade-scale-leave-to {
   opacity: 0;
