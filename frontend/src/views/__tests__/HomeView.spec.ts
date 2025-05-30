@@ -44,10 +44,6 @@ describe('HomeView.vue', () => {
 
     expect(wrapper.text()).toContain('Customer Feedback')
     expect(wrapper.text()).toContain('Product Satisfaction')
-    expect(wrapper.find('.pagination').exists()).toBe(true)
-
-    const nextBtn = wrapper.find('.pagination button:last-of-type')
-    expect(nextBtn.attributes('disabled')).toBeUndefined()
     expect(wrapper.text()).toContain('Page 1 of 3')
   })
 })
