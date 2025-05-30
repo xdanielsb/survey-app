@@ -1,75 +1,115 @@
 <template>
   <div
-    class="mb-6 p-6 rounded-[var(--radius-lg)] bg-white border border-[color:var(--color-neutral-200)] shadow-[var(--shadow-soft)] transition hover:shadow-[var(--shadow-card)]"
+    class="group relative overflow-hidden flex flex-col md:flex-row items-center gap-6 p-6 rounded-[var(--radius-lg)] bg-white border border-[color:var(--color-neutral-200)] shadow-[var(--shadow-card)] transition-transform duration-300 ease-[var(--ease-snappy)] hover:shadow-lg hover:-translate-y-1"
   >
-    <h3 class="text-lg font-semibold text-[color:var(--color-neutral-800)] mb-4">
-      {{ question.questionText }}
-    </h3>
+    <!-- Donut Chart -->
+    <div class="relative w-44 h-44 flex-shrink-0">
+      <div ref="chartRef" class="absolute inset-0" />
 
-    <div ref="chartRef" class="w-full h-[250px]" />
+      <!-- Center badge -->
+      <div
+        class="absolute inset-0 flex items-center justify-center text-center pointer-events-none"
+      >
+        <span
+          class="inline-block px-3 py-1 rounded-full bg-[color:var(--color-neutral-100)] text-xs font-semibold text-[color:var(--color-neutral-700)] shadow-sm"
+        >
+          Avg {{ avgLabel }}
+        </span>
+      </div>
+    </div>
 
-    <p class="mt-4 text-sm text-[color:var(--color-neutral-600)]">
-      <strong class="text-[color:var(--color-neutral-800)]">Average Score:</strong>
-      {{ question.averageScore.toFixed(2) }}
-    </p>
+    <!-- Question + Legend -->
+    <div class="flex-1">
+      <h3 class="text-lg font-display font-semibold text-[color:var(--color-neutral-900)] mb-4">
+        {{ question.questionText }}
+      </h3>
+
+      <!-- Legend -->
+      <ul class="grid gap-2 sm:grid-cols-2 md:grid-cols-1">
+        <li
+          v-for="entry in legendData"
+          :key="entry.name"
+          class="flex items-center gap-2 text-sm text-[color:var(--color-neutral-700)]"
+        >
+          <span class="block w-3 h-3 rounded-full" :style="{ backgroundColor: entry.color }" />
+          <span class="truncate">{{ entry.name }}</span>
+          <span class="ml-auto font-medium text-[color:var(--color-neutral-500)]">
+            {{ entry.value }}%
+          </span>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import * as echarts from 'echarts'
-import { onMounted, ref } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import type { QuestionResult } from '@/types/question-result'
 
-const props = defineProps<{
-  question: QuestionResult
-}>()
+/* ---------- Props ---------- */
+const props = defineProps<{ question: QuestionResult }>()
 
+/* ---------- Chart & Legend Data ---------- */
 const chartRef = ref<HTMLDivElement | null>(null)
 
+const rawData = computed(() =>
+  Object.entries(props.question.distribution).map(([label, value]) => ({
+    name: formatOption(label),
+    value,
+  })),
+)
+
+// nicer colors (extend or match Maverik palette)
+const palette = [
+  'var(--color-primary-600)',
+  'var(--color-primary-400)',
+  'var(--color-primary-200)',
+  '#e0e7ff',
+  'var(--color-primary-800)',
+]
+
+const legendData = computed(() =>
+  rawData.value.map((d, i) => ({
+    ...d,
+    color: palette[i % palette.length],
+  })),
+)
+
+/* ---------- Average label ---------- */
+const avgLabel = computed(() => props.question.averageScore.toFixed(2))
+
+/* ---------- Chart Init ---------- */
 onMounted(() => {
   if (!chartRef.value) return
 
-  const chart = echarts.init(chartRef.value)
-  const data = Object.entries(props.question.distribution).map(([label, value]) => ({
-    name: formatOption(label),
-    value,
-  }))
+  const chart = echarts.init(chartRef.value, undefined, { renderer: 'svg' })
 
   chart.setOption({
-    title: {
-      text: 'Responses',
-      left: 'center',
-      textStyle: {
-        fontFamily: 'var(--font-display)',
-        color: 'var(--color-neutral-800)',
-        fontWeight: 500,
-      },
-    },
-    tooltip: {
-      trigger: 'item',
-    },
-    legend: {
-      bottom: 0,
-    },
+    tooltip: { trigger: 'item' },
+    animationDuration: 800,
     series: [
       {
-        name: 'Answers',
         type: 'pie',
-        radius: '50%',
-        data,
-        emphasis: {
-          itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.1)',
-          },
-        },
+        radius: ['50%', '80%'],
+        startAngle: 90,
+        label: { show: false },
+        labelLine: { show: false },
+        data: legendData.value.map((d) => ({
+          value: d.value,
+          name: d.name,
+          itemStyle: { color: d.color },
+        })),
       },
     ],
   })
+
+  // Resize with container
+  window.addEventListener('resize', () => chart.resize())
 })
 
-function formatOption(option: string) {
-  return option.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase())
+/* ---------- Helpers ---------- */
+function formatOption(text: string) {
+  return text.replace(/([A-Z])/g, ' $1').replace(/^./, (s) => s.toUpperCase())
 }
 </script>

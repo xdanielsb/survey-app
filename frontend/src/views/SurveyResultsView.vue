@@ -1,11 +1,17 @@
 <template>
-  <div>
-    <h2 v-if="results">{{ results.surveyTitle }}</h2>
-    <p v-else>Loading results...</p>
+  <div class="max-w-6xl mx-auto px-6 py-10">
+    <h2
+      v-if="results"
+      class="text-3xl font-display font-semibold text-[color:var(--color-neutral-900)] mb-8"
+    >
+      {{ results.surveyTitle }}
+    </h2>
 
-    <div class="grid">
+    <p v-else class="text-[color:var(--color-neutral-600)] text-lg">Loading results...</p>
+
+    <div v-if="results" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       <SurveyResultItem
-        v-for="question in results?.questionResults"
+        v-for="question in results.questionResults"
         :key="question.questionId"
         :question="question"
       />
@@ -28,17 +34,3 @@ onMounted(async () => {
   results.value = await fetchSurveyResults(id)
 })
 </script>
-
-<style scoped>
-.container {
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 1rem;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 1.5rem;
-}
-</style>
