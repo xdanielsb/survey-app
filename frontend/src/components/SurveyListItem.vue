@@ -1,12 +1,35 @@
 <template>
-  <li class="survey-item">
-    <span class="title truncate">{{ survey.title }}</span>
+  <li
+    class="flex items-center justify-between bg-white border border-[color:var(--color-neutral-200)] rounded-[var(--radius-md)] px-6 py-4 mb-4 shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-card)] transition-shadow duration-300 ease-[var(--ease-snappy)]"
+  >
+    <span
+      class="truncate text-base font-medium text-[color:var(--color-neutral-900)] max-w-[200px]"
+    >
+      {{ survey.title }}
+    </span>
 
-    <div class="actions">
-      <router-link :to="`/surveys/${survey.id}`" class="btn primary">Answer</router-link>
-      <router-link :to="`/surveys/${survey.id}/results`" class="btn secondary">Results</router-link>
+    <div class="flex gap-2">
+      <router-link
+        :to="`/surveys/${survey.id}`"
+        class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-[var(--radius-sm)] text-white bg-[color:var(--color-primary-600)] hover:bg-[color:var(--color-primary-700)] transition"
+      >
+        Answer
+      </router-link>
 
-      <button v-role="['ADMIN']" @click="handleDelete" class="btn danger">Delete</button>
+      <router-link
+        :to="`/surveys/${survey.id}/results`"
+        class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-[var(--radius-sm)] bg-[color:var(--color-neutral-200)] text-[color:var(--color-neutral-700)] hover:bg-[color:var(--color-neutral-300)] transition"
+      >
+        Results
+      </router-link>
+
+      <button
+        v-role="['ADMIN']"
+        @click="handleDelete"
+        class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-[var(--radius-sm)] bg-[color:var(--color-danger)] text-white hover:bg-red-700 transition"
+      >
+        Delete
+      </button>
     </div>
   </li>
 </template>
@@ -30,63 +53,3 @@ const handleDelete = async () => {
   }
 }
 </script>
-
-<style scoped>
-.survey-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: white;
-  padding: 1rem 1.5rem;
-  margin-bottom: 1rem;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  transition: box-shadow 0.2s;
-}
-
-.survey-item:hover {
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-}
-
-.actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.btn {
-  padding: 0.4rem 0.75rem;
-  border: none;
-  border-radius: 6px;
-  text-decoration: none;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.primary {
-  background-color: #007aff;
-  color: white;
-}
-
-.secondary {
-  background-color: #ddd;
-  color: black;
-}
-
-.danger {
-  background-color: #e63946;
-  color: white;
-}
-
-.danger:hover {
-  background-color: #d62828;
-}
-
-.truncate {
-  display: inline-block;
-  max-width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  vertical-align: middle;
-}
-</style>
