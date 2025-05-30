@@ -17,6 +17,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@heroicons/vue": "^2.2.0",
     "@sentry/vue": "^9.22.0",
     "@stripe/stripe-js": "^7.3.0",
     "@vee-validate/yup": "^4.15.0",

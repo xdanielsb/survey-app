@@ -113,7 +113,7 @@ const search = ref('')
 const credits = ref<number | null>(null)
 
 watchEffect(async () => {
-  const { content, totalPages: tp } = await fetchSurveys(page.value, 4)
+  const { content, totalPages: tp } = await fetchSurveys(page.value, 9)
   surveys.value = content
   totalPages.value = tp
 })
