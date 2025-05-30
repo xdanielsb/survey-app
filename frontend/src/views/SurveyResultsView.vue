@@ -1,26 +1,63 @@
 <template>
-  <div class="max-w-6xl mx-auto px-6 py-10">
-    <h2
+  <div class="relative">
+    <!-- Sticky insight bar -->
+    <header
       v-if="results"
-      class="text-3xl font-display font-semibold text-[color:var(--color-neutral-900)] mb-8"
+      class="sticky top-0 z-20 backdrop-blur-sm bg-white/70 border-b border-[color:var(--color-neutral-200)] py-3 px-6 flex items-center justify-between"
     >
-      {{ results.surveyTitle }}
-    </h2>
+      <h1 class="text-lg font-display font-semibold text-[color:var(--color-neutral-900)] truncate">
+        {{ results.surveyTitle }}
+      </h1>
 
-    <p v-else class="text-[color:var(--color-neutral-600)] text-lg">Loading results...</p>
+      <!-- Quick metric -->
+      <span
+        class="px-3 py-1 rounded-full bg-[color:var(--color-neutral-100)] text-[color:var(--color-neutral-700)] text-sm font-medium"
+      >
+        Questions {{ questionCount }}
+      </span>
+    </header>
 
-    <div v-if="results" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      <SurveyResultItem
-        v-for="question in results.questionResults"
-        :key="question.questionId"
-        :question="question"
-      />
-    </div>
+    <!-- Main content -->
+    <main class="max-w-6xl mx-auto px-6 py-12 space-y-10">
+      <!-- Loading state -->
+      <template v-if="!results">
+        <h2 class="text-xl font-display font-semibold text-[color:var(--color-neutral-600)] mb-6">
+          Loading results…
+        </h2>
+
+        <!-- Skeleton grid -->
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div
+            v-for="n in 6"
+            :key="n"
+            class="animate-pulse h-[300px] rounded-[var(--radius-lg)] bg-[color:var(--color-neutral-100)]"
+          />
+        </div>
+      </template>
+
+      <!-- Rendered insights -->
+      <template v-else>
+        <!-- Hero title (desktop) -->
+        <h2
+          class="hidden md:block text-3xl font-display font-semibold text-[color:var(--color-neutral-900)]"
+        >
+          {{ results.surveyTitle }}
+        </h2>
+
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <SurveyResultItem
+            v-for="q in results.questionResults"
+            :key="q.questionId"
+            :question="q"
+          />
+        </div>
+      </template>
+    </main>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import type { SurveyResults } from '@/types/survey-results'
 import { fetchSurveyResults } from '@/services/surveyService'
@@ -28,6 +65,8 @@ import SurveyResultItem from '@/components/SurveyResultItem.vue'
 
 const route = useRoute()
 const results = ref<SurveyResults | null>(null)
+
+const questionCount = computed(() => results.value?.questionResults.length ?? 0)
 
 onMounted(async () => {
   const id = Number(route.params.id)
