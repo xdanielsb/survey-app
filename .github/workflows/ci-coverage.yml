@@ -1,0 +1,79 @@
+name: Coverage
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+  pull-requests: write     # allow PR comment
+
+jobs:
+  coverage:
+    name: ${{ matrix.part }} coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    strategy:
+      fail-fast: false      # let each leg finish for full reporting
+      matrix:
+        part: [backend, frontend]
+
+    # Ensure only one coverage run per commit ref & part
+    concurrency:
+      group: "cov-${{ github.ref }}-${{ matrix.part }}"
+      cancel-in-progress: true
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0    # let Codecov diff against base
+
+      - name: Set up JDK 17
+        if: ${{ matrix.part == 'backend' }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: maven       # built-in dependency cache :contentReference[oaicite:0]{index=0}
+
+      - name: Build & test backend
+        if: ${{ matrix.part == 'backend' }}
+        working-directory: backend
+        run: ./mvnw -B verify --no-transfer-progress
+
+      - name: Set up Node 20
+        if: ${{ matrix.part == 'frontend' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm         # caches ~/.npm automatically :contentReference[oaicite:1]{index=1}
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install & test frontend
+        if: ${{ matrix.part == 'frontend' }}
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: ${{ matrix.part }}
+          files: ${{ matrix.part == 'backend' && 'backend/target/site/jacoco/jacoco.xml' || 'frontend/coverage/lcov.info' }}
+          name: ${{ matrix.part }}
+          fail_ci_if_error: true
+          verbose: true
+
+      # Always archive raw reports (helps debugging if Codecov rejects them)
+      - name: Archive raw coverage artefacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.part }}-coverage
+          path: ${{ matrix.part == 'backend' && 'backend/target/site/jacoco' || 'frontend/coverage' }}
+          retention-days: 7
