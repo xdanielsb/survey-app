@@ -6,6 +6,7 @@ import { toastService } from '@/services/toastService'
 import { signInWithPopup } from 'firebase/auth'
 import { auth, googleProvider } from '@/firebase.ts'
 import { useAuthStore } from '@/stores/authStore.ts'
+import api from '@/services/api.ts'
 
 /* v-model from parent */
 const show = defineModel<boolean>({ required: true })
@@ -80,6 +81,13 @@ async function googleLogin() {
       toastService.error('Google sign-in failed: No user data received')
       return
     }
+    // register the user
+    const userPayload = {
+      uid: user.uid,
+      email: user.email,
+    }
+    await api.post('/users/create', userPayload)
+
     authStore.login(user.email, idToken, [])
     toastService.success(`Welcome, ${user.displayName ?? 'friend'}!`)
     router.push('/')
