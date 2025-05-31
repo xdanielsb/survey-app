@@ -3,6 +3,9 @@ import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { loginUser, signUpUser } from '@/services/authService'
 import { toastService } from '@/services/toastService'
+import { signInWithPopup } from 'firebase/auth'
+import { auth, googleProvider } from '@/firebase.ts'
+import { useAuthStore } from '@/stores/authStore.ts'
 
 /* v-model from parent */
 const show = defineModel<boolean>({ required: true })
@@ -60,8 +63,31 @@ function toggleMode() {
   isSignUp.value = !isSignUp.value
 }
 
-function googleSoon() {
-  toastService.info('Google login — coming soon ✨')
+async function googleLogin() {
+  try {
+    if (!auth) {
+      toastService.error('Firebase auth not initialized')
+      return
+    }
+    if (!googleProvider) {
+      toastService.error('Google provider not configured')
+      return
+    }
+    const { user } = await signInWithPopup(auth, googleProvider)
+    const idToken = await user.getIdToken(true)
+    const authStore = useAuthStore()
+    if (!user.email) {
+      toastService.error('Google sign-in failed: No user data received')
+      return
+    }
+    authStore.login(user.email, idToken, [])
+    toastService.success(`Welcome, ${user.displayName ?? 'friend'}!`)
+    router.push('/')
+    show.value = false
+  } catch (err) {
+    console.error(err)
+    toastService.error('Google sign-in failed')
+  }
 }
 </script>
 
@@ -84,7 +110,7 @@ function googleSoon() {
 
             <!-- Google -->
             <button
-              @click="googleSoon"
+              @click="googleLogin"
               class="w-full inline-flex items-center justify-center gap-3 rounded-[var(--radius-sm)] border border-[color:var(--color-neutral-300)] py-2.5 text-sm font-medium hover:bg-[color:var(--color-neutral-100)] transition"
             >
               <img

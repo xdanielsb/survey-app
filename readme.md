@@ -20,8 +20,8 @@ This repository contains a full-stack **Survey App** built with:
 -  **Instrumentation**| Sentry frontend & backend (error tracking)
 -  **Payment**| Stripe
 -  **Pagination**
--  **Testing** | CodeCoverage
-
+-  **Testing** | Vitest + JaCoCo • Codecov for coverage 
+-  **Google Sign-up** | Firebase Authentication (Google provider) 
 ###  Dev development
 
 ```bash
