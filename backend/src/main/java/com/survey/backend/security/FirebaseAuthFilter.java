@@ -1,10 +1,12 @@
 package com.survey.backend.security;
 
+import com.google.firebase.auth.AuthErrorCode;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.survey.backend.entity.Role;
 import com.survey.backend.entity.User;
+import com.survey.backend.exceptions.ExpiredTokenException;
 import com.survey.backend.logging.HttpLoggingFilter;
 import com.survey.backend.repository.UserRepository;
 import jakarta.servlet.FilterChain;
@@ -29,7 +31,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class FirebaseAuthFilter extends OncePerRequestFilter {
 
   private static final Logger log = LoggerFactory.getLogger(HttpLoggingFilter.class);
-
   private final UserRepository userRepository;
 
   public FirebaseAuthFilter(UserRepository userRepository) {
@@ -41,30 +42,37 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
       HttpServletRequest request, HttpServletResponse response, FilterChain chain)
       throws ServletException, IOException {
 
-    extractBearerToken(request)
-        .flatMap(this::verifyToken)
-        .ifPresent(
-            token -> {
-              // Load user + roles
-              List<GrantedAuthority> authorities =
-                  userRepository
-                      .findByUid(token.getUid())
-                      .map(User::getRoles)
-                      .orElse(Set.of()) // fallback to empty set if user not found
-                      .stream()
-                      .map(Role::getName)
-                      .map(SimpleGrantedAuthority::new)
-                      .collect(Collectors.toList());
+    try {
+      Optional<String> tokenOpt = extractBearerToken(request);
+      Optional<FirebaseToken> decoded = tokenOpt.flatMap(this::verifyToken);
 
-              // Set auth context
-              var auth = new UsernamePasswordAuthenticationToken(token.getUid(), null, authorities);
-              SecurityContextHolder.getContext().setAuthentication(auth);
-              log.info(
-                  "Authenticated user email={} uid={} roles={}",
-                  token.getEmail(),
-                  token.getUid(),
-                  authorities.stream().map(GrantedAuthority::getAuthority).toList());
-            });
+      if (decoded.isPresent()) {
+        FirebaseToken token = decoded.get();
+
+        // Load user + roles
+        List<GrantedAuthority> authorities =
+            userRepository
+                .findByUid(token.getUid())
+                .map(User::getRoles)
+                .orElse(Set.of()) // fallback to empty set if user not found
+                .stream()
+                .map(Role::getName)
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+
+        // Set auth context
+        var auth = new UsernamePasswordAuthenticationToken(token.getUid(), null, authorities);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        log.info(
+            "Authenticated user email={} uid={} roles={}",
+            token.getEmail(),
+            token.getUid(),
+            authorities.stream().map(GrantedAuthority::getAuthority).toList());
+      }
+    } catch (ExpiredTokenException ex) {
+      response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "TOKEN_EXPIRED");
+      return;
+    }
 
     chain.doFilter(request, response);
   }
@@ -88,7 +96,10 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
       FirebaseToken decoded = FirebaseAuth.getInstance().verifyIdToken(token);
       return Optional.of(decoded);
     } catch (FirebaseAuthException e) {
-      log.error("Invalid Firebase token: {}" + e.getMessage()); // avoids log spam
+      if (e.getAuthErrorCode() == AuthErrorCode.EXPIRED_ID_TOKEN) {
+        throw new ExpiredTokenException("TOKEN_EXPIRED");
+      }
+      log.warn("Invalid Firebase token: {}", e.getMessage());
       return Optional.empty();
     }
   }

@@ -3,6 +3,7 @@ _Cloud‑native survey engine with end‑to‑end observability._
 
 ![Backend CI](https://github.com/xdanielsb/survey-app/actions/workflows/ci-backend.yml/badge.svg)
 ![Frontend CI](https://github.com/xdanielsb/survey-app/actions/workflows/ci-frontend.yml/badge.svg)
+![Frontend Coverage](https://codecov.io/gh/xdanielsb/survey-app/branch/master/graph/badge.svg)
 ![License](https://img.shields.io/github/license/xdanielsb/survey-app)
 ![Release](https://img.shields.io/github/v/tag/xdanielsb/survey-app)
 
@@ -17,7 +18,7 @@ This repository contains a full-stack **Survey App** built with:
 -  **Periodic rotating backups** Till 30 days
 -  **Instrumentation**| Sentry frontend & backend (error tracking)
 -  **Payment**| Stripe
--  **Pagination 
+-  **Pagination**
 
 ###  Dev development
 

@@ -33,16 +33,18 @@ class SecurityConfigTest {
             post("/surveys/create")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{ \"title\": \"Test\", \"questions\": [] }"))
-        .andExpect(status().isForbidden());
+        .andExpect(status().isUnauthorized());
 
-    mockMvc.perform(post("/surveys/delete/1")).andExpect(status().isForbidden());
-    mockMvc.perform(post("/payments/session")).andExpect(status().isForbidden());
-    mockMvc.perform(get("/users/credits")).andExpect(status().isForbidden());
+    mockMvc.perform(post("/surveys/delete/1")).andExpect(status().isUnauthorized());
+    mockMvc.perform(post("/payments/session")).andExpect(status().isUnauthorized());
+    mockMvc.perform(get("/payments/verify?session_id=130")).andExpect(status().isUnauthorized());
+    mockMvc.perform(get("/users/credits")).andExpect(status().isUnauthorized());
   }
 
   @Test
   void unknownEndpointsShouldBeDenied() throws Exception {
     mockMvc.perform(get("/admin")).andExpect(status().isForbidden());
     mockMvc.perform(get("/secret/hidden")).andExpect(status().isForbidden());
+    mockMvc.perform(post("/internal/ops")).andExpect(status().isForbidden());
   }
 }

@@ -69,13 +69,14 @@ class PaymentControllerTest {
   }
 
   @Test
-  void testCreateSession_whenNotAuthenticated_returns403() throws Exception {
+  void testCreateSession_whenNotAuthenticated_returns401() throws Exception {
     when(userService.getCurrentUser()).thenThrow(new AccessDeniedException("Not authenticated"));
 
-    mockMvc.perform(post("/payments/session")).andExpect(status().isForbidden());
+    mockMvc.perform(post("/payments/session")).andExpect(status().isUnauthorized());
   }
 
   @Test
+  @WithMockUser(username = "abc123", roles = "CUSTOMER")
   void testVerifyPayment_returnsPaymentInfo() throws Exception {
     // Arrange
     String sessionId = "cs_test_123456";

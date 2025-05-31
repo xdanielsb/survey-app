@@ -44,5 +44,18 @@ jobs:
       - name: Run Vitest
         run: npx vitest run
 
+      - name: Run coverage
+        working-directory: frontend
+        run: npm run coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: frontend/coverage/lcov.info
+          flags: frontend
+          fail_ci_if_error: true
+          verbose: true
+
       - name: Run Linter
         run: npm run lint

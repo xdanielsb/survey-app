@@ -27,6 +27,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    console.log('API Error:', error)
     if (error.response?.status === 401) {
       const authStore = useAuthStore()
       toastService.warning('[Auth] Session expired, please login again.')

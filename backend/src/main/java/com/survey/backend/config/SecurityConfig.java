@@ -1,6 +1,7 @@
 package com.survey.backend.config;
 
 import com.survey.backend.security.FirebaseAuthFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -29,20 +30,20 @@ public class SecurityConfig {
                         "/auth/login",
                         "/users/**",
                         "/payments/webhook",
-                        "/payments/verify",
                         "/payments/webhook/**",
-                        "/payments/verify/**",
                         "/surveys",
                         "/surveys/create",
                         "/surveys/*",
-                        "/surveys/*/results",
-                        "/surveys/*/responses")
+                        "/surveys/*/responses",
+                        "/surveys/*/results")
                     .permitAll()
 
                     // Authenticated-only routes
                     .requestMatchers(
                         "/surveys/create",
                         "/surveys/delete/**",
+                        "/payments/verify",
+                        "/payments/verify/**",
                         "/payments/session",
                         "/payments/verify",
                         "/users/credits")
@@ -51,11 +52,16 @@ public class SecurityConfig {
                     // Everything else is denied
                     .anyRequest()
                     .denyAll())
-
-        // Add Firebase filter before username-password filter
+        .anonymous(AbstractHttpConfigurer::disable)
         .addFilterBefore(firebaseAuthFilter, UsernamePasswordAuthenticationFilter.class)
-
-        // Disable CSRF for API use (enable for forms)
+        .exceptionHandling(
+            ex ->
+                ex.authenticationEntryPoint(
+                        (req, res, ex2) ->
+                            res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "UNAUTHORIZED"))
+                    .accessDeniedHandler(
+                        (req, res, ex2) ->
+                            res.sendError(HttpServletResponse.SC_FORBIDDEN, "FORBIDDEN")))
         .csrf(AbstractHttpConfigurer::disable);
 
     return http.build();
