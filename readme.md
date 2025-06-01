@@ -14,7 +14,8 @@ This repository contains a full-stack **Survey App** built with:
 -  **Vue 3 + TypeScript** for the frontend UI  
 -  **Security** | Firebase Auth ⤳ JWT gateway, backend routes secured
 -  **Seamless CI / CD** | Independent pipelines for UI & API, auto‑promote from staging to prod 
--  **PostgreSQL as the database** with flyway to version the database 
+-  **PostgreSQL as the database** with flyway to version the database
+-  **Database restore** one liner `make restore FILE=backups/{file}`
 -  **Docker for local development** 
 -  **Periodic rotating backups** Till 30 days
 -  **Instrumentation**| Sentry frontend & backend (error tracking)
