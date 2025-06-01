@@ -47,7 +47,9 @@ if [ ! -s "$TMP_SQL" ]; then
 fi
 
 echo "Down the services to avoid new updates"
-docker compose down backend
+docker compose down
+echo "Create container to apply restore"
+docker compose up db -d
 
 echo "Restoring to PostgreSQL..."
 # Copy SQL file into the running db container
@@ -61,8 +63,7 @@ docker compose exec db bash -c "PGPASSWORD='${POSTGRES_PASSWORD}' psql -U ${POST
 echo "Cleaning up..."
 rm -f "$TMP_SQL"
 
-echo "Restoring backend services"
-
-docker compose up backend -d
+echo "Restoring other services"
+docker compose up -d
 
 echo "✅ Restore complete."
