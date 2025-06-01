@@ -35,7 +35,10 @@ public class SecurityConfig {
                         "/surveys/create",
                         "/surveys/*",
                         "/surveys/*/responses",
-                        "/surveys/*/results")
+                        "/surveys/*/results",
+                        "/actuator/prometheus",
+                        "/actuator/health",
+                        "/actuator/info")
                     .permitAll()
 
                     // Authenticated-only routes

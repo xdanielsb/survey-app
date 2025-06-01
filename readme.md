@@ -23,7 +23,8 @@ This repository contains a full-stack **Survey App** built with:
 -  **Pagination**
 -  **Testing** | Vitest + JaCoCo • Codecov for coverage 
 -  **Google Sign-up** | Firebase Authentication (Google provider) 
--  **Monitoring** | ELK 
+-  **Centralized Logging** | ELK 
+-  **Monitoring** | Prometheus + Graphana 
 ###  Dev development
 
 ```bash
