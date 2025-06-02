@@ -110,13 +110,11 @@ async function googleLogin() {
         <div
           class="relative flex w-full max-w-3xl overflow-hidden rounded-[var(--radius-lg)] bg-white shadow-[var(--shadow-soft)]"
         >
-          <!-- Form side -->
           <div class="w-full lg:w-1/2 p-10 space-y-6">
             <h1 class="text-2xl font-display font-semibold text-center">
               {{ isSignUp ? 'Create Account' : 'Welcome back' }}
             </h1>
 
-            <!-- Google -->
             <button
               @click="googleLogin"
               class="w-full inline-flex items-center justify-center gap-3 rounded-[var(--radius-sm)] border border-[color:var(--color-neutral-300)] py-2.5 text-sm font-medium hover:bg-[color:var(--color-neutral-100)] transition"
@@ -128,14 +126,12 @@ async function googleLogin() {
               Continue with Google
             </button>
 
-            <!-- Divider -->
             <div class="flex items-center gap-4">
               <span class="flex-1 h-px bg-[color:var(--color-neutral-200)]" />
               <span class="text-xs text-[color:var(--color-neutral-500)] uppercase">or</span>
               <span class="flex-1 h-px bg-[color:var(--color-neutral-200)]" />
             </div>
 
-            <!-- Email / Password -->
             <form @submit.prevent="handleSubmit" class="space-y-4">
               <input
                 v-model="email"
@@ -162,7 +158,6 @@ async function googleLogin() {
               <p v-if="errorMsg" class="text-xs text-red-600 text-center">{{ errorMsg }}</p>
             </form>
 
-            <!-- Toggle -->
             <p class="text-center text-sm">
               <span v-if="isSignUp">Already have an account?</span>
               <span v-else>Don't have an account?</span>
@@ -176,7 +171,6 @@ async function googleLogin() {
             </p>
           </div>
 
-          <!-- Hero image -->
           <div
             class="hidden lg:block lg:w-1/2 bg-cover bg-center"
             style="

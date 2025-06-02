@@ -39,7 +39,6 @@ onMounted(async () => {
   try {
     surveyCredits.value = (await getUserCredits()).credits
   } catch (err) {
-    toastService.error('Could not fetch your credits')
     logger.error(JSON.stringify(err))
   }
 })
