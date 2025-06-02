@@ -121,6 +121,7 @@ services:
     container_name: prometheus
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     depends_on:
@@ -153,4 +154,5 @@ volumes:
   db-data:
   caddy-data:
   es-data:
+  prometheus_data:
 
