@@ -19,85 +19,59 @@
   "links": [],
   "panels": [
     {
-      "datasource": "Prometheus",
-      "type": "timeseries",
-      "fieldConfig": {
-        "defaults": {
-          "unit": "ms"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 0
-      },
       "id": 1,
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "type": "timeseries",
+      "title": "HTTP Request Latency (avg in ms)",
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": { "unit": "ms" },
+        "overrides": []
+      },
       "options": {
-        "legend": {
-          "displayMode": "table"
-        }
+        "legend": { "displayMode": "table" }
       },
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket[5m])) by (le))",
-          "legendFormat": "95th pct",
+          "expr": " (sum by(instance)( rate(http_server_requests_seconds_sum[5m]) ) / sum by(instance)( rate(http_server_requests_seconds_count[5m]) )) * 1000 ",
+          "legendFormat": "avg latency (ms) ({{instance}})",
           "refId": "A"
         }
-      ],
-      "title": "HTTP Request Latency (95th pct in ms)"
+      ]
     },
     {
-      "datasource": "Prometheus",
-      "type": "timeseries",
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 0
-      },
       "id": 2,
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "type": "timeseries",
+      "title": "Error Rate (5xx or 4xx errors/sec)",
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": { "unit": "short" },
+        "overrides": []
+      },
       "options": {
-        "legend": {
-          "displayMode": "table"
-        }
+        "legend": { "displayMode": "table" }
       },
       "targets": [
         {
-          "expr": "sum(rate(http_server_requests_seconds_count{status=~\"5..\"}[5m]))",
-          "legendFormat": "5xx errors/sec",
+          "expr": "sum by (instance)( rate(http_server_requests_seconds_count{status!~\"2..|3..\"}[5m]) )",
+          "legendFormat": "5xx/sec ({{instance}})",
           "refId": "A"
         }
-      ],
-      "title": "Error Rate (5xx Errors/sec)"
+      ]
     },
     {
-      "datasource": "Prometheus",
+      "id": 3,
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
       "type": "timeseries",
+      "title": "Traffic (Requests/sec)",
+      "datasource": "Prometheus",
       "fieldConfig": {
-        "defaults": {
-          "unit": "reqps"
-        },
+        "defaults": { "unit": "reqps" },
         "overrides": []
       },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 8
-      },
-      "id": 3,
       "options": {
-        "legend": {
-          "displayMode": "table"
-        }
+        "legend": { "displayMode": "table" }
       },
       "targets": [
         {
@@ -105,34 +79,25 @@
           "legendFormat": "Requests/sec",
           "refId": "A"
         }
-      ],
-      "title": "Traffic (Requests/sec)"
+      ]
     },
     {
-      "datasource": "Prometheus",
+      "id": 4,
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
       "type": "timeseries",
+      "title": "Saturation (CPU & Memory)",
+      "datasource": "Prometheus",
       "fieldConfig": {
-        "defaults": {
-          "unit": "percent"
-        },
+        "defaults": { "unit": "percent" },
         "overrides": []
       },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 8
-      },
-      "id": 4,
       "options": {
-        "legend": {
-          "displayMode": "table"
-        }
+        "legend": { "displayMode": "table" }
       },
       "targets": [
         {
-          "expr": "100 - (avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
-          "legendFormat": "CPU Usage (%)",
+          "expr": "100 - (avg by (instance)( irate(node_cpu_seconds_total{mode=\"idle\"}[5m]) ) * 100)",
+          "legendFormat": "CPU Usage (%) ({{instance}})",
           "refId": "A"
         },
         {
@@ -140,16 +105,13 @@
           "legendFormat": "Memory Available (%)",
           "refId": "B"
         }
-      ],
-      "title": "Saturation (CPU & Memory)"
+      ]
     }
   ],
   "refresh": "10s",
   "schemaVersion": 36,
   "style": "dark",
-  "tags": [
-    "survey-app"
-  ],
+  "tags": ["survey-app"],
   "templating": {
     "list": []
   },
@@ -160,5 +122,5 @@
   "timepicker": {},
   "timezone": "",
   "title": "Survey-App Overview",
-  "version": 1
+  "version": 4
 }
