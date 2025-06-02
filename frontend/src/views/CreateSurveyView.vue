@@ -10,7 +10,6 @@ import type { SurveyForm } from '@/validation/surveySchema'
 import { ValidationError } from 'yup'
 import { logger } from '@/plugins/logger'
 
-/* ─────────────────── state ───────────────────── */
 const surveyTitle = ref('')
 const questions = ref([{ text: '' }])
 const surveyCredits = ref<number | null>(null)
@@ -25,7 +24,6 @@ const questionErrorList = computed(() =>
   errors.questions.map((msg, idx) => ({ msg, idx })).filter(({ msg }) => Boolean(msg)),
 )
 
-/* ──────────── helpers ───────────── */
 const addQuestion = () => {
   questions.value.push({ text: '' })
   errors.questions.push(undefined)
@@ -94,17 +92,14 @@ const buyCredit = () => buySurveyCredit()
 </script>
 
 <template>
-  <!-- Loading credits -->
   <div v-if="surveyCredits === null" class="text-center text-[color:var(--color-neutral-600)]">
     Fetching your survey credits…
   </div>
 
-  <!-- Form -->
   <div
     v-else-if="surveyCredits > 0"
     class="mx-auto max-w-3xl p-8 space-y-8 bg-white rounded-[var(--radius-lg)] shadow-[var(--shadow-soft)] ring-1 ring-[color:var(--color-neutral-200)]"
   >
-    <!-- Header -->
     <div class="flex justify-between items-center">
       <h1 class="text-2xl font-display font-semibold">Create Survey</h1>
       <span
@@ -114,7 +109,6 @@ const buyCredit = () => buySurveyCredit()
       </span>
     </div>
 
-    <!-- Title -->
     <div>
       <label for="survey-title" class="block mb-1 text-sm font-medium">Survey Title</label>
       <input
@@ -127,7 +121,6 @@ const buyCredit = () => buySurveyCredit()
       <p v-if="errors.title" class="mt-1 text-xs text-red-600">{{ errors.title }}</p>
     </div>
 
-    <!-- Questions -->
     <div>
       <label class="block mb-2 text-sm font-medium">Questions</label>
 

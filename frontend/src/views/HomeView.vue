@@ -98,12 +98,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watchEffect, computed, onMounted } from 'vue'
+import { ref, watch, watchEffect, computed, onMounted } from 'vue'
 import { fetchSurveys } from '@/services/surveyService'
 import { getUserCredits } from '@/services/creditService'
+import { onBeforeRouteUpdate } from 'vue-router'
 import type { Survey } from '@/types/survey'
 import SurveyListItem from '@/components/SurveyListItem.vue'
-import { toastService } from '@/services/toastService'
+import { logger } from '@/plugins/logger'
+import { useAuthStore } from '@/stores/authStore'
 
 /* ---------- reactive state ---------- */
 const surveys = ref<Survey[] | null>(null)
@@ -112,6 +114,17 @@ const totalPages = ref(0)
 const search = ref('')
 const credits = ref<number | null>(null)
 
+const authStore = useAuthStore()
+
+async function loadCredits() {
+  try {
+    const { credits: c } = await getUserCredits()
+    credits.value = c
+  } catch {
+    logger.error('Failed to load user credits')
+  }
+}
+
 watchEffect(async () => {
   const { content, totalPages: tp } = await fetchSurveys(page.value, 9)
   surveys.value = content
@@ -119,13 +132,24 @@ watchEffect(async () => {
 })
 
 onMounted(async () => {
-  try {
-    const { credits: c } = await getUserCredits()
-    credits.value = c
-  } catch {
-    toastService.error('Could not fetch credits')
-  }
+  loadCredits()
 })
+
+onBeforeRouteUpdate((to, from, next) => {
+  loadCredits()
+  next()
+})
+
+watch(
+  () => authStore.isAuthenticated,
+  (isAuthNow) => {
+    if (isAuthNow) {
+      loadCredits()
+    } else {
+      credits.value = null
+    }
+  },
+)
 
 const filteredSurveys = computed(() =>
   surveys.value

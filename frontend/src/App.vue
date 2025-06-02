@@ -4,10 +4,8 @@ import { RouterView, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import { logger } from '@/plugins/logger'
 
-/* ── modal loaded on demand ─────────────── */
 const LoginView = defineAsyncComponent(() => import('@/views/LoginView.vue'))
 
-/* ── env / auth ─────────────────────────── */
 const mode = import.meta.env.MODE as 'development' | 'test' | 'production'
 const router = useRouter()
 const authStore = useAuthStore()
@@ -65,7 +63,6 @@ onMounted(() => {
       style="clip-path: polygon(28% 0, 100% 0, 100% 100%, 72% 100%, 58% 74%, 46% 52%, 34% 29%)"
     ></div>
 
-    <!-- ███ frosted navbar -->
     <header
       class="sticky top-0 z-40 flex items-center justify-between gap-4 backdrop-blur-sm bg-white/75 border-b border-[color:var(--color-neutral-200)] px-6 py-2 shadow-sm"
     >
@@ -99,14 +96,12 @@ onMounted(() => {
       </div>
     </header>
 
-    <!-- ███ routed pages -->
     <main class="flex-1 max-w-6xl mx-auto px-6 py-10">
       <Transition name="page" mode="out-in" appear>
         <RouterView />
       </Transition>
     </main>
 
-    <!-- ███ login modal -->
     <LoginView v-model="showLogin" />
   </div>
 </template>
