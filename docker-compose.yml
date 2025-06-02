@@ -122,6 +122,7 @@ services:
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
+      - ./monitoring/grafana/provisioning/dashboards:/var/lib/grafana/dashboards
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     depends_on:
