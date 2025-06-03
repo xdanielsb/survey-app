@@ -1,0 +1,30 @@
+name: Simple Release Changelog
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Find previous tag
+        id: prevtag
+        run: |
+          PREV=$(git tag --sort=-creatordate | grep -B1 "^${GITHUB_REF_NAME}$" | head -n1)
+          echo "previous_tag=$PREV" >> $GITHUB_OUTPUT
+
+      - name: List new commits
+        run: |
+          echo "## Commits in this release:" > body.txt
+          git log ${{ steps.prevtag.outputs.previous_tag }}..${{ github.event.release.tag_name }} --oneline >> body.txt
+
+      - name: Add to release notes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release edit ${{ github.event.release.tag_name }} --notes-file body.txt
