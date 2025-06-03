@@ -1,4 +1,4 @@
-package com.survey.backend.commands;
+package com.survey.backend.command;
 
 import com.survey.backend.entity.Question;
 import com.survey.backend.entity.Survey;

@@ -1,4 +1,4 @@
-package com.survey.backend.exceptions;
+package com.survey.backend.exception;
 
 import com.stripe.exception.AuthenticationException;
 import org.springframework.http.HttpStatus;

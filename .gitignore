@@ -4,3 +4,5 @@ Caddyfile
 .env
 backups/
 secrets/
+*.swo
+*.swp

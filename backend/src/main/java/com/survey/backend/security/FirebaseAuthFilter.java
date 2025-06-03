@@ -6,7 +6,7 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.survey.backend.entity.Role;
 import com.survey.backend.entity.User;
-import com.survey.backend.exceptions.ExpiredTokenException;
+import com.survey.backend.exception.ExpiredTokenException;
 import com.survey.backend.logging.HttpLoggingFilter;
 import com.survey.backend.repository.UserRepository;
 import jakarta.servlet.FilterChain;
