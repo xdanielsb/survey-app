@@ -28,4 +28,9 @@ export const routes = [
     path: '/login',
     component: () => import('@/views/LoginView.vue'),
   },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import('@/views/NotFound.vue'),
+  },
 ]
