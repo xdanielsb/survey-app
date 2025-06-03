@@ -1,7 +1,7 @@
 package com.survey.backend.controller;
 
-import com.survey.backend.dto.LoginRequest;
-import com.survey.backend.dto.LoginResponse;
+import com.survey.backend.dto.LoginRequestDTO;
+import com.survey.backend.dto.LoginResponseDTO;
 import com.survey.backend.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
@@ -15,7 +15,7 @@ public class AuthController {
   private final LoginService loginService;
 
   @PostMapping("/login")
-  public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+  public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO request) {
     return ResponseEntity.ok(loginService.login(request));
   }
 }

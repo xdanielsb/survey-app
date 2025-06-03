@@ -5,7 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.survey.backend.dto.LoginRequest;
+import com.survey.backend.dto.LoginRequestDTO;
 import com.survey.backend.entity.Role;
 import com.survey.backend.entity.User;
 import com.survey.backend.service.UserService;
@@ -51,7 +51,7 @@ public class AuthControllerTest {
 
   @Test
   public void testLoginSuccess() throws Exception {
-    LoginRequest loginRequest = new LoginRequest();
+    LoginRequestDTO loginRequest = new LoginRequestDTO();
     loginRequest.setEmail("test@example.com");
     loginRequest.setPassword("password");
     String email = "test@example.com";
@@ -74,7 +74,7 @@ public class AuthControllerTest {
 
   @Test
   public void testLoginFailsWhenFirebaseResponseIsInvalid() throws Exception {
-    LoginRequest loginRequest = new LoginRequest();
+    LoginRequestDTO loginRequest = new LoginRequestDTO();
     loginRequest.setEmail("user@example.com");
     loginRequest.setPassword("password");
 

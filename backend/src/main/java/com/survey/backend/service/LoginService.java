@@ -1,7 +1,7 @@
 package com.survey.backend.service;
 
-import com.survey.backend.dto.LoginRequest;
-import com.survey.backend.dto.LoginResponse;
+import com.survey.backend.dto.LoginRequestDTO;
+import com.survey.backend.dto.LoginResponseDTO;
 import com.survey.backend.entity.Role;
 import com.survey.backend.entity.User;
 import java.util.List;
@@ -23,7 +23,7 @@ public class LoginService {
   @Value("${firebase.api.key}")
   private String firebaseApiKey;
 
-  public LoginResponse login(LoginRequest request) {
+  public LoginResponseDTO login(LoginRequestDTO request) {
     String firebaseUrl =
         "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key="
             + firebaseApiKey;
@@ -49,6 +49,6 @@ public class LoginService {
     User user = userService.saveUser(firebaseUid, request.getEmail());
     List<String> roles = user.getRoles().stream().map(Role::getName).toList();
 
-    return new LoginResponse(idToken, roles);
+    return new LoginResponseDTO(idToken, roles);
   }
 }
