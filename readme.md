@@ -12,7 +12,7 @@ This repository contains a full-stack **Survey App** built with:
 
 -  **Spring Boot** (Java 17) for the backend API  
 -  **Vue 3 + TypeScript** for the frontend UI  
--  **Security** | Firebase Auth ⤳ JWT gateway, backend routes secured
+-  **Security** | Google Sign-in, Firebase Auth ⤳ JWT gateway, backend routes secured
 -  **Seamless CI / CD** | Independent pipelines for UI & API, auto‑promote from staging to prod 
 -  **PostgreSQL as the database** with flyway to version the database
 -  **Database restore** one liner `make restore FILE=backups/{file}`
@@ -21,10 +21,12 @@ This repository contains a full-stack **Survey App** built with:
 -  **Instrumentation**| Sentry frontend & backend (error tracking)
 -  **Payment**| Stripe
 -  **Pagination**
--  **Testing** | Vitest + JaCoCo • Codecov for coverage 
--  **Google Sign-up** | Firebase Authentication (Google provider) 
--  **Centralized Logging** | ELK 
+-  **Testing** | Vitest + JaCoCo + Codecov + TestContainers
+-  **Observability:** Logstash + Elasticsearch + Kibana + Grafana  
 -  **Monitoring** | Prometheus + Grafana (Latency, Error Rate, Traffic, Saturation) 
+-  **Strees tests** with k6
+*  **Delivery:** GitHub Actions · Docker · Caddy reverse‑proxy  
+
 ###  Dev development
 
 ```bash
@@ -41,14 +43,6 @@ This repository contains a full-stack **Survey App** built with:
 More details: [`backend/README.md`](./backend/README.md)
 More details: [`frontend/README.md`](./frontend/README.md)
 
-
----
-##  Stack
-* **Backend:** Spring Boot 17 · Postgres · Flyway · Testcontainers  
-* **Frontend:** Vue 3 · Vite · TypeScript · Pinia  
-* **Observability:** Logstash → Elasticsearch → Kibana · Grafana  
-* **Delivery:** GitHub Actions · Docker · Caddy reverse‑proxy  
----
 
 ## License
 BSD 3-Clause
