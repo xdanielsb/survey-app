@@ -6,6 +6,8 @@ import com.survey.backend.dto.SurveyResponseDTO;
 import com.survey.backend.dto.SurveyResultDTO;
 import com.survey.backend.entity.*;
 import com.survey.backend.helper.AnswerMapper;
+import com.survey.backend.helper.LikertScore;
+import com.survey.backend.helper.QuestionResult;
 import com.survey.backend.helper.SurveyMapper;
 import com.survey.backend.repository.*;
 import jakarta.persistence.EntityNotFoundException;
@@ -60,9 +62,8 @@ public class SurveyService {
 
     try {
       Survey survey = surveyOpt.get();
-      Response response = createSurveyResponseRecord(survey);
+      Response response = responseRepo.save(Response.builder().survey(survey).build());
       List<Answer> answers = convertDtoToAnswers(dto, response);
-
       answerRepo.saveAll(answers);
       return true;
     } catch (IllegalArgumentException ex) {
@@ -76,10 +77,6 @@ public class SurveyService {
           ex);
       return false;
     }
-  }
-
-  private Response createSurveyResponseRecord(Survey survey) {
-    return responseRepo.save(Response.builder().survey(survey).build());
   }
 
   private List<Answer> convertDtoToAnswers(SurveyResponseDTO dto, Response response) {
@@ -110,21 +107,18 @@ public class SurveyService {
 
     try {
       Survey survey = surveyOpt.get();
-      List<SurveyResultDTO.QuestionResultDTO> questionResults = generateResultsForSurvey(survey);
-      SurveyResultDTO result = buildSurveyResultDTO(survey, questionResults);
+      List<SurveyResultDTO.QuestionResultDTO> questionResults =
+          survey.getQuestions().stream()
+              .map(this::computeQuestionResult)
+              .filter(Objects::nonNull)
+              .collect(Collectors.toList());
+      SurveyResultDTO result = SurveyMapper.buildSurveyResultDTO(survey, questionResults);
       return Optional.of(result);
     } catch (Exception ex) {
       log.error(
           "Failed to compute survey results for surveyId {}: {}", surveyId, ex.getMessage(), ex);
       return Optional.empty();
     }
-  }
-
-  private List<SurveyResultDTO.QuestionResultDTO> generateResultsForSurvey(Survey survey) {
-    return survey.getQuestions().stream()
-        .map(this::computeQuestionResult)
-        .filter(Objects::nonNull)
-        .collect(Collectors.toList());
   }
 
   private SurveyResultDTO.QuestionResultDTO computeQuestionResult(Question question) {
@@ -139,22 +133,12 @@ public class SurveyService {
                       scale -> answers.stream().filter(a -> a.getAnswer() == scale).count()));
 
       double averageScore =
-          answers.stream().mapToInt(a -> mapLikertToScore(a.getAnswer())).average().orElse(0.0);
+          answers.stream()
+              .mapToInt(a -> LikertScore.mapLikertToScore(a.getAnswer()))
+              .average()
+              .orElse(0.0);
 
-      return SurveyResultDTO.QuestionResultDTO.builder()
-          .questionId(question.getId())
-          .questionText(question.getQuestionText())
-          .totalResponses(answers.size())
-          .averageScore(averageScore)
-          .distribution(
-              SurveyResultDTO.QuestionResultDTO.LikertDistribution.builder()
-                  .totallyDisagree(distribution.getOrDefault(LikertScale.TOTALLY_DISAGREE, 0L))
-                  .disagree(distribution.getOrDefault(LikertScale.DISAGREE, 0L))
-                  .neutral(distribution.getOrDefault(LikertScale.NEUTRAL, 0L))
-                  .agree(distribution.getOrDefault(LikertScale.AGREE, 0L))
-                  .fullyAgree(distribution.getOrDefault(LikertScale.FULLY_AGREE, 0L))
-                  .build())
-          .build();
+      return QuestionResult.getQuestionResultDTO(question, answers, averageScore, distribution);
 
     } catch (Exception ex) {
       log.error(
@@ -163,25 +147,14 @@ public class SurveyService {
     }
   }
 
-  private SurveyResultDTO buildSurveyResultDTO(
-      Survey survey, List<SurveyResultDTO.QuestionResultDTO> questionResults) {
-    return SurveyResultDTO.builder()
-        .surveyId(survey.getId())
-        .surveyTitle(survey.getTitle())
-        .questionResults(questionResults)
-        .build();
-  }
-
   @Transactional
   public Survey createSurvey(CreateSurveyDTO dto) {
-    // Get current user from the security context
     User user = userService.getCurrentUser();
     int updated = userRepo.decrementCreditIfAvailable(user.getId());
     if (updated == 0) {
       throw new IllegalStateException("Not enough survey credits to create a survey.");
     }
 
-    // Build survey and questions
     Survey survey = Survey.builder().title(dto.getTitle()).build();
 
     List<Question> questions =
@@ -198,15 +171,5 @@ public class SurveyService {
     survey.setQuestions(questions);
     userRepo.save(user); // Save user to update credits
     return surveyRepo.save(survey);
-  }
-
-  private int mapLikertToScore(LikertScale scale) {
-    return switch (scale) {
-      case TOTALLY_DISAGREE -> 1;
-      case DISAGREE -> 2;
-      case NEUTRAL -> 3;
-      case AGREE -> 4;
-      case FULLY_AGREE -> 5;
-    };
   }
 }
