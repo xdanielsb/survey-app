@@ -1,4 +1,4 @@
-FROM node:18-alpine AS builder
+FROM node:24-alpine AS builder
 WORKDIR /app
 COPY . .
 
@@ -33,7 +33,7 @@ ENV VITE_GOOGLE_WEB_CLIENT_ID=$VITE_GOOGLE_WEB_CLIENT_ID
 RUN npm install
 RUN npm run build
 
-FROM node:18-alpine AS runner
+FROM node:24-alpine AS runner
 WORKDIR /app
 COPY --from=builder /app /app
 RUN npm install -g serve
