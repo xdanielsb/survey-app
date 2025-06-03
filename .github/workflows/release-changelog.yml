@@ -1,8 +1,11 @@
-name: Simple Release Changelog
+name: Release Changelog
 
 on:
   release:
     types: [created]
+
+permissions:
+  contents: write
 
 jobs:
   changelog:
@@ -15,13 +18,23 @@ jobs:
       - name: Find previous tag
         id: prevtag
         run: |
-          PREV=$(git tag --sort=-creatordate | grep -B1 "^${GITHUB_REF_NAME}$" | head -n1)
+          echo "All tags (sorted):"
+          git tag --sort=-creatordate
+          echo "Current tag: $GITHUB_REF_NAME"
+          PREV=$(git tag --sort=-creatordate | grep -v "^${GITHUB_REF_NAME}$" | head -n1)
+          echo "Detected previous tag: $PREV"
           echo "previous_tag=$PREV" >> $GITHUB_OUTPUT
 
-      - name: List new commits
+      - name: List new commits and add compare link
         run: |
-          echo "## Commits in this release:" > body.txt
-          git log ${{ steps.prevtag.outputs.previous_tag }}..${{ github.event.release.tag_name }} --oneline >> body.txt
+          PREV_TAG=${{ steps.prevtag.outputs.previous_tag }}
+          CURR_TAG=${{ github.event.release.tag_name }}
+          REPO="${{ github.repository }}"
+          echo "🔗 [Compare changes](https://github.com/$REPO/compare/$PREV_TAG...$CURR_TAG)" > body.txt
+          echo "" >> body.txt
+          echo "## Commits in this release:" >> body.txt
+          git log $PREV_TAG..$CURR_TAG --oneline >> body.txt
+          cat body.txt
 
       - name: Add to release notes
         env:
