@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
@@ -38,6 +39,7 @@ class FirebaseAuthFilterTest {
   }
 
   @Test
+  @WithMockUser(username = "user123")
   void shouldSetAuthentication_whenValidToken() throws Exception {
     String uid = "user123";
     FirebaseToken mockToken = mock(FirebaseToken.class);

@@ -42,36 +42,31 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
       HttpServletRequest request, HttpServletResponse response, FilterChain chain)
       throws ServletException, IOException {
 
-    try {
-      Optional<String> tokenOpt = extractBearerToken(request);
-      Optional<FirebaseToken> decoded = tokenOpt.flatMap(this::verifyToken);
+    Optional<String> tokenOpt = extractBearerToken(request);
+    Optional<FirebaseToken> decoded = tokenOpt.flatMap(this::verifyToken);
 
-      if (decoded.isPresent()) {
-        FirebaseToken token = decoded.get();
+    if (decoded.isPresent()) {
+      FirebaseToken token = decoded.get();
 
-        // Load user + roles
-        List<GrantedAuthority> authorities =
-            userRepository
-                .findByUid(token.getUid())
-                .map(User::getRoles)
-                .orElse(Set.of()) // fallback to empty set if user not found
-                .stream()
-                .map(Role::getName)
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+      // Load user + roles
+      List<GrantedAuthority> authorities =
+          userRepository
+              .findByUid(token.getUid())
+              .map(User::getRoles)
+              .orElse(Set.of()) // fallback to empty set if user not found
+              .stream()
+              .map(Role::getName)
+              .map(SimpleGrantedAuthority::new)
+              .collect(Collectors.toList());
 
-        // Set auth context
-        var auth = new UsernamePasswordAuthenticationToken(token.getUid(), null, authorities);
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        log.info(
-            "Authenticated user email={} uid={} roles={}",
-            token.getEmail(),
-            token.getUid(),
-            authorities.stream().map(GrantedAuthority::getAuthority).toList());
-      }
-    } catch (ExpiredTokenException ex) {
-      response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "TOKEN_EXPIRED");
-      return;
+      // Set auth context
+      var auth = new UsernamePasswordAuthenticationToken(token.getUid(), null, authorities);
+      SecurityContextHolder.getContext().setAuthentication(auth);
+      log.info(
+          "Authenticated user email={} uid={} roles={}",
+          token.getEmail(),
+          token.getUid(),
+          authorities.stream().map(GrantedAuthority::getAuthority).toList());
     }
 
     chain.doFilter(request, response);
