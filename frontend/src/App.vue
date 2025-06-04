@@ -11,6 +11,7 @@ const router = useRouter()
 const authStore = useAuthStore()
 const userEmail = computed(() => (authStore.isAuthenticated ? authStore.email : null))
 const showLogin = ref(false)
+const premium = computed(() => authStore.isPremium)
 
 /* env pill classes */
 const envClass = computed(() =>
@@ -74,8 +75,22 @@ onMounted(() => {
       </span>
 
       <div class="flex items-center gap-4 text-sm">
-        <span v-if="userEmail" class="text-[color:var(--color-neutral-700)] truncate max-w-[14rem]">
+        <span
+          v-if="userEmail"
+          class="inline-flex items-center gap-1 text-[color:var(--color-neutral-700)] truncate max-w-[14rem]"
+        >
           {{ userEmail }}
+          <svg
+            v-if="premium"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4 text-yellow-500"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              d="M10 2l2.39 4.84 5.35.78-3.87 3.77.91 5.32L10 14.77l-4.78 2.52.91-5.32L2.26 7.62l5.35-.78L10 2z"
+            />
+          </svg>
         </span>
 
         <button

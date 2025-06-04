@@ -49,6 +49,6 @@ public class LoginService {
     User user = userService.saveUser(firebaseUid, request.getEmail());
     List<String> roles = user.getRoles().stream().map(Role::getName).toList();
 
-    return new LoginResponseDTO(idToken, roles);
+    return new LoginResponseDTO(idToken, roles, user.isPremium());
   }
 }

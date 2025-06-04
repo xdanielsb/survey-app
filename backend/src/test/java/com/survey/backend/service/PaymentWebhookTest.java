@@ -43,7 +43,7 @@ class PaymentWebhookTest {
   }
 
   @Test
-  void marks_payment_paid_and_grants_credit() throws Exception {
+  void marks_payment_paid_and_grants_credit_and_premium() throws Exception {
 
     User user = User.builder().id(1L).email("daniel@email.com").surveyCredits(0).build();
 
@@ -84,8 +84,8 @@ class PaymentWebhookTest {
       // should be paid
       verify(paymentRepo)
           .save(argThat(p -> "PAID".equals(p.getStatus()) && "evt_1".equals(p.getStripeEventId())));
-      // should have granted 1 credit
-      verify(userRepo).save(argThat(u -> u.getSurveyCredits() == 1));
+      // should have granted 1 credit and marked premium
+      verify(userRepo).save(argThat(u -> u.getSurveyCredits() == 1 && u.isPremium()));
     }
   }
 }

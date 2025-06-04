@@ -32,7 +32,13 @@ public class UserService {
                   roleRepository
                       .findByName("CUSTOMER")
                       .orElseThrow(() -> new IllegalStateException("CUSTOMER role not found"));
-              User user = User.builder().uid(uid).email(email).roles(Set.of(customerRole)).build();
+              User user =
+                  User.builder()
+                      .uid(uid)
+                      .email(email)
+                      .isPremium(false)
+                      .roles(Set.of(customerRole))
+                      .build();
               return userRepository.save(user);
             });
   }

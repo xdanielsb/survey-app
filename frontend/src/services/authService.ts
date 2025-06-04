@@ -7,9 +7,9 @@ import { useAuthStore } from '@/stores/authStore'
 export async function loginUser(email: string, password: string) {
   try {
     const response = await api.post('/auth/login', { email, password })
-    const { token, roles } = response.data
+    const { token, roles, isPremium } = response.data
     const authStore = useAuthStore()
-    authStore.login(email, token, roles)
+    authStore.login(email, token, roles, isPremium)
     return { success: true }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
@@ -38,7 +38,7 @@ export async function signUpUser(email: string, password: string): Promise<strin
 
     await api.post('/users/create', userPayload)
     const authStore = useAuthStore()
-    authStore.login(email, token, [])
+    authStore.login(email, token, [], false)
     return token
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {

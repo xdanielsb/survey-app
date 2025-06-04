@@ -58,7 +58,12 @@ public class AuthControllerTest {
 
     Role customerRole = new Role(1L, "CUSTOMER");
     User mockUser =
-        User.builder().uid(firebaseUid).roles(Set.of(customerRole)).email("x@test.com").build();
+        User.builder()
+            .uid(firebaseUid)
+            .roles(Set.of(customerRole))
+            .email("x@test.com")
+            .isPremium(true)
+            .build();
 
     Mockito.when(userService.saveUser(firebaseUid, email)).thenReturn(mockUser);
 
@@ -69,7 +74,8 @@ public class AuthControllerTest {
                 .content(objectMapper.writeValueAsString(loginRequest)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.token").value(firebaseToken))
-        .andExpect(jsonPath("$.roles[0]").value("CUSTOMER"));
+        .andExpect(jsonPath("$.roles[0]").value("CUSTOMER"))
+        .andExpect(jsonPath("$.premium").value(true));
   }
 
   @Test

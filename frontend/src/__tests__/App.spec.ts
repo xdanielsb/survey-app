@@ -3,7 +3,7 @@ import { mount, flushPromises } from '@vue/test-utils'
 import App from '@/App.vue'
 
 // Mocks for router, logger, and store
-let _auth = { isAuthenticated: false, email: '', logout: vi.fn() }
+let _auth = { isAuthenticated: false, email: '', isPremium: false, logout: vi.fn() }
 
 vi.mock('vue-router', () => ({
   useRouter: () => ({ push: vi.fn() }),
@@ -21,7 +21,7 @@ vi.mock('@/stores/authStore', () => ({
 describe('App.vue', () => {
   beforeEach(() => {
     // Reset mock store state before each test
-    _auth = { isAuthenticated: false, email: '', logout: vi.fn() }
+    _auth = { isAuthenticated: false, email: '', isPremium: false, logout: vi.fn() }
   })
   afterEach(() => {
     vi.clearAllMocks()
@@ -38,9 +38,11 @@ describe('App.vue', () => {
   it('shows user email and logout when logged in', async () => {
     _auth.isAuthenticated = true
     _auth.email = 'alice@example.com'
+    _auth.isPremium = true
     const wrapper = mount(App)
     await flushPromises()
     expect(wrapper.text()).toContain('alice@example.com')
     expect(wrapper.find('button').text().toLowerCase()).toContain('logout')
+    expect(wrapper.find('svg.text-yellow-500').exists()).toBe(true)
   })
 })

@@ -38,6 +38,9 @@ public class User {
   @Column(nullable = false)
   private int surveyCredits;
 
+  @Column(nullable = false)
+  private boolean isPremium;
+
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
       name = "user_roles",

@@ -133,6 +133,7 @@ public class PaymentService {
 
       User user = payment.getUser();
       user.setSurveyCredits(user.getSurveyCredits() + payment.getCreditsGranted());
+      user.setPremium(true);
 
       paymentRepository.save(payment);
       userRepository.save(user);
@@ -141,6 +142,7 @@ public class PaymentService {
           "Payment confirmed: user={}, credits={}, session={}",
           user.getEmail(),
           user.getSurveyCredits(),
+          user.isPremium(),
           sessionId);
     }
   }

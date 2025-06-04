@@ -9,4 +9,5 @@ import lombok.Data;
 public class LoginResponseDTO {
   private String token;
   private List<String> roles;
+  private boolean isPremium;
 }

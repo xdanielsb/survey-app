@@ -47,13 +47,19 @@ class LoginServiceTest {
 
     Role customerRole = new Role(1L, "CUSTOMER");
     User user =
-        User.builder().uid("uid123").email("test@example.com").roles(Set.of(customerRole)).build();
+        User.builder()
+            .uid("uid123")
+            .email("test@example.com")
+            .roles(Set.of(customerRole))
+            .isPremium(true)
+            .build();
     when(userService.saveUser("uid123", "test@example.com")).thenReturn(user);
 
     LoginResponseDTO result = loginService.login(req);
 
     assertEquals("token123", result.getToken());
     assertEquals(List.of("CUSTOMER"), result.getRoles());
+    assertTrue(result.isPremium());
   }
 
   @Test

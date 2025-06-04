@@ -87,7 +87,7 @@ async function googleLogin() {
     }
     await api.post('/users/create', userPayload)
 
-    authStore.login(user.email, idToken, [])
+    authStore.login(user.email, idToken, [], false)
     toastService.success(`Welcome, ${user.displayName ?? 'friend'}!`)
     router.push('/')
     show.value = false
