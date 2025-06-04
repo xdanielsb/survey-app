@@ -55,7 +55,7 @@ echo "Restoring to PostgreSQL..."
 # Copy SQL file into the running db container
 docker compose cp "$TMP_SQL" db:/tmp/restore.sql
 
-echo "Dropping and recreating database $POSTGRES_DB"o
+echo "Dropping and recreating database $POSTGRES_DB"
 docker compose exec db psql -U $POSTGRES_USER -d postgres -c "DROP DATABASE IF EXISTS $POSTGRES_DB;"
 docker compose exec db psql -U $POSTGRES_USER -d postgres -c "CREATE DATABASE $POSTGRES_DB;"
 docker compose exec db bash -c "PGPASSWORD='${POSTGRES_PASSWORD}' psql -U ${POSTGRES_USER} -d ${POSTGRES_DB} < /tmp/restore.sql"
