@@ -139,7 +139,7 @@ public class PaymentService {
       userRepository.save(user);
 
       log.info(
-          "Payment confirmed: user={}, credits={}, session={}",
+          "Payment confirmed: user={}, credits={}, premium={}, session={}",
           user.getEmail(),
           user.getSurveyCredits(),
           user.isPremium(),

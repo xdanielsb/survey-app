@@ -124,7 +124,10 @@ class FirebaseAuthFilterTest {
     boolean prometheus = filter.shouldNotFilter(request);
     when(request.getRequestURI()).thenReturn("/actuator/health");
     boolean health = filter.shouldNotFilter(request);
+    when(request.getRequestURI()).thenReturn("/actuator/other");
+    boolean other = filter.shouldNotFilter(request);
     assertThat(prometheus).isTrue();
     assertThat(health).isTrue();
+    assertThat(other).isTrue();
   }
 }

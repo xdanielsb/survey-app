@@ -7,9 +7,10 @@ import { useAuthStore } from '@/stores/authStore'
 export async function loginUser(email: string, password: string) {
   try {
     const response = await api.post('/auth/login', { email, password })
-    const { token, roles, isPremium } = response.data
+    const { token, roles, premium } = response.data
+    console.log(response.data)
     const authStore = useAuthStore()
-    authStore.login(email, token, roles, isPremium)
+    authStore.login(email, token, roles, premium)
     return { success: true }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
