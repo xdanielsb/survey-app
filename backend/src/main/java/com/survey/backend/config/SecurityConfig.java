@@ -32,7 +32,6 @@ public class SecurityConfig {
                         "/payments/webhook",
                         "/payments/webhook/**",
                         "/surveys",
-                        "/surveys/create",
                         "/surveys/*",
                         "/surveys/*/responses",
                         "/surveys/*/results",
