@@ -117,4 +117,14 @@ class FirebaseAuthFilterTest {
       verify(chain).doFilter(request, response);
     }
   }
+
+  @Test
+  void shouldSkipFilteringForActuatorEndpoints() throws Exception {
+    when(request.getRequestURI()).thenReturn("/actuator/prometheus");
+    boolean prometheus = filter.shouldNotFilter(request);
+    when(request.getRequestURI()).thenReturn("/actuator/health");
+    boolean health = filter.shouldNotFilter(request);
+    assertThat(prometheus).isTrue();
+    assertThat(health).isTrue();
+  }
 }

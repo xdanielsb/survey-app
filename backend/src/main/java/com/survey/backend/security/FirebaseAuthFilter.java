@@ -40,6 +40,12 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
   }
 
   @Override
+  protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+    String path = request.getRequestURI();
+    return path != null && path.startsWith("/actuator");
+  }
+
+  @Override
   protected void doFilterInternal(
       HttpServletRequest request, HttpServletResponse response, FilterChain chain)
       throws ServletException, IOException {
@@ -80,14 +86,15 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
       return Optional.of(header.substring(7));
     }
     if (request.getCookies() != null) {
-      String names = Arrays.stream(request.getCookies()).map(Cookie::getName).collect(Collectors.joining(","));
-      log.info("cookies={}",  names);
+      String names =
+          Arrays.stream(request.getCookies()).map(Cookie::getName).collect(Collectors.joining(","));
+      log.info("cookies={}", names);
       for (Cookie cookie : request.getCookies()) {
         if ("token".equals(cookie.getName()) && !cookie.getValue().isBlank()) {
           return Optional.of(cookie.getValue());
         }
       }
-    }else{
+    } else {
       log.info("No cookies found in request");
     }
 
