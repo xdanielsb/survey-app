@@ -53,12 +53,7 @@ class SurveyServiceTest {
     savedSurvey.setTitle("Test Survey");
 
     when(userService.getCurrentUser()).thenReturn(user);
-    when(userRepository.decrementCreditIfAvailable(user.getId()))
-        .thenAnswer(
-            invocation -> {
-              user.setSurveyCredits(user.getSurveyCredits() - 1);
-              return 1;
-            });
+    when(userRepository.decrementCreditIfAvailable(user.getId())).thenReturn(1);
     when(surveyRepository.save(any(Survey.class))).thenReturn(savedSurvey);
     when(userRepository.save(any(User.class))).thenReturn(user);
 

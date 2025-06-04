@@ -154,6 +154,8 @@ public class SurveyService {
     if (updated == 0) {
       throw new IllegalStateException("Not enough survey credits to create a survey.");
     }
+    // Sync the in-memory entity so subsequent save() persists the new credit value
+    user.setSurveyCredits(user.getSurveyCredits() - 1);
 
     Survey survey = Survey.builder().title(dto.getTitle()).build();
 
