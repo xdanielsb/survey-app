@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia'
+import Cookies from 'js-cookie'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    token: localStorage.getItem('token') || null,
-    roles: JSON.parse(localStorage.getItem('roles') || '[]'),
-    email: localStorage.getItem('email') || null,
-    isAuthenticated: !!localStorage.getItem('token') && !!localStorage.getItem('email'),
+    token: Cookies.get('token') || null,
+    roles: JSON.parse(Cookies.get('roles') || '[]'),
+    email: Cookies.get('email') || null,
+    isAuthenticated: !!Cookies.get('token') && !!Cookies.get('email'),
   }),
 
   actions: {
@@ -14,9 +15,12 @@ export const useAuthStore = defineStore('auth', {
       this.roles = roles
       this.email = email
       this.isAuthenticated = true
-      localStorage.setItem('token', token)
-      localStorage.setItem('email', email)
-      localStorage.setItem('roles', JSON.stringify(roles))
+      Cookies.set('token', token, { secure: true, sameSite: 'strict' })
+      Cookies.set('email', email, { secure: true, sameSite: 'strict' })
+      Cookies.set('roles', JSON.stringify(roles), {
+        secure: true,
+        sameSite: 'strict',
+      })
     },
 
     logout() {
@@ -24,9 +28,9 @@ export const useAuthStore = defineStore('auth', {
       this.email = null
       this.roles = []
       this.isAuthenticated = false
-      localStorage.removeItem('token')
-      localStorage.removeItem('roles')
-      localStorage.removeItem('email')
+      Cookies.remove('token')
+      Cookies.remove('roles')
+      Cookies.remove('email')
     },
   },
 })

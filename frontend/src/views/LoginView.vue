@@ -36,7 +36,6 @@ async function handleSubmit() {
     try {
       const token = await signUpUser(email.value, password.value)
       if (token) {
-        localStorage.setItem('token', token)
         toastService.success('Account created!')
         router.push('/')
         show.value = false
