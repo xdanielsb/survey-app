@@ -80,6 +80,7 @@ services:
   analytics:
     build:
       context: ./analytics
+      network: host
     container_name: ai-analytics
     ports:
       - "8000:8000"
