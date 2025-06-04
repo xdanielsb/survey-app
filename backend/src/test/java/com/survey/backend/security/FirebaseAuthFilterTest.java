@@ -110,9 +110,9 @@ class FirebaseAuthFilterTest {
       filter.doFilterInternal(request, response, chain);
 
       assertThat(SecurityContextHolder.getContext().getAuthentication())
-              .isNotNull()
-              .extracting(auth -> auth.getPrincipal())
-              .isEqualTo(uid);
+          .isNotNull()
+          .extracting(auth -> auth.getPrincipal())
+          .isEqualTo(uid);
 
       verify(chain).doFilter(request, response);
     }
