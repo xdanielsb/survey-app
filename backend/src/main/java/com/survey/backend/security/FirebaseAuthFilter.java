@@ -11,6 +11,7 @@ import com.survey.backend.logging.HttpLoggingFilter;
 import com.survey.backend.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -77,6 +78,14 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
     if (header != null && header.startsWith("Bearer ")) {
       return Optional.of(header.substring(7));
     }
+    if (request.getCookies() != null) {
+      for (Cookie cookie : request.getCookies()) {
+        if ("token".equals(cookie.getName()) && !cookie.getValue().isBlank()) {
+          return Optional.of(cookie.getValue());
+        }
+      }
+    }
+
     log.info(
         "Auth bypassed: No Bearer token found | method={} path={} ip={} user-agent={}",
         request.getMethod(),

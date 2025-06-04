@@ -12,7 +12,7 @@ This repository contains a full-stack **Survey App** built with:
 
 -  **Spring Boot** (Java 17) for the backend API  
 -  **Vue 3 + TypeScript** for the frontend UI  
--  **Security** | Google Sign-in, Firebase Auth ⤳ JWT gateway, backend routes secured
+-  **Security** | Google Sign-in, Firebase Auth, JWT gateway, api routes protected, cookies 
 -  **Seamless CI / CD** | Independent pipelines for UI & API, auto‑promote from staging to prod 
 -  **PostgreSQL as the database** with flyway to version the database
 -  **Database restore** one liner `make restore FILE=backups/{file}`

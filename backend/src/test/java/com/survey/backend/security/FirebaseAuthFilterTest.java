@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.survey.backend.repository.UserRepository;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -89,5 +90,31 @@ class FirebaseAuthFilterTest {
 
     assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
     verify(chain).doFilter(request, response);
+  }
+
+  @Test
+  void shouldSetAuthentication_whenTokenInCookie() throws Exception {
+    String uid = "userCookie";
+    FirebaseToken mockToken = mock(FirebaseToken.class);
+    when(mockToken.getUid()).thenReturn(uid);
+
+    when(request.getHeader("Authorization")).thenReturn(null);
+    Cookie cookie = new Cookie("token", "cookie-token");
+    when(request.getCookies()).thenReturn(new Cookie[] {cookie});
+
+    try (MockedStatic<FirebaseAuth> firebaseAuthMock = mockStatic(FirebaseAuth.class)) {
+      FirebaseAuth firebaseAuth = mock(FirebaseAuth.class);
+      when(firebaseAuth.verifyIdToken("cookie-token")).thenReturn(mockToken);
+      firebaseAuthMock.when(FirebaseAuth::getInstance).thenReturn(firebaseAuth);
+
+      filter.doFilterInternal(request, response, chain);
+
+      assertThat(SecurityContextHolder.getContext().getAuthentication())
+              .isNotNull()
+              .extracting(auth -> auth.getPrincipal())
+              .isEqualTo(uid);
+
+      verify(chain).doFilter(request, response);
+    }
   }
 }

@@ -11,18 +11,19 @@ const api = axios.create({
   timeout: 10000,
 })
 
-// Request interceptor: inject JWT token
-api.interceptors.request.use(
-  (config) => {
-    const authStore = useAuthStore()
-    const token = authStore.token
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
-    return config
-  },
-  (error) => Promise.reject(error),
-)
+if (import.meta.env.DEV) {
+  api.interceptors.request.use(
+    (config) => {
+      const authStore = useAuthStore()
+      const token = authStore.token
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`
+      }
+      return config
+    },
+    (error) => Promise.reject(error),
+  )
+}
 
 api.interceptors.response.use(
   (response) => response,
