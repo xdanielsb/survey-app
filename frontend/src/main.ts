@@ -18,7 +18,6 @@ Sentry.init({
   sendDefaultPii: true,
 })
 
-app.use(createPinia())
 app.use(router)
 app.use(ToastPlugin)
 app.use(createPinia())
