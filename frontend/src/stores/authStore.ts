@@ -15,11 +15,12 @@ export const useAuthStore = defineStore('auth', {
       this.roles = roles
       this.email = email
       this.isAuthenticated = true
-      Cookies.set('token', token, { secure: true, sameSite: 'strict' })
-      Cookies.set('email', email, { secure: true, sameSite: 'strict' })
+      Cookies.set('token', token, { secure: true, sameSite: 'strict', expires: 1 / 24 })
+      Cookies.set('email', email, { secure: true, sameSite: 'strict', expires: 1 / 24 })
       Cookies.set('roles', JSON.stringify(roles), {
         secure: true,
         sameSite: 'strict',
+        expires: 1 / 24,
       })
     },
 
