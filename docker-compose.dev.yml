@@ -77,6 +77,13 @@ services:
     depends_on:
       - db
 
+  analytics:
+    build:
+      context: ./analytics
+    container_name: ai-analytics
+    ports:
+      - "8000:8000"
+
 volumes:
   db-data:
   pgadmin-data:

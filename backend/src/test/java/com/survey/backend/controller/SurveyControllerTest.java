@@ -6,14 +6,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.survey.backend.dto.CreateSurveyDTO;
-import com.survey.backend.dto.SurveyDTO;
-import com.survey.backend.dto.SurveyResponseDTO;
-import com.survey.backend.dto.SurveyResultDTO;
+import com.survey.backend.dto.*;
 import com.survey.backend.entity.Question;
 import com.survey.backend.entity.Survey;
+import com.survey.backend.entity.User;
 import com.survey.backend.repository.UserRepository;
+import com.survey.backend.service.AnalyticsService;
 import com.survey.backend.service.SurveyService;
+import com.survey.backend.service.UserService;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -39,6 +39,8 @@ class SurveyControllerTest {
 
   @MockBean private SurveyService surveyService;
   @MockBean private UserRepository userRepository;
+  @MockBean private AnalyticsService analyticsService;
+  @MockBean private UserService userService;
 
   @Autowired private ObjectMapper objectMapper;
 
@@ -198,5 +200,39 @@ class SurveyControllerTest {
     mockMvc.perform(delete("/surveys/delete/1")).andExpect(status().isForbidden());
 
     Mockito.verifyNoInteractions(surveyService);
+  }
+
+  @Test
+  @WithMockUser(
+      username = "u1",
+      authorities = {"CUSTOMER"})
+  void getAiInsights_returnsInsights_whenUserHasCredits() throws Exception {
+    var user = User.builder().uid("u1").surveyCredits(2).build();
+    when(userService.getCurrentUser()).thenReturn(user);
+
+    SurveyResultDTO result = SurveyResultDTO.builder().surveyId(5L).surveyTitle("Demo").build();
+    AiInsightsDTO insights = AiInsightsDTO.builder().surveyId(5L).build();
+
+    when(surveyService.getSurveyResults(5L)).thenReturn(Optional.of(result));
+    when(analyticsService.analyzeSurvey(result)).thenReturn(insights);
+
+    mockMvc
+        .perform(get("/surveys/5/insights"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.surveyId").value(5L));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "u1",
+      authorities = {"CUSTOMER"})
+  void getAiInsights_forbidden_whenNoCredits() throws Exception {
+    var user = User.builder().uid("u1").surveyCredits(0).build();
+    when(userService.getCurrentUser()).thenReturn(user);
+
+    mockMvc.perform(get("/surveys/2/insights")).andExpect(status().isForbidden());
+
+    Mockito.verifyNoInteractions(surveyService);
+    Mockito.verifyNoInteractions(analyticsService);
   }
 }

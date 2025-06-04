@@ -1,17 +1,17 @@
 package com.survey.backend.controller;
 
-import com.survey.backend.dto.CreateSurveyDTO;
-import com.survey.backend.dto.SurveyDTO;
-import com.survey.backend.dto.SurveyResponseDTO;
-import com.survey.backend.dto.SurveyResultDTO;
+import com.survey.backend.dto.*;
 import com.survey.backend.helper.SurveyMapper;
 import com.survey.backend.security.RequireAuth;
 import com.survey.backend.security.RequireRole;
 import com.survey.backend.security.RoleType;
+import com.survey.backend.service.AnalyticsService;
 import com.survey.backend.service.SurveyService;
+import com.survey.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 public class SurveyController {
 
   private final SurveyService surveyService;
+  private final UserService userService;
+  private final AnalyticsService analyticsService;
 
   @GetMapping("/{id}")
   public ResponseEntity<SurveyDTO> getSurvey(@PathVariable Long id) {
@@ -42,6 +44,21 @@ public class SurveyController {
   public ResponseEntity<SurveyResultDTO> getResults(@PathVariable Long id) {
     return surveyService
         .getSurveyResults(id)
+        .map(ResponseEntity::ok)
+        .orElse(ResponseEntity.notFound().build());
+  }
+
+  @RequireAuth
+  @GetMapping("/{id}/insights")
+  public ResponseEntity<AiInsightsDTO> getAiInsights(@PathVariable Long id) {
+    var user = userService.getCurrentUser();
+    if (user.getSurveyCredits() <= 0) {
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
+    return surveyService
+        .getSurveyResults(id)
+        .map(analyticsService::analyzeSurvey)
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
   }

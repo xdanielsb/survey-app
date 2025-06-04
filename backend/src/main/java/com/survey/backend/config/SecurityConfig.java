@@ -44,6 +44,7 @@ public class SecurityConfig {
                     .requestMatchers(
                         "/surveys/create",
                         "/surveys/delete/**",
+                        "/surveys/*/insights",
                         "/payments/verify",
                         "/payments/verify/**",
                         "/payments/session",

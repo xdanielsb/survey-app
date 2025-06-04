@@ -48,6 +48,7 @@ services:
     depends_on:
       - db
       - logstash
+      - analytics
     environment:
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
@@ -61,6 +62,7 @@ services:
       - LOGSTASH_PORT=5000
       - SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
       - SENTRY_AUTH_DSN=${SENTRY_AUTH_DSN}
+      - ANALYTICS_URL=${ANALYTICS_URL}  
     healthcheck:
       test: ["CMD", "curl", "-f", "http://backend:8080/actuator/health"]
       interval: 5s
@@ -156,6 +158,11 @@ services:
       - '--path.rootfs=/host'
     volumes:
       - '/:/host:ro,rslave'
+
+  analytics:
+    build:
+      context: ./analytics
+    container_name: ai-analytics
 
 volumes:
   db-data:

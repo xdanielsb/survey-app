@@ -26,7 +26,8 @@ This repository contains a full-stack **Survey App** built with:
 -  **Monitoring** | Prometheus + Grafana (Latency, Error Rate, Traffic, Saturation) 
 -  **Stress tests with k6** (nightly via GitHub Actions)
 -  **Security scanning** | OWASP Dependency Check and npm audit via GitHub Actions
-*  **Delivery:** GitHub Actions · Docker · Caddy reverse‑proxy  
+-  **AI analytics microservice** | containerized FastAPI service for insights
+-  **Delivery:** GitHub Actions · Docker · Caddy reverse‑proxy
 
 ###  Dev development
 
