@@ -1,0 +1,22 @@
+name: Nightly Stress Test
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  k6:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: stress-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run k6 load test
+        uses: grafana/k6-action@v0.3.1
+        with:
+          filename: stress_tests/get-surveys.js
+          flags: --vus 50 --duration 30s
+        env:
+          BASE_URL: ${{ secrets.STRESS_TEST_BASE_URL }}

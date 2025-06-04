@@ -24,7 +24,7 @@ This repository contains a full-stack **Survey App** built with:
 -  **Testing** | Vitest + JaCoCo + Codecov + TestContainers
 -  **Observability:** Logstash + Elasticsearch + Kibana + Grafana  
 -  **Monitoring** | Prometheus + Grafana (Latency, Error Rate, Traffic, Saturation) 
--  **Strees tests** with k6
+-  **Stress tests with k6** (nightly via GitHub Actions)
 *  **Delivery:** GitHub Actions · Docker · Caddy reverse‑proxy  
 
 ###  Dev development
