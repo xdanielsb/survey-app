@@ -99,4 +99,15 @@ class PaymentControllerTest {
         .andExpect(jsonPath("$.email").value("test@user.com"))
         .andExpect(jsonPath("$.creditsGranted").value(1));
   }
+
+  @Test
+  @WithMockUser
+  void testVerifyPayment_notFound() throws Exception {
+    String sessionId = "cs_test_missing";
+    when(paymentService.findBySessionId(sessionId)).thenReturn(Optional.empty());
+
+    mockMvc
+        .perform(MockMvcRequestBuilders.get("/payments/verify").param("session_id", sessionId))
+        .andExpect(status().isNotFound());
+  }
 }
