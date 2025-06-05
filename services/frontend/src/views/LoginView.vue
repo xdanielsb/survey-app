@@ -1,12 +1,8 @@
 <script setup lang="ts" strict>
 import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { loginUser, signUpUser } from '@/services/authService'
+import { loginUserAndPassword, loginWithGoogle, signUpUser } from '@/services/authService'
 import { toastService } from '@/services/toastService'
-import { signInWithPopup } from 'firebase/auth'
-import { auth, googleProvider } from '@/firebase.ts'
-import { useAuthStore } from '@/stores/authStore.ts'
-import api from '@/services/api.ts'
 
 /* v-model from parent */
 const show = defineModel<boolean>({ required: true })
@@ -49,7 +45,7 @@ async function handleSubmit() {
   }
 
   /* Sign In */
-  const { success } = await loginUser(email.value, password.value)
+  const { success } = await loginUserAndPassword(email.value, password.value)
   if (success) {
     router.push('/')
     show.value = false
@@ -64,36 +60,13 @@ function toggleMode() {
 }
 
 async function googleLogin() {
-  try {
-    if (!auth) {
-      toastService.error('Firebase auth not initialized')
-      return
-    }
-    if (!googleProvider) {
-      toastService.error('Google provider not configured')
-      return
-    }
-    const { user } = await signInWithPopup(auth, googleProvider)
-    const idToken = await user.getIdToken(true)
-    const authStore = useAuthStore()
-    if (!user.email) {
-      toastService.error('Google sign-in failed: No user data received')
-      return
-    }
-    // register the user
-    const userPayload = {
-      uid: user.uid,
-      email: user.email,
-    }
-    await api.post('/users/create', userPayload)
-
-    authStore.login(user.email, idToken, [], false)
-    toastService.success(`Welcome, ${user.displayName ?? 'friend'}!`)
-    router.push('/')
+  const { success, message } = await loginWithGoogle()
+  if (success) {
+    toastService.success(message || 'Hello')
     show.value = false
-  } catch (err) {
-    console.error(err)
-    toastService.error('Google sign-in failed')
+    router.push('/')
+  } else {
+    toastService.error(message || 'Google sign-in failed')
   }
 }
 </script>

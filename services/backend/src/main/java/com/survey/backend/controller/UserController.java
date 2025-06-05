@@ -1,6 +1,8 @@
 package com.survey.backend.controller;
 
+import com.survey.backend.dto.UserDTO;
 import com.survey.backend.entity.User;
+import com.survey.backend.helper.UserMapper;
 import com.survey.backend.security.RequireAuth;
 import com.survey.backend.service.UserService;
 import java.util.Map;
@@ -17,7 +19,7 @@ public class UserController {
   private final UserService userService;
 
   @PostMapping("/create")
-  public ResponseEntity<User> createUser(@RequestBody Map<String, String> body) {
+  public ResponseEntity<UserDTO> createUser(@RequestBody Map<String, String> body) {
     String uid = body.get("uid");
     String email = body.get("email");
 
@@ -26,7 +28,7 @@ public class UserController {
     }
 
     User saved = userService.saveUser(uid, email);
-    return ResponseEntity.ok(saved);
+    return ResponseEntity.ok(UserMapper.toDTO(saved));
   }
 
   @GetMapping("/credits")

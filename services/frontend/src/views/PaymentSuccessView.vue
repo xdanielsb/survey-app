@@ -19,6 +19,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '@/services/api.ts'
 import { logger } from '@/plugins/logger'
+import { useAuthStore } from '@/stores/authStore.ts'
 
 export default {
   name: 'PaymentSuccessView',
@@ -27,6 +28,7 @@ export default {
     const loading = ref(true)
     const error = ref('')
     const creditsGranted = ref(0)
+    const authStore = useAuthStore()
 
     onMounted(async () => {
       const sessionId = route.query.session_id
@@ -39,6 +41,7 @@ export default {
       try {
         const response = await api.get(`/payments/verify?session_id=${sessionId}`)
         creditsGranted.value = response.data.creditsGranted
+        authStore.updatePremium(!!creditsGranted.value)
       } catch (err) {
         logger.error('Payment verification failed:', err)
         error.value = 'We could not verify your payment. Please contact support.'

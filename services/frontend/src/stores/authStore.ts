@@ -31,6 +31,15 @@ export const useAuthStore = defineStore('auth', {
       })
     },
 
+    updatePremium(premium: boolean) {
+      this.isPremium = true
+      Cookies.set('isPremium', String(premium), {
+        secure: true,
+        sameSite: 'strict',
+        expires: 1 / 24,
+      })
+    },
+
     logout() {
       this.token = null
       this.email = null

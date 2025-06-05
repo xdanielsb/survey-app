@@ -4,6 +4,7 @@ import { RouterView, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import { logger } from '@/plugins/logger'
 import { HomeIcon } from '@heroicons/vue/24/solid'
+import { buySurveyCredit } from '@/services/stripeService'
 
 const LoginView = defineAsyncComponent(() => import('@/views/LoginView.vue'))
 
@@ -27,6 +28,10 @@ const envClass = computed(() =>
 function logout() {
   authStore.logout()
   router.push('/')
+}
+
+function buyCredit() {
+  buySurveyCredit()
 }
 
 /* wow-burst once */
@@ -103,6 +108,14 @@ onMounted(() => {
             />
           </svg>
         </span>
+
+        <button
+          v-if="authStore.isAuthenticated"
+          @click="buyCredit"
+          class="px-4 py-1.5 rounded-full bg-black text-white font-medium shadow-[var(--shadow-card)] hover:bg-neutral-800 transition"
+        >
+          Buy Credits
+        </button>
 
         <button
           v-if="!userEmail"

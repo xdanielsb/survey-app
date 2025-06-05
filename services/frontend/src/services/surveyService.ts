@@ -4,6 +4,8 @@ import type { SurveyResponse } from '@/types/survey-response.ts'
 import type { CreateSurveyInput } from '@/types/create-question-input.ts'
 import type { Page } from '@/types/pagination.ts'
 import api from '@/services/api'
+import type { CreateUserInput } from '@/types/create-user-input.ts'
+import type { User } from '@/types/user.ts'
 
 export const fetchSurveys = async (page: number = 0, size: number = 5): Promise<Page<Survey>> => {
   const response = await api.get<Page<Survey>>('/surveys', {
@@ -36,4 +38,9 @@ export const createSurvey = async (data: CreateSurveyInput): Promise<Survey> => 
 
 export const deleteSurvey = async (surveyId: number): Promise<void> => {
   await api.delete(`/surveys/delete/${surveyId}`)
+}
+
+export const createUser = async (data: CreateUserInput): Promise<User> => {
+  const response = await api.post<User>('/users/create', data)
+  return response.data
 }

@@ -39,7 +39,9 @@ public class UserControllerTest extends IntegrationTest {
                 .content(objectMapper.writeValueAsString(requestBody)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.uid").value("firebase-123"))
-        .andExpect(jsonPath("$.email").value("test@user.com"));
+        .andExpect(jsonPath("$.email").value("test@user.com"))
+        .andExpect(jsonPath("$.premium").value(false))
+        .andExpect(jsonPath("$.roles[0]").value("CUSTOMER"));
 
     var saved = userRepository.findByUid("firebase-123");
     assertThat(saved).isPresent();

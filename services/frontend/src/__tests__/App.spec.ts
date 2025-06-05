@@ -9,6 +9,10 @@ vi.mock('vue-router', () => ({
   useRouter: () => ({ push: vi.fn() }),
   RouterView: { template: '<div>RouterView</div>' },
   RouterLink: { template: '<a><slot /></a>' },
+  createRouter: () => ({
+    beforeEach: vi.fn(),
+  }),
+  createWebHistory: vi.fn(),
 }))
 
 vi.mock('@/plugins/logger', () => ({
@@ -42,7 +46,7 @@ describe('App.vue', () => {
     const wrapper = mount(App)
     await flushPromises()
     expect(wrapper.text()).toContain('alice@example.com')
-    expect(wrapper.find('button').text().toLowerCase()).toContain('logout')
+    expect(wrapper.find('button').text().toLowerCase()).toContain('buy credits')
     expect(wrapper.find('svg.text-yellow-500').exists()).toBe(true)
   })
 })
