@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
 import org.slf4j.MDC;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
  * contain consistent identifiers for better monitoring.
  */
 @Component
+@Order(1) // Ensure this runs before other filters that might log
 public class RequestLoggingFilter extends OncePerRequestFilter {
   private static final String HEADER_REQUEST_ID = "X-Request-ID";
 

@@ -61,7 +61,8 @@
                         "traceId": "%X{traceId}",
                         "spanId": "%X{spanId}",
                         "userId": "%X{userId:-}",
-                        "app": "${APP_NAME}"
+                        "app": "${APP_NAME}",
+                        "requestId": "%X{requestId:-}"
                         }
                     </pattern>
                 </pattern>
