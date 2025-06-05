@@ -25,15 +25,18 @@ public class PaymentController {
   @PostMapping("/session")
   public Map<String, String> createSession() throws StripeException {
     User user = userService.getCurrentUser();
-    log.info("Payment started by: " + user.getUid());
+    log.info("Starting payment session for user={}", user.getUid());
     String sessionId = paymentService.createCheckoutSession(user);
+    log.info("Created payment session id={} for user={}", sessionId, user.getUid());
     return Map.of("sessionId", sessionId);
   }
 
   @PostMapping("/webhook")
   public ResponseEntity<Void> webhook(
       @RequestBody String payload, @RequestHeader("Stripe-Signature") String sig) throws Exception {
+    log.debug("Received Stripe webhook signature={}", sig);
     paymentService.handleWebhook(payload, sig);
+    log.info("Processed Stripe webhook");
     return ResponseEntity.ok().build();
   }
 

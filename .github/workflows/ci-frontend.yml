@@ -3,12 +3,12 @@ name: Frontend CI
 on:
   push:
     paths:
-      - 'frontend/**'
+      - 'services/frontend/**'
       - '.github/workflows/ci-frontend.yml'
     branches: [ master ]
   pull_request:
     paths:
-      - 'frontend/**'
+      - 'services/frontend/**'
       - '.github/workflows/ci-frontend.yml'
     branches: [ master ]
 
@@ -19,7 +19,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: frontend
+        working-directory: services/frontend
 
     steps:
       - name: Checkout code
@@ -34,7 +34,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-npm-${{ hashFiles('frontend/package-lock.json') }}
+          key: ${{ runner.os }}-npm-${{ hashFiles('services/frontend/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-npm-
 
