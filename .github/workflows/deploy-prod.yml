@@ -1,4 +1,3 @@
-
 name: Deploy to Production
 
 on:
@@ -35,7 +34,7 @@ jobs:
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cat << 'EOF' > /root/survey-app/.env
+            cat << 'EOF' > /root/survey-app/infra/.env
               ${{ secrets.ENV_FILE }}
             EOF
 
@@ -46,7 +45,7 @@ jobs:
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cat << 'EOF' > /root/survey-app/Caddyfile
+            cat << 'EOF' > /root/survey-app/infra/Caddyfile
               ${{ secrets.CADDY_FILE }}
             EOF
 
@@ -57,10 +56,9 @@ jobs:
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cat << 'EOF' > /root/survey-app/backend/src/main/resources/firebase-service-account.json
-             ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+            cat << 'EOF' > /root/survey-app/services/backend/src/main/resources/firebase-service-account.json
+              ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
             EOF
-
 
       - name: Deploy with Docker Compose (Production)
         uses: appleboy/ssh-action@v1
@@ -70,6 +68,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /root/survey-app
-            docker compose down
-            docker compose --env-file .env up -d --build
-
+            docker compose -f infra/docker-compose.yml down
+            docker compose -f infra/docker-compose.yml --env-file infra/.env up -d --build

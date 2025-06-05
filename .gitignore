@@ -1,8 +1,9 @@
 *.swp
 .idea
-Caddyfile
-.env
+infra/Caddyfile
+infra/.env
 backups/
 secrets/
 *.swo
 *.swp
+.env

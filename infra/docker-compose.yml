@@ -9,8 +9,8 @@ services:
       PGDATA: /var/lib/postgresql/data
     volumes:
       - db-data:/var/lib/postgresql/data
-      - ./backend/db/init:/docker-entrypoint-initdb.d
-      - ./backups:/backups
+      - ../services/backend/db/init:/docker-entrypoint-initdb.d
+      - ../backups:/backups
     healthcheck:
       test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB}", "-U", "${POSTGRES_USER}"]
       interval: 5s
@@ -48,7 +48,7 @@ services:
 
   backend:
     build:
-      context: ./backend
+      context: ../services/backend
       network: "host"
     container_name: survey-backend
     restart: always
@@ -79,7 +79,7 @@ services:
 
   frontend:
     build:
-      context: ./frontend
+      context: ../services/frontend
       network: "host"
       args:
         VITE_BACKEND_URL: ${VITE_BACKEND_URL}
@@ -128,7 +128,7 @@ services:
       BACKUP_KEEP_WEEKS: "0"
       BACKUP_KEEP_MONTHS: "0"
     volumes:
-      - ./backups:/backups
+      - ../backups:/backups
     depends_on:
       - db
 
@@ -167,13 +167,25 @@ services:
 
   analytics:
     build:
-      context: ./analytics
+      context: ../services/analytics
       network: "host"
     container_name: ai-analytics
+    environment:
+      - OLLAMA_URL=http://ollama:11434
+      - OLLAMA_MODEL=llama3
+    depends_on:
+      - ollama
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    volumes:
+      - ollama-data:/root/.ollama
 
 volumes:
   db-data:
   caddy-data:
   es-data:
   prometheus_data:
+  ollama-data:
 
