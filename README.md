@@ -2,9 +2,9 @@
 
 _Cloud‑native survey engine with end‑to‑end observability._
 
-![Backend CI](https://github.com/xdanielsb/survey-app/actions/workflows/ci-backend.yml/badge.svg)
-![Frontend CI](https://github.com/xdanielsb/survey-app/actions/workflows/ci-frontend.yml/badge.svg)
-![Analytics CI](https://github.com/xdanielsb/survey-app/actions/workflows/ci-analytics.yml/badge.svg)
+![Backend CI](https://github.com/xdanielsb/survey-app/actions/workflows/ci/ci-backend.yml/badge.svg)
+![Frontend CI](https://github.com/xdanielsb/survey-app/actions/workflows/ci/ci-frontend.yml/badge.svg)
+![Analytics CI](https://github.com/xdanielsb/survey-app/actions/workflows/ci/ci-analytics.yml/badge.svg)
 [![Frontend Coverage](https://img.shields.io/codecov/c/github/xdanielsb/survey-app?flag=frontend&label=frontend%20coverage&branch=master)](https://app.codecov.io/gh/xdanielsb/survey-app/flags/frontend)
 [![Backend Coverage](https://img.shields.io/codecov/c/github/xdanielsb/survey-app?flag=backend&label=backend%20coverage&branch=master)](https://app.codecov.io/gh/xdanielsb/survey-app/flags/backend)
 ![License](https://img.shields.io/github/license/xdanielsb/survey-app)
@@ -38,12 +38,12 @@ services/
   backend/
   frontend/
   analytics/
-infrastructure/
+infra/
   monitoring/
   elk/
   docker-compose.yml
 scripts/
-stress_tests/
+performance/stress_tests/
 Caddyfile
 docker-compose.dev.yml
 Makefile
@@ -55,7 +55,7 @@ Makefile
  # db + api + ui + elk
 
  $ make dev-up           # start all services
- # docker compose -f docker-compose.dev.yml --env-file .env up --build --force-recreate -d
+ # docker compose -f docker-compose.dev.yml --env-file infra/.env up --build --force-recreate -d
 
  # stop services
  $ make dev-down

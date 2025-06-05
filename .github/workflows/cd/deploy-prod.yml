@@ -1,17 +1,15 @@
 
-name: Deploy to staging 
+name: Deploy to Production
 
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: staging
+    environment: production
     concurrency:
-      group: deploy-staging-${{ github.ref }}
+      group: deploy-prod-${{ github.ref }}
       cancel-in-progress: true
 
     steps:
@@ -37,7 +35,7 @@ jobs:
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cat << 'EOF' > /root/survey-app/.env
+              cat << 'EOF' > /root/survey-app/infra/.env
               ${{ secrets.ENV_FILE }}
             EOF
 
@@ -63,7 +61,8 @@ jobs:
              ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
             EOF
 
-      - name: Deploy with Docker Compose
+
+      - name: Deploy with Docker Compose (Production)
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.HOST }}
@@ -71,6 +70,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /root/survey-app
-            docker compose -f infrastructure/docker-compose.yml down
-            docker compose -f infrastructure/docker-compose.yml --env-file .env up -d --build
+              docker compose -f infra/docker-compose.yml down
+              docker compose -f infra/docker-compose.yml --env-file infra/.env up -d --build
 
