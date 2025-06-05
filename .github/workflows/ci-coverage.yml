@@ -41,7 +41,7 @@ jobs:
 
       - name: Build & test backend
         if: ${{ matrix.part == 'backend' }}
-        working-directory: backend
+        working-directory: services/backend
         run: ./mvnw -B verify --no-transfer-progress
 
       - name: Set up Node 20
@@ -50,11 +50,11 @@ jobs:
         with:
           node-version: 20
           cache: npm         # caches ~/.npm automatically :contentReference[oaicite:1]{index=1}
-          cache-dependency-path: frontend/package-lock.json
+          cache-dependency-path: services/frontend/package-lock.json
 
       - name: Install & test frontend
         if: ${{ matrix.part == 'frontend' }}
-        working-directory: frontend
+        working-directory: services/frontend
         run: |
           npm ci
           npm run coverage
@@ -64,7 +64,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: ${{ matrix.part }}
-          files: ${{ matrix.part == 'backend' && 'backend/target/site/jacoco/jacoco.xml' || 'frontend/coverage/lcov.info' }}
+          files: ${{ matrix.part == 'backend' && 'services/backend/target/site/jacoco/jacoco.xml' || 'services/frontend/coverage/lcov.info' }}
           name: ${{ matrix.part }}
           fail_ci_if_error: true
           verbose: true
@@ -75,5 +75,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.part }}-coverage
-          path: ${{ matrix.part == 'backend' && 'backend/target/site/jacoco' || 'frontend/coverage' }}
+          path: ${{ matrix.part == 'backend' && 'services/backend/target/site/jacoco' || 'services/frontend/coverage' }}
           retention-days: 7

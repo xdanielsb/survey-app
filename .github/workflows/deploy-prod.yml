@@ -57,7 +57,7 @@ jobs:
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cat << 'EOF' > /root/survey-app/backend/src/main/resources/firebase-service-account.json
+            cat << 'EOF' > /root/survey-app/services/backend/src/main/resources/firebase-service-account.json
              ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
             EOF
 
@@ -70,6 +70,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /root/survey-app
-            docker compose down
-            docker compose --env-file .env up -d --build
+            docker compose -f infrastructure/docker-compose.yml down
+            docker compose -f infrastructure/docker-compose.yml --env-file .env up -d --build
 

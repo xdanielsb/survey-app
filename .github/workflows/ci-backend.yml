@@ -4,12 +4,12 @@ name: Backend CI
 on:
   push:
     paths:
-      - 'backend/**'
+      - 'services/backend/**'
       - '.github/workflows/ci-backend.yml'
     branches: [ master ]
   pull_request:
     paths:
-      - 'backend/**'
+      - 'services/backend/**'
       - '.github/workflows/ci-backend.yml'
     branches: [ master ]
 
@@ -20,7 +20,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: backend
+        working-directory: services/backend
 
     steps:
       - name: Checkout code
