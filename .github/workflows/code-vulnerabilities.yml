@@ -1,32 +1,55 @@
-name: CodeQL Scan
-
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
+  schedule:
+    - cron: '0 4 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
 
 jobs:
   analyze:
-    name: Analyze
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [ 'javascript', 'java' ]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Initialize CodeQL (Java)
+        uses: github/codeql-action/init@v3
+        with:
+          languages: java
+          build-mode: manual
+
+      - name: Build Backend
+        run: ./mvnw -B package -DskipTests
+        working-directory: services/backend
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
-          languages: ${{ matrix.language }}
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
+          languages: javascript, typescript
+          build-mode: none
+
+      - name: Build Frontend
+        run: |
+          npm ci --ignore-scripts
+          npm run build
+        working-directory: services/frontend
+
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
-        with:
-          category: '/language:${{ matrix.language }}'
