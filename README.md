@@ -42,10 +42,10 @@ infra/
   monitoring/
   elk/
   docker-compose.yml
-scripts/
+  docker-compose.dev.yml
+  Caddyfile
+  scripts/
 performance/stress_tests/
-Caddyfile
-docker-compose.dev.yml
 Makefile
 ```
 
@@ -55,7 +55,7 @@ Makefile
  # db + api + ui + elk
 
  $ make dev-up           # start all services
- # docker compose -f docker-compose.dev.yml --env-file infra/.env up --build --force-recreate -d
+ # docker compose -f infra/docker-compose.dev.yml --env-file infra/.env up --build --force-recreate -d
 
  # stop services
  $ make dev-down

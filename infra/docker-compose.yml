@@ -108,7 +108,7 @@ services:
       - KIBANA_USER=${KIBANA_USER}
       - KIBANA_PASS_HASH=${KIBANA_PASS_HASH}
     volumes:
-      - ../Caddyfile:/etc/caddy/Caddyfile
+      - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy-data:/data
     depends_on:
       - frontend

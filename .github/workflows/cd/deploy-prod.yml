@@ -46,7 +46,7 @@ jobs:
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cat << 'EOF' > /root/survey-app/Caddyfile
+            cat << 'EOF' > /root/survey-app/infra/Caddyfile
               ${{ secrets.CADDY_FILE }}
             EOF
 
