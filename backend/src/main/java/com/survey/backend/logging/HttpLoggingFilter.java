@@ -44,10 +44,18 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
                         : entry.getValue()));
   }
 
+  private boolean isPrometheusActuatorRequest(String path) {
+    return path.startsWith("/actuator");
+  }
+
   @Override
   protected void doFilterInternal(
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
+    if (isPrometheusActuatorRequest(request.getRequestURI())) {
+      filterChain.doFilter(request, response);
+      return;
+    }
 
     ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request);
     ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(response);
