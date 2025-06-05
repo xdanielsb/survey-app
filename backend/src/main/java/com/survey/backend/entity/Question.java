@@ -23,7 +23,7 @@ public class Question {
   @JoinColumn(name = "survey_id")
   private Survey survey;
 
-  @Column(name = "question_text", nullable = false, unique = true)
+  @Column(name = "question_text", nullable = false)
   private String questionText;
 
   @Column(nullable = false)

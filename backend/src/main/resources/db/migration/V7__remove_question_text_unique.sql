@@ -1,0 +1,1 @@
+ALTER TABLE questions DROP CONSTRAINT IF EXISTS questions_question_text_key;
