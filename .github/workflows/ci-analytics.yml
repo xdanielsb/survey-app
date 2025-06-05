@@ -1,0 +1,43 @@
+name: Analytics CI
+
+on:
+  push:
+    paths:
+      - 'analytics/**'
+      - '.github/workflows/ci-analytics.yml'
+    branches: [ master ]
+  pull_request:
+    paths:
+      - 'analytics/**'
+      - '.github/workflows/ci-analytics.yml'
+    branches: [ master ]
+
+jobs:
+  analytics-tests:
+    name: Run FastAPI Analytics Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: analytics
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('analytics/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: pip install -e .[test]
+
+      - name: Run pytest
+        run: pytest -q
