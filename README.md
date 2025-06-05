@@ -28,20 +28,28 @@ This repository contains a full-stack **Survey App** built with:
 -  **Monitoring** | Prometheus + Grafana (Latency, Error Rate, Traffic, Saturation) 
 -  **Stress tests with k6** (nightly via GitHub Actions)
 -  **Security scanning** | OWASP Dependency Check and npm audit via GitHub Actions
--  **AI analytics microservice** | containerized FastAPI service for insights
+-  **LLMs for analytics** | analytics project connected to LLM models to provide AI service insights
 -  **Delivery:** GitHub Actions · Docker · Caddy reverse‑proxy
 
 ###  Dev development
 
 ```bash
  # db + api + ui + elk
- docker compose -f docker-compose.dev.yml --env-file .env up --build --force-recreate -d
 
- # backend
- ./mvnw --debug spring-boot:run
+ $ make dev-up           # start all services
+ # docker compose -f docker-compose.dev.yml --env-file .env up --build --force-recreate -d
 
- # frontend
- npm run dev
+ # stop services
+ $ make dev-down
+
+ # tail container logs
+ $ make dev-logs
+
+ # /backend
+ $ ./mvnw --debug spring-boot:run
+
+ # /frontend
+ $ npm run dev
 ```
 
 More details: [`backend/README.md`](./backend/README.md)

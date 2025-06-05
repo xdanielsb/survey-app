@@ -84,8 +84,23 @@ services:
     container_name: ai-analytics
     ports:
       - "8000:8000"
+    environment:
+      - OLLAMA_URL=http://localhost:11434
+      - OLLAMA_MODEL=llama3
+    depends_on:
+      - ollama
+
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
 
 volumes:
   db-data:
   pgadmin-data:
+  ollama-data:
 

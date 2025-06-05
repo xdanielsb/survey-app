@@ -170,10 +170,22 @@ services:
       context: ./analytics
       network: "host"
     container_name: ai-analytics
+    environment:
+      - OLLAMA_URL=http://ollama:11434
+      - OLLAMA_MODEL=llama3
+    depends_on:
+      - ollama
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    volumes:
+      - ollama-data:/root/.ollama
 
 volumes:
   db-data:
   caddy-data:
   es-data:
   prometheus_data:
+  ollama-data:
 
