@@ -2,9 +2,9 @@
 set -euo pipefail
 
 # Load secrets from .env if it exists
-if [ -f .env ]; then
+if [ -f infra/.env ]; then
   set -a
-  grep -E '^[A-Za-z_][A-Za-z0-9_]*=.*' .env > /tmp/env.filtered
+  grep -E '^[A-Za-z_][A-Za-z0-9_]*=.*' infra/.env > /tmp/env.filtered
   . /tmp/env.filtered
   set +a
 fi
@@ -47,23 +47,23 @@ if [ ! -s "$TMP_SQL" ]; then
 fi
 
 echo "Down the services to avoid new updates"
-docker compose down
+docker compose -f infra/docker-compose.yml down
 echo "Create container to apply restore"
-docker compose up db -d
+docker compose -f infra/docker-compose.yml up db -d
 
 echo "Restoring to PostgreSQL..."
 # Copy SQL file into the running db container
-docker compose cp "$TMP_SQL" db:/tmp/restore.sql
+docker compose -f infra/docker-compose.yml cp "$TMP_SQL" db:/tmp/restore.sql
 
 echo "Dropping and recreating database $POSTGRES_DB"
-docker compose exec db psql -U $POSTGRES_USER -d postgres -c "DROP DATABASE IF EXISTS $POSTGRES_DB;"
-docker compose exec db psql -U $POSTGRES_USER -d postgres -c "CREATE DATABASE $POSTGRES_DB;"
-docker compose exec db bash -c "PGPASSWORD='${POSTGRES_PASSWORD}' psql -U ${POSTGRES_USER} -d ${POSTGRES_DB} < /tmp/restore.sql"
+docker compose -f infra/docker-compose.yml exec db psql -U $POSTGRES_USER -d postgres -c "DROP DATABASE IF EXISTS $POSTGRES_DB;"
+docker compose -f infra/docker-compose.yml exec db psql -U $POSTGRES_USER -d postgres -c "CREATE DATABASE $POSTGRES_DB;"
+docker compose -f infra/docker-compose.yml exec db bash -c "PGPASSWORD='${POSTGRES_PASSWORD}' psql -U ${POSTGRES_USER} -d ${POSTGRES_DB} < /tmp/restore.sql"
 
 echo "Cleaning up..."
 rm -f "$TMP_SQL"
 
 echo "Restoring other services"
-docker compose up -d
+docker compose -f infra/docker-compose.yml up -d
 
 echo "✅ Restore complete."
