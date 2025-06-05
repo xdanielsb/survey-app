@@ -1,6 +1,14 @@
 <template>
   <div class="relative">
     <main class="mx-auto px-6 py-16 space-y-10">
+      <section class="rounded-[var(--radius-md)] bg-[color:var(--color-primary-50)] p-6 shadow-[var(--shadow-soft)]">
+        <p class="text-lg font-medium text-[color:var(--color-neutral-900)] mb-2">
+          "The people who are crazy enough to think they can change the world are the ones who do." – Steve Jobs
+        </p>
+        <p class="text-[color:var(--color-neutral-700)]">
+          Buy a survey to become a lifelong premium user and unlock AI analytics for every survey you create.
+        </p>
+      </section>
       <section class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
         <div>
           <h1

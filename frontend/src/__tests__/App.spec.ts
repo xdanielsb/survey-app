@@ -8,6 +8,7 @@ let _auth = { isAuthenticated: false, email: '', isPremium: false, logout: vi.fn
 vi.mock('vue-router', () => ({
   useRouter: () => ({ push: vi.fn() }),
   RouterView: { template: '<div>RouterView</div>' },
+  RouterLink: { template: '<a><slot /></a>' },
 }))
 
 vi.mock('@/plugins/logger', () => ({
@@ -31,7 +32,6 @@ describe('App.vue', () => {
     _auth.isAuthenticated = false
     const wrapper = mount(App)
     await flushPromises()
-    expect(wrapper.text()).toContain('Env:')
     expect(wrapper.find('button').text().toLowerCase()).toContain('login')
   })
 

@@ -3,6 +3,7 @@ import { computed, onMounted, ref, defineAsyncComponent } from 'vue'
 import { RouterView, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import { logger } from '@/plugins/logger'
+import { HomeIcon } from '@heroicons/vue/24/solid'
 
 const LoginView = defineAsyncComponent(() => import('@/views/LoginView.vue'))
 
@@ -67,12 +68,22 @@ onMounted(() => {
     <header
       class="sticky top-0 z-40 flex items-center justify-between gap-4 backdrop-blur-sm bg-white/75 border-b border-[color:var(--color-neutral-200)] px-6 py-2 shadow-sm"
     >
-      <span
-        :class="envClass"
-        class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold shadow-[var(--shadow-card)]"
-      >
-        Env: {{ mode }}
-      </span>
+      <div class="flex items-center gap-4">
+        <router-link
+          to="/"
+          class="p-1 rounded-full hover:bg-[color:var(--color-neutral-100)] transition"
+          aria-label="Home"
+        >
+          <HomeIcon class="w-5 h-5 text-[color:var(--color-neutral-600)]" />
+        </router-link>
+        <span
+          :class="envClass"
+          v-if="mode === 'development' || mode === 'test'"
+          class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs shadow-[var(--shadow-card)]"
+        >
+          ENV: {{ mode }}
+        </span>
+      </div>
 
       <div class="flex items-center gap-4 text-sm">
         <span

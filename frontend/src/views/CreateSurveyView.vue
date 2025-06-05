@@ -9,7 +9,9 @@ import { typedSurveySchema } from '@/validation/surveySchema'
 import type { SurveyForm } from '@/validation/surveySchema'
 import { ValidationError } from 'yup'
 import { logger } from '@/plugins/logger'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const surveyTitle = ref('')
 const questions = ref([{ text: '' }])
 const surveyCredits = ref<number | null>(null)
@@ -72,7 +74,7 @@ async function submitSurvey() {
     return
   }
   try {
-    await createSurvey({
+    const survey = await createSurvey({
       title: surveyTitle.value,
       questions: questions.value.map((q, i) => ({
         questionText: q.text,
@@ -82,6 +84,7 @@ async function submitSurvey() {
     toastService.success('Survey created successfully!')
     surveyTitle.value = ''
     questions.value = [{ text: '' }]
+    router.push(`/surveys/${survey.id}/results`)
   } catch (err) {
     toastService.error('Error creating survey')
     logger.error(JSON.stringify(err))

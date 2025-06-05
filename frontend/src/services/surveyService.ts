@@ -29,8 +29,8 @@ export const fetchSurveyResults = async (id: number): Promise<SurveyResults> => 
   return response.data
 }
 
-export const createSurvey = async (data: CreateSurveyInput): Promise<void> => {
-  const response = await api.post('/surveys/create', data)
+export const createSurvey = async (data: CreateSurveyInput): Promise<Survey> => {
+  const response = await api.post<Survey>('/surveys/create', data)
   return response.data
 }
 
