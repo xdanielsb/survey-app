@@ -47,23 +47,23 @@ if [ ! -s "$TMP_SQL" ]; then
 fi
 
 echo "Down the services to avoid new updates"
-docker compose -f infrastructure/docker-compose.yml down
+docker compose -f infra/docker-compose.yml down
 echo "Create container to apply restore"
-docker compose -f infrastructure/docker-compose.yml up db -d
+docker compose -f infra/docker-compose.yml up db -d
 
 echo "Restoring to PostgreSQL..."
 # Copy SQL file into the running db container
-docker compose -f infrastructure/docker-compose.yml cp "$TMP_SQL" db:/tmp/restore.sql
+docker compose -f infra/docker-compose.yml cp "$TMP_SQL" db:/tmp/restore.sql
 
 echo "Dropping and recreating database $POSTGRES_DB"
-docker compose -f infrastructure/docker-compose.yml exec db psql -U $POSTGRES_USER -d postgres -c "DROP DATABASE IF EXISTS $POSTGRES_DB;"
-docker compose -f infrastructure/docker-compose.yml exec db psql -U $POSTGRES_USER -d postgres -c "CREATE DATABASE $POSTGRES_DB;"
-docker compose -f infrastructure/docker-compose.yml exec db bash -c "PGPASSWORD='${POSTGRES_PASSWORD}' psql -U ${POSTGRES_USER} -d ${POSTGRES_DB} < /tmp/restore.sql"
+docker compose -f infra/docker-compose.yml exec db psql -U $POSTGRES_USER -d postgres -c "DROP DATABASE IF EXISTS $POSTGRES_DB;"
+docker compose -f infra/docker-compose.yml exec db psql -U $POSTGRES_USER -d postgres -c "CREATE DATABASE $POSTGRES_DB;"
+docker compose -f infra/docker-compose.yml exec db bash -c "PGPASSWORD='${POSTGRES_PASSWORD}' psql -U ${POSTGRES_USER} -d ${POSTGRES_DB} < /tmp/restore.sql"
 
 echo "Cleaning up..."
 rm -f "$TMP_SQL"
 
 echo "Restoring other services"
-docker compose -f infrastructure/docker-compose.yml up -d
+docker compose -f infra/docker-compose.yml up -d
 
 echo "✅ Restore complete."

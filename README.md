@@ -38,14 +38,16 @@ services/
   backend/
   frontend/
   analytics/
-infrastructure/
+infra/
   monitoring/
   elk/
+  Caddyfile
+  .env.example
   docker-compose.yml
+  docker-compose.dev.yml
 scripts/
-stress_tests/
-Caddyfile
-docker-compose.dev.yml
+performance/
+  stress_tests/
 Makefile
 ```
 
@@ -54,8 +56,8 @@ Makefile
 ```bash
  # db + api + ui + elk
 
- $ make dev-up           # start all services
- # docker compose -f docker-compose.dev.yml --env-file .env up --build --force-recreate -d
+$ make dev-up           # start all services
+ # docker compose -f infra/docker-compose.dev.yml --env-file infra/.env up --build --force-recreate -d
 
  # stop services
  $ make dev-down

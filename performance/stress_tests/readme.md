@@ -1,4 +1,4 @@
-# Stress test for critical routes
+# Performance tests for critical routes
 
 ### Build:  
    docker build -t stress-test-runner .
