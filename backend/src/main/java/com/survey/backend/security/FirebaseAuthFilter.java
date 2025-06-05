@@ -7,7 +7,6 @@ import com.google.firebase.auth.FirebaseToken;
 import com.survey.backend.entity.Role;
 import com.survey.backend.entity.User;
 import com.survey.backend.exception.ExpiredTokenException;
-import com.survey.backend.logging.HttpLoggingFilter;
 import com.survey.backend.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -32,7 +31,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class FirebaseAuthFilter extends OncePerRequestFilter {
 
-  private static final Logger log = LoggerFactory.getLogger(HttpLoggingFilter.class);
+  private static final Logger log = LoggerFactory.getLogger(FirebaseAuthFilter.class);
   private final UserRepository userRepository;
 
   public FirebaseAuthFilter(UserRepository userRepository) {
