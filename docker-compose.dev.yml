@@ -9,7 +9,7 @@ services:
       PGDATA: /var/lib/postgresql/data
     volumes:
       - db-data:/var/lib/postgresql/data
-      - ./backend/db/init:/docker-entrypoint-initdb.d
+      - ./services/backend/db/init:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
 
@@ -42,7 +42,7 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - ./elk/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ./infrastructure/elk/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
     depends_on:
       - elasticsearch
 
@@ -79,7 +79,7 @@ services:
 
   analytics:
     build:
-      context: ./analytics
+      context: ./services/analytics
       network: host
     container_name: ai-analytics
     ports:
