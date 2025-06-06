@@ -36,6 +36,8 @@ class PaymentWebhookTest {
 
   @Mock UserRepository userRepo;
 
+  @Mock EmailService emailService;
+
   @BeforeEach
   void setUp() {
     // Inject the webhook secret exactly as PaymentService will see it.
@@ -86,6 +88,7 @@ class PaymentWebhookTest {
           .save(argThat(p -> "PAID".equals(p.getStatus()) && "evt_1".equals(p.getStripeEventId())));
       // should have granted 1 credit and marked premium
       verify(userRepo).save(argThat(u -> u.getSurveyCredits() == 1 && u.isPremium()));
+      verify(emailService).sendCreditPurchaseEmail(user, 1);
     }
   }
 }

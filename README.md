@@ -10,24 +10,24 @@ _Cloud‑native survey engine with end‑to‑end observability._
 ![License](https://img.shields.io/github/license/xdanielsb/survey-app)
 ![Release](https://img.shields.io/github/v/tag/xdanielsb/survey-app)
 
-This repository contains a full-stack **Survey App** built with:
+## Key Features
 
--  **Security** | Google Sign-in, Firebase Auth, JWT gateway, api routes protected, cookies 
 -  **Seamless CI / CD** | Independent pipelines for UI & API, auto‑promote from staging to prod 
+-  **Security** | Google Sign-in, Firebase Auth, JWT gateway, api routes protected, cookies 
+-  **Security scanning** | OWASP Dependency Check and npm audit via GitHub Actions
 -  **PostgreSQL as the database** with flyway to version the database
 -  **Database restore** one liner `make restore FILE=backups/{file}`
 -  **Docker for local development** 
 -  **Periodic rotating backups** Till 30 days
 -  **Instrumentation**| Sentry frontend & backend (error tracking)
 -  **Payment**| Stripe
--  **Pagination**
--  **Testing** | Vitest + JaCoCo + Codecov + TestContainers
+-  **Emails** | Sendgrid
 -  **Observability:** Logstash + Elasticsearch + Kibana + Grafana  
 -  **Monitoring** | Prometheus + Grafana (Latency, Error Rate, Traffic, Saturation) 
--  **Stress tests with k6** (nightly via GitHub Actions)
--  **Security scanning** | OWASP Dependency Check and npm audit via GitHub Actions
- -  **LLMs for analytics** | analytics project connected to LLM models to provide AI service insights
- -  **Delivery:** GitHub Actions · Docker · Caddy reverse‑proxy
+-  **Unit/Integration Test** | Vitest + JaCoCo + Codecov + TestContainers
+-  **Stress tests** with k6 (nightly via GitHub Actions)
+ -  **LLMs** | analytics project connected to LLM models to provide AI service insights
+ -  **Delivery** GitHub Actions · Docker · Caddy reverse‑proxy
 
 ## Project Structure
 
@@ -70,6 +70,7 @@ Makefile
 
 More details: [`backend/README.md`](./services/backend/README.md)
 More details: [`frontend/README.md`](./services/frontend/README.md)
+More details: [`analytics/README.md`](./services/analytics/README.md)
 
 
 ## License

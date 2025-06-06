@@ -38,6 +38,7 @@ public class PaymentService {
 
   private final PaymentRepository paymentRepository;
   private final UserRepository userRepository;
+  private final EmailService emailService;
 
   @PostConstruct
   public void init() {
@@ -137,6 +138,7 @@ public class PaymentService {
 
       paymentRepository.save(payment);
       userRepository.save(user);
+      emailService.sendCreditPurchaseEmail(user, payment.getCreditsGranted());
 
       log.info(
           "Payment confirmed: user={}, credits={}, premium={}, session={}",

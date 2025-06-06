@@ -30,6 +30,8 @@ class PaymentServiceCreateSessionTest {
 
   @Mock private UserRepository userRepo;
 
+  @Mock private EmailService emailService;
+
   private static final String DUMMY_STRIPE_SECRET = "sk_test_dummy";
   private static final String DUMMY_PRICE_ID = "price_12345";
   private static final String DUMMY_FRONTEND_URL = "https://frontend.example.com";
