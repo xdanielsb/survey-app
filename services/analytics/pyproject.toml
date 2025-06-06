@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-test = ["pytest", "httpx"]
+test = ["pytest", "httpx", "pytest-cov"]
 
 [tool.pytest.ini_options]
 addopts = "-vv"

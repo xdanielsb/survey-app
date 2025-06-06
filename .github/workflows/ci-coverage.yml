@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false      # let each leg finish for full reporting
       matrix:
-        part: [backend, frontend]
+        part: [backend, frontend, analytics]
 
     # Ensure only one coverage run per commit ref & part
     concurrency:
@@ -52,6 +52,12 @@ jobs:
           cache: npm         # caches ~/.npm automatically :contentReference[oaicite:1]{index=1}
           cache-dependency-path: services/frontend/package-lock.json
 
+      - name: Set up Python
+        if: ${{ matrix.part == 'analytics' }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
       - name: Install & test frontend
         if: ${{ matrix.part == 'frontend' }}
         working-directory: services/frontend
@@ -59,12 +65,19 @@ jobs:
           npm ci
           npm run coverage
 
+      - name: Install & test analytics
+        if: ${{ matrix.part == 'analytics' }}
+        working-directory: services/analytics
+        run: |
+          pip install -e .[test]
+          pytest --cov=app --cov-report=xml --cov-report=html
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: ${{ matrix.part }}
-          files: ${{ matrix.part == 'backend' && 'services/backend/target/site/jacoco/jacoco.xml' || 'services/frontend/coverage/lcov.info' }}
+          files: ${{ matrix.part == 'backend' && 'services/backend/target/site/jacoco/jacoco.xml' || matrix.part == 'frontend' && 'services/frontend/coverage/lcov.info' || 'services/analytics/coverage.xml' }}
           name: ${{ matrix.part }}
           fail_ci_if_error: true
           verbose: true
@@ -75,5 +88,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.part }}-coverage
-          path: ${{ matrix.part == 'backend' && 'services/backend/target/site/jacoco' || 'services/frontend/coverage' }}
+          path: ${{ matrix.part == 'backend' && 'services/backend/target/site/jacoco' || matrix.part == 'frontend' && 'services/frontend/coverage' || 'services/analytics/htmlcov' }}path: ${{ matrix.part == 'backend' && 'services/backend/target/site/jacoco' || matrix.part == 'frontend' && 'services/frontend/coverage' || 'services/analytics/htmlcov' }}path: ${{ matrix.part == 'backend' && 'services/backend/target/site/jacoco' || matrix.part == 'frontend' && 'services/frontend/coverage' || 'services/analytics/htmlcov' }}path: ${{ matrix.part == 'backend' && 'services/backend/target/site/jacoco' || matrix.part == 'frontend' && 'services/frontend/coverage' || 'services/analytics/htmlcov' }}path: ${{ matrix.part == 'backend' && 'services/backend/target/site/jacoco' || matrix.part == 'frontend' && 'services/frontend/coverage' || 'services/analytics/htmlcov' }}
           retention-days: 7
