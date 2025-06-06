@@ -17,6 +17,17 @@
         <span class="hidden sm:inline">Results</span>
       </router-link>
 
+      <a
+        :href="shareUrl"
+        target="_blank"
+        rel="noopener"
+        class="action-pill neutral"
+        title="Share on X"
+      >
+        <ShareIcon class="w-4 h-4" />
+        <span class="hidden sm:inline">Share</span>
+      </a>
+
       <button
         v-role="['ADMIN']"
         @click="handleDelete"
@@ -33,10 +44,19 @@
 import type { Survey } from '@/types/survey'
 import { deleteSurvey } from '@/services/surveyService'
 
-import { ArrowRightOnRectangleIcon, ChartBarIcon, TrashIcon } from '@heroicons/vue/24/solid'
+import {
+  ArrowRightOnRectangleIcon,
+  ChartBarIcon,
+  TrashIcon,
+  ShareIcon,
+} from '@heroicons/vue/24/solid'
 
 const props = defineProps<{ survey: Survey }>()
 const emit = defineEmits<{ (e: 'deleted', id: number): void }>()
+
+const shareUrl =
+  'https://x.com/share?url=' +
+  encodeURIComponent(`${window.location.origin}/surveys/${props.survey.id}`)
 
 async function handleDelete() {
   if (!confirm('Delete this survey?')) return
