@@ -9,6 +9,8 @@ import router from './router'
 import * as Sentry from '@sentry/vue'
 
 import 'vue-toast-notification/dist/theme-default.css'
+import FloatingVue from 'floating-vue'
+import 'floating-vue/dist/style.css'
 
 const app = createApp(App)
 
@@ -21,6 +23,7 @@ Sentry.init({
 app.use(router)
 app.use(ToastPlugin)
 app.use(createPinia())
+app.use(FloatingVue)
 
 app.directive('role', vRole)
 

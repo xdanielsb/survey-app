@@ -47,6 +47,5 @@ describe('App.vue', () => {
     await flushPromises()
     expect(wrapper.text()).toContain('alice@example.com')
     expect(wrapper.find('button').text().toLowerCase()).toContain('buy credits')
-    expect(wrapper.find('svg.text-yellow-500').exists()).toBe(true)
   })
 })

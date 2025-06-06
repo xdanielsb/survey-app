@@ -3,6 +3,7 @@ import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { loginUserAndPassword, loginWithGoogle, signUpUser } from '@/services/authService'
 import { toastService } from '@/services/toastService'
+import { useAuthStore } from '@/stores/authStore.ts'
 
 /* v-model from parent */
 const show = defineModel<boolean>({ required: true })
@@ -13,6 +14,7 @@ const password = ref('')
 const errorMsg = ref('')
 const isSignUp = ref(false)
 const router = useRouter()
+const authStore = useAuthStore()
 
 /* reset when modal closes */
 watch(show, (v) => {
@@ -62,7 +64,11 @@ function toggleMode() {
 async function googleLogin() {
   const { success, message } = await loginWithGoogle()
   if (success) {
-    toastService.success(message || 'Hello')
+    if (authStore.isPremium) {
+      toastService.success('Welcome back, premium user! 🎉')
+    } else {
+      toastService.success(message || 'Hello')
+    }
     show.value = false
     router.push('/')
   } else {
