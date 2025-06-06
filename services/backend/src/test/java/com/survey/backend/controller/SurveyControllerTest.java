@@ -50,6 +50,7 @@ class SurveyControllerTest {
         SurveyDTO.builder()
             .id(1L)
             .title("Team Survey")
+            .responseCount(0)
             .questions(
                 List.of(
                     SurveyDTO.QuestionDTO.builder()
@@ -123,8 +124,8 @@ class SurveyControllerTest {
 
   @Test
   void shouldReturnPagedListOfSurveys() throws Exception {
-    SurveyDTO survey1 = new SurveyDTO(1L, "Team Feedback", null);
-    SurveyDTO survey2 = new SurveyDTO(2L, "Sprint Review", null);
+    SurveyDTO survey1 = SurveyDTO.builder().id(1L).title("Team Feedback").responseCount(0).build();
+    SurveyDTO survey2 = SurveyDTO.builder().id(2L).title("Sprint Review").responseCount(0).build();
     Page<SurveyDTO> page = new PageImpl<>(List.of(survey1, survey2));
 
     Mockito.when(surveyService.getAllSurveys(Mockito.any(Pageable.class))).thenReturn(page);

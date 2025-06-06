@@ -39,6 +39,7 @@ class SurveyServiceResponseAndDeleteTest {
 
     Question q = Question.builder().id(2L).survey(survey).build();
     when(questionRepo.findById(2L)).thenReturn(Optional.of(q));
+    when(surveyRepo.incrementResponseCount(1L)).thenReturn(1);
 
     SurveyResponseDTO request =
         SurveyResponseDTO.builder()
@@ -52,6 +53,7 @@ class SurveyServiceResponseAndDeleteTest {
 
     assertTrue(result);
     verify(responseRepo).save(any(Response.class));
+    verify(surveyRepo).incrementResponseCount(1L);
     verify(answerRepo)
         .saveAll(
             argThat(

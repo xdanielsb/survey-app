@@ -53,6 +53,7 @@ public class SurveyService {
             });
   }
 
+  @Transactional
   public boolean saveSurveyResponse(Long surveyId, SurveyResponseDTO dto) {
     Optional<Survey> surveyOpt = surveyRepo.findById(surveyId);
     if (surveyOpt.isEmpty()) {
@@ -65,6 +66,8 @@ public class SurveyService {
       Response response = responseRepo.save(Response.builder().survey(survey).build());
       List<Answer> answers = convertDtoToAnswers(dto, response);
       answerRepo.saveAll(answers);
+      surveyRepo.incrementResponseCount(survey.getId());
+      survey.setResponseCount(survey.getResponseCount() + 1);
       return true;
     } catch (IllegalArgumentException ex) {
       log.warn("Invalid data while saving survey response: {}", ex.getMessage());

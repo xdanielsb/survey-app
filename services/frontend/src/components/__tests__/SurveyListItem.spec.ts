@@ -4,11 +4,17 @@ import { describe, it, expect } from 'vitest'
 import type { Survey } from '@/types/survey.ts'
 
 describe('SurveyListItem.vue', () => {
-  it('mounts without errors', () => {
-    const dummySurvey: Survey = { id: 1, title: 'Test Survey', questions: [] }
+  it('mounts without errors and shows response count', () => {
+    const dummySurvey: Survey = {
+      id: 1,
+      title: 'Test Survey',
+      responseCount: 5,
+      questions: [],
+    }
     const wrapper = mount(SurveyListItem, {
       props: { survey: dummySurvey },
     })
     expect(wrapper.exists()).toBe(true)
+    expect(wrapper.text()).toContain('5')
   })
 })

@@ -1,0 +1,1 @@
+ALTER TABLE surveys ADD COLUMN response_count INTEGER NOT NULL DEFAULT 0;

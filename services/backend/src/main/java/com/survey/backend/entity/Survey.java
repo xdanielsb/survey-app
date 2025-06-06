@@ -34,6 +34,9 @@ public class Survey {
   @Column(name = "created_at")
   private LocalDateTime createdAt = LocalDateTime.now();
 
+  @Column(name = "response_count", nullable = false)
+  private int responseCount = 0;
+
   @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL)
   private List<Question> questions;
 }

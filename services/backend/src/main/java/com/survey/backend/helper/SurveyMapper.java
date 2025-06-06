@@ -12,6 +12,7 @@ public class SurveyMapper {
     return SurveyDTO.builder()
         .id(survey.getId())
         .title(survey.getTitle())
+        .responseCount(survey.getResponseCount())
         .questions(
             survey.getQuestions().stream().map(QuestionMapper::toDTO).collect(Collectors.toList()))
         .build();

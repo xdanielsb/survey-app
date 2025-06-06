@@ -15,6 +15,7 @@ import lombok.Setter;
 public class SurveyDTO {
   private Long id;
   private String title;
+  private int responseCount;
   private List<QuestionDTO> questions;
 
   @Getter
