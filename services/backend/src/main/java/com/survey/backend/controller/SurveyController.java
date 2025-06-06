@@ -71,8 +71,9 @@ public class SurveyController {
   }
 
   @GetMapping
-  public ResponseEntity<Page<SurveyDTO>> getSurveys(Pageable pageable) {
-    return ResponseEntity.ok(surveyService.getAllSurveys(pageable));
+  public ResponseEntity<Page<SurveyDTO>> getSurveys(
+      Pageable pageable, @RequestParam(required = false, name = "q") String query) {
+    return ResponseEntity.ok(surveyService.getAllSurveys(pageable, query));
   }
 
   @RequireRole({RoleType.ADMIN})

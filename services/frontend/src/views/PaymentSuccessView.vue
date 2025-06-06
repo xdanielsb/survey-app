@@ -8,7 +8,7 @@
       <div v-else-if="error" class="error">{{ error }}</div>
       <div v-else class="success">
         <p><strong>Credits Added:</strong> {{ creditsGranted }}</p>
-        <router-link to="/" class="home-link">Back to Dashboard</router-link>
+        <router-link to="/" clasHomegs="home-link">Back to Dashboard</router-link>
       </div>
     </div>
   </div>

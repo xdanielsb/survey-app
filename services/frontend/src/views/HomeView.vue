@@ -138,9 +138,13 @@ async function loadCredits() {
 }
 
 watchEffect(async () => {
-  const { content, totalPages: tp } = await fetchSurveys(page.value, 9)
+  const { content, totalPages: tp } = await fetchSurveys(page.value, 9, search.value)
   surveys.value = content
   totalPages.value = tp
+})
+
+watch(search, () => {
+  page.value = 0
 })
 
 onMounted(async () => {
@@ -163,9 +167,5 @@ watch(
   },
 )
 
-const filteredSurveys = computed(() =>
-  surveys.value
-    ? surveys.value.filter((s) => s.title.toLowerCase().includes(search.value.toLowerCase()))
-    : [],
-)
+const filteredSurveys = computed(() => surveys.value ?? [])
 </script>

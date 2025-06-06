@@ -41,6 +41,7 @@ describe('HomeView.vue', () => {
 
     // Wait for reactivity + watchEffect to finish
     await new Promise((resolve) => setTimeout(resolve, 0))
+    expect(fetchSurveys).toHaveBeenCalledWith(0, 9, '')
 
     expect(wrapper.text()).toContain('Customer Feedback')
     expect(wrapper.text()).toContain('Product Satisfaction')

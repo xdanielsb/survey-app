@@ -36,8 +36,12 @@ public class SurveyService {
     return surveyRepo.findById(id).map(SurveyMapper::toDTO);
   }
 
-  public Page<SurveyDTO> getAllSurveys(Pageable pageable) {
-    return surveyRepo.findAll(pageable).map(SurveyMapper::toDTO);
+  public Page<SurveyDTO> getAllSurveys(Pageable pageable, String query) {
+    Page<Survey> page =
+        (query == null || query.isBlank())
+            ? surveyRepo.findAll(pageable)
+            : surveyRepo.findByTitleContainingIgnoreCase(query, pageable);
+    return page.map(SurveyMapper::toDTO);
   }
 
   public void deleteSurvey(Long surveyId) {

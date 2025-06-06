@@ -7,9 +7,13 @@ import api from '@/services/api'
 import type { CreateUserInput } from '@/types/create-user-input.ts'
 import type { User } from '@/types/user.ts'
 
-export const fetchSurveys = async (page: number = 0, size: number = 5): Promise<Page<Survey>> => {
+export const fetchSurveys = async (
+  page: number = 0,
+  size: number = 5,
+  query = '',
+): Promise<Page<Survey>> => {
   const response = await api.get<Page<Survey>>('/surveys', {
-    params: { page, size },
+    params: { page, size, q: query },
   })
   return response.data
 }

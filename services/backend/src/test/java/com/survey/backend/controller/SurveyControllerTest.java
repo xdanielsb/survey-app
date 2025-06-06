@@ -128,7 +128,8 @@ class SurveyControllerTest {
     SurveyDTO survey2 = SurveyDTO.builder().id(2L).title("Sprint Review").responseCount(0).build();
     Page<SurveyDTO> page = new PageImpl<>(List.of(survey1, survey2));
 
-    Mockito.when(surveyService.getAllSurveys(Mockito.any(Pageable.class))).thenReturn(page);
+    Mockito.when(surveyService.getAllSurveys(Mockito.any(Pageable.class), Mockito.isNull()))
+        .thenReturn(page);
 
     mockMvc
         .perform(get("/surveys?page=0&size=10"))
@@ -137,6 +138,21 @@ class SurveyControllerTest {
         .andExpect(jsonPath("$.content.length()").value(2))
         .andExpect(jsonPath("$.content[0].title").value("Team Feedback"))
         .andExpect(jsonPath("$.content[1].title").value("Sprint Review"));
+  }
+
+  @Test
+  void shouldFilterSurveysUsingQuery() throws Exception {
+    SurveyDTO survey = SurveyDTO.builder().id(5L).title("Search Title").responseCount(0).build();
+    Page<SurveyDTO> page = new PageImpl<>(List.of(survey));
+
+    Mockito.when(surveyService.getAllSurveys(Mockito.any(Pageable.class), Mockito.eq("search")))
+        .thenReturn(page);
+
+    mockMvc
+        .perform(get("/surveys?q=search&page=0&size=10"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.content.length()").value(1))
+        .andExpect(jsonPath("$.content[0].title").value("Search Title"));
   }
 
   @Test
