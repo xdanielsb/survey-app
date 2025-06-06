@@ -15,10 +15,11 @@ _Cloud‑native survey engine with end‑to‑end observability._
 -  **Seamless CI / CD** | Independent pipelines for UI & API, auto‑promote from staging to prod 
 -  **Security** | Google Sign-in, Firebase Auth, JWT gateway, api routes protected, cookies 
 -  **Security scanning** | OWASP Dependency Check and npm audit via GitHub Actions
+-  **RateLimiter** | Bucket4J
 -  **PostgreSQL as the database** with flyway to version the database
 -  **Database restore** one liner `make restore FILE=backups/{file}`
--  **Docker for local development** 
 -  **Periodic rotating backups** Till 30 days
+-  **Docker for local development** 
 -  **Instrumentation**| Sentry frontend & backend (error tracking)
 -  **Payment**| Stripe
 -  **Emails** | Sendgrid
