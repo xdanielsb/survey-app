@@ -88,5 +88,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.part }}-coverage
-          path: ${{ matrix.part == 'backend' && 'services/backend/target/site/jacoco' || matrix.part == 'frontend' && 'services/frontend/coverage' || 'services/analytics/htmlcov' }}path: ${{ matrix.part == 'backend' && 'services/backend/target/site/jacoco' || matrix.part == 'frontend' && 'services/frontend/coverage' || 'services/analytics/htmlcov' }}path: ${{ matrix.part == 'backend' && 'services/backend/target/site/jacoco' || matrix.part == 'frontend' && 'services/frontend/coverage' || 'services/analytics/htmlcov' }}path: ${{ matrix.part == 'backend' && 'services/backend/target/site/jacoco' || matrix.part == 'frontend' && 'services/frontend/coverage' || 'services/analytics/htmlcov' }}path: ${{ matrix.part == 'backend' && 'services/backend/target/site/jacoco' || matrix.part == 'frontend' && 'services/frontend/coverage' || 'services/analytics/htmlcov' }}
+          path: ${{ matrix.part == 'backend' && 'services/backend/target/site/jacoco' || matrix.part == 'frontend' && 'services/frontend/coverage' || 'services/analytics/htmlcov' }}
           retention-days: 7

@@ -26,9 +26,17 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 
   private static final Logger log = LoggerFactory.getLogger(RateLimitingFilter.class);
 
-  private final int capacity;
-  private final Duration refillDuration;
+  @Value("${ratelimit.capacity:100}")
+  private int capacity;
+
+  @Value("${ratelimit.refill-ms:60000}")
+  private Duration refillDuration;
+
   private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();
+
+  public RateLimitingFilter() {
+    this(100, Duration.ofMillis(60000));
+  }
 
   public RateLimitingFilter(
       @Value("${ratelimit.capacity:100}") int capacity,
