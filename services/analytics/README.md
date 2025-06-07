@@ -9,7 +9,14 @@ pip install -e .[test]
 pytest -q
 ```
 
-# requirements
+
+## Linting
+```bash
+    ruff check . --fix
+    isort .
+```
+
+## requirements
 
 The runtime dependencies are defined in `pyproject.toml`. To generate a
 `requirements.txt` file, install `pip-tools` and run:

@@ -1,9 +1,9 @@
+import os
+from typing import List
+
+import httpx
 from fastapi import FastAPI
 from pydantic import BaseModel
-from typing import List
-import os
-import httpx
-
 
 OLLAMA_URL = os.getenv("OLLAMA_URL")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3")

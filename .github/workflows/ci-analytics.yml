@@ -39,5 +39,14 @@ jobs:
       - name: Install dependencies
         run: pip install -e .[test]
 
+      - name: Check import order with isort
+        run: isort . --check --diff
+
+      - name: Lint with ruff
+        run: ruff check .
+
+      - name: Type check with mypy
+        run: mypy app.py tests/test_app.py
+
       - name: Run pytest
         run: pytest -q

@@ -17,7 +17,27 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-test = ["pytest", "httpx", "pytest-cov"]
+test = [
+    "pytest",
+    "httpx",
+    "pytest-cov",
+    "ruff",
+    "isort",
+    "mypy",
+]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+check_untyped_defs = true
 
 [tool.pytest.ini_options]
 addopts = "-vv"

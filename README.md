@@ -22,8 +22,9 @@ _Cloud‑native survey engine with end‑to‑end observability._
 -  **Periodic rotating backups** Till 30 days
 -  **Docker for local development** 
 -  **Instrumentation**| Sentry frontend & backend (error tracking)
--  **Payment**| Stripe
--  **Emails** | Sendgrid
+-  **Payment**| Stripe (to buy credits)
+-  **Emails** | Sendgrid (when buy a survey)
+-  **Theme** | Dark/White theme
 -  **Observability:** Logstash + Elasticsearch + Kibana + Grafana  
 -  **Monitoring** | Prometheus + Grafana (Latency, Error Rate, Traffic, Saturation) 
 -  **Unit/Integration Test** | Vitest + JaCoCo + Codecov + TestContainers
@@ -37,7 +38,7 @@ _Cloud‑native survey engine with end‑to‑end observability._
 services/
   backend/     (spring boot)
   frontend/    (vuejs)
-  analytics/   (flaskapi)
+  analytics/   (fastapi)
 infra/
   monitoring/
   elk/
