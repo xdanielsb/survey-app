@@ -86,7 +86,7 @@ async function googleLogin() {
         @click.self="show = false"
       >
         <div
-          class="relative flex w-full max-w-3xl overflow-hidden rounded-[var(--radius-lg)] bg-white shadow-[var(--shadow-soft)]"
+          class="relative flex w-full max-w-3xl overflow-hidden rounded-[var(--radius-lg)] bg-[color:var(--color-neutral-100)] shadow-[var(--shadow-soft)]"
         >
           <div class="w-full lg:w-1/2 p-10 space-y-6">
             <h1 class="text-2xl font-display font-semibold text-center">

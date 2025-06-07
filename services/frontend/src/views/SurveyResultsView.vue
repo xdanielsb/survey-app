@@ -2,7 +2,7 @@
   <div class="relative">
     <header
       v-if="results"
-      class="sticky top-0 z-20 backdrop-blur-sm bg-white/70 border-b border-[color:var(--color-neutral-200)] py-3 px-6 flex items-center justify-between"
+      class="sticky top-0 z-20 backdrop-blur-sm bg-[color:var(--color-neutral-50)]/70 border-b border-[color:var(--color-neutral-200)] py-3 px-6 flex items-center justify-between"
     >
       <h1 class="text-lg font-display font-semibold text-[color:var(--color-neutral-900)] truncate">
         {{ results.surveyTitle }}

@@ -61,14 +61,14 @@ export default {
   justify-content: center;
   align-items: center;
   height: 80vh;
-  background-color: #fafafa;
+  background-color: var(--color-neutral-50);
 }
 
 .card {
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  background: white;
+  background: var(--color-neutral-100);
   text-align: center;
   max-width: 400px;
 }
@@ -84,18 +84,18 @@ p {
 }
 
 .success {
-  color: #007a33;
+  color: var(--color-success);
   margin-top: 1rem;
 }
 
 .error {
-  color: #d93025;
+  color: var(--color-danger);
   margin-top: 1rem;
 }
 
 .loading {
   font-style: italic;
-  color: #555;
+  color: var(--color-neutral-600);
   margin-top: 1rem;
 }
 
@@ -103,7 +103,7 @@ p {
   display: inline-block;
   margin-top: 1.5rem;
   color: white;
-  background-color: #007aff;
+  background-color: var(--color-primary-600);
   padding: 0.5rem 1.2rem;
   border-radius: 6px;
   text-decoration: none;
@@ -111,6 +111,6 @@ p {
 }
 
 .home-link:hover {
-  background-color: #005bb5;
+  background-color: var(--color-primary-700);
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <li
-    class="group flex flex-col justify-between gap-4 rounded-[var(--radius-md)] border border-[color:var(--color-neutral-200)] bg-white p-6 shadow-[var(--shadow-soft)] transition-transform duration-300 ease-[var(--ease-snappy)] hover:-translate-y-[3px] hover:shadow-[var(--shadow-card)]"
+    class="group flex flex-col justify-between gap-4 rounded-[var(--radius-md)] border border-[color:var(--color-neutral-200)] bg-[color:var(--color-neutral-100)] p-6 shadow-[var(--shadow-soft)] transition-transform duration-300 ease-[var(--ease-snappy)] hover:-translate-y-[3px] hover:shadow-[var(--shadow-card)]"
   >
     <p
       class="text-lg font-medium text-[color:var(--color-neutral-900)] line-clamp-2 flex items-center gap-2"

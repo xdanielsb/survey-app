@@ -55,7 +55,7 @@
             v-model="search"
             type="text"
             placeholder="Search…"
-            class="flex-1 sm:w-56 px-4 py-2 text-sm rounded-[var(--radius-sm)] border border-[color:var(--color-neutral-300)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-primary-500)] bg-white"
+            class="flex-1 sm:w-56 px-4 py-2 text-sm rounded-[var(--radius-sm)] border border-[color:var(--color-neutral-300)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-primary-500)] bg-[color:var(--color-neutral-50)]"
           />
 
           <router-link

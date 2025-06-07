@@ -1,6 +1,6 @@
 <template>
   <div
-    class="mb-8 p-6 rounded-[var(--radius-lg)] bg-white border border-[color:var(--color-neutral-200)] shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-card)] transition-shadow duration-300 ease-[var(--ease-snappy)]"
+    class="mb-8 p-6 rounded-[var(--radius-lg)] bg-[color:var(--color-neutral-100)] border border-[color:var(--color-neutral-200)] shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-card)] transition-shadow duration-300 ease-[var(--ease-snappy)]"
   >
     <label class="block mb-4 text-[1.1rem] font-semibold text-[color:var(--color-neutral-800)]">
       {{ question.questionText }}

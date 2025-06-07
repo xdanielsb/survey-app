@@ -3,8 +3,9 @@ import { computed, onMounted, ref, defineAsyncComponent } from 'vue'
 import { RouterView, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import { logger } from '@/plugins/logger'
-import { HomeIcon } from '@heroicons/vue/24/solid'
+import { HomeIcon, MoonIcon, SunIcon } from '@heroicons/vue/24/solid'
 import { buySurveyCredit } from '@/services/stripeService'
+import { useThemeStore } from '@/stores/themeStore'
 
 const LoginView = defineAsyncComponent(() => import('@/views/LoginView.vue'))
 
@@ -14,6 +15,7 @@ const authStore = useAuthStore()
 const userEmail = computed(() => (authStore.isAuthenticated ? authStore.email : null))
 const showLogin = ref(false)
 const premium = computed(() => authStore.isPremium)
+const themeStore = useThemeStore()
 
 /* env pill classes */
 const envClass = computed(() =>
@@ -71,7 +73,7 @@ onMounted(() => {
     ></div>
 
     <header
-      class="sticky top-0 z-40 flex items-center justify-between gap-4 backdrop-blur-sm bg-white/75 border-b border-[color:var(--color-neutral-200)] px-6 py-2 shadow-sm"
+      class="sticky top-0 z-40 flex items-center justify-between gap-4 backdrop-blur-sm bg-[color:var(--color-neutral-50)]/75 border-b border-[color:var(--color-neutral-200)] px-6 py-2 shadow-sm"
     >
       <div class="flex items-center gap-4">
         <router-link
@@ -105,6 +107,15 @@ onMounted(() => {
           class="px-4 py-1.5 rounded-full bg-black text-white font-medium shadow-[var(--shadow-card)] hover:bg-neutral-800 transition"
         >
           Buy Credits
+        </button>
+
+        <button
+          @click="themeStore.toggle()"
+          class="p-2 rounded-full hover:bg-[color:var(--color-neutral-100)] transition"
+          :aria-label="themeStore.dark ? 'Switch to light mode' : 'Switch to dark mode'"
+        >
+          <MoonIcon v-if="!themeStore.dark" class="w-5 h-5 text-[color:var(--color-neutral-600)]" />
+          <SunIcon v-else class="w-5 h-5 text-[color:var(--color-neutral-600)]" />
         </button>
 
         <button

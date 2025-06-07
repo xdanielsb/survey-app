@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="survey"
-    class="max-w-3xl mx-auto my-10 px-6 py-8 bg-white border border-[color:var(--color-neutral-200)] rounded-[var(--radius-lg)] shadow-[var(--shadow-soft)]"
+    class="max-w-3xl mx-auto my-10 px-6 py-8 bg-[color:var(--color-neutral-100)] border border-[color:var(--color-neutral-200)] rounded-[var(--radius-lg)] shadow-[var(--shadow-soft)]"
   >
     <h2 class="text-2xl font-display font-semibold text-[color:var(--color-neutral-900)] mb-6">
       {{ survey.title }}

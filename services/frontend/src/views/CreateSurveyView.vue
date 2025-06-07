@@ -101,7 +101,7 @@ const buyCredit = () => buySurveyCredit()
 
   <div
     v-else-if="surveyCredits > 0"
-    class="mx-auto max-w-3xl p-8 space-y-8 bg-white rounded-[var(--radius-lg)] shadow-[var(--shadow-soft)] ring-1 ring-[color:var(--color-neutral-200)]"
+    class="mx-auto max-w-3xl p-8 space-y-8 bg-[color:var(--color-neutral-100)] rounded-[var(--radius-lg)] shadow-[var(--shadow-soft)] ring-1 ring-[color:var(--color-neutral-200)]"
   >
     <div class="flex justify-between items-center">
       <h1 class="text-2xl font-display font-semibold">Create Survey</h1>
