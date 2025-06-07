@@ -39,14 +39,16 @@ services/
   backend/     (spring boot)
   frontend/    (vuejs)
   analytics/   (fastapi)
+  backoffice/   (angular)
 infra/
   monitoring/
   elk/
+  scripts/
   docker-compose.yml
   docker-compose.dev.yml
   Caddyfile
-  scripts/
-performance/stress_tests/
+performance/
+  stress_tests/
 Makefile
 ```
 
