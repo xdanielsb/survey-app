@@ -99,13 +99,17 @@ services:
     volumes:
       - ollama-data:/root/.ollama
 
-  backoffice:
-    build:
-      context: ../services/backoffice
-      network: host
-    container_name: survey-backoffice
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.4
+    command: start-dev --import-realm
+    container_name: keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: secret
+    volumes:
+      - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
     ports:
-      - "4200:4200"
+      - "8080:8080"
 
 volumes:
   db-data:

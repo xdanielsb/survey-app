@@ -14,7 +14,7 @@ _Cloud‑native survey engine with end‑to‑end observability._
 ## Key Features
 
 -  **Seamless CI / CD** | Independent pipelines for UI & API, auto‑promote from staging to prod 
--  **Security** | Google Sign-in, Firebase Auth, JWT gateway, api routes protected, cookies 
+-  **Security** | Google Sign-in, Firebase Auth, JWT gateway, api routes protected, secure cookies, Keycloak for Backoffice
 -  **Security scanning** | OWASP Dependency Check and npm audit via GitHub Actions
 -  **RateLimiter** | Bucket4J
 -  **PostgreSQL as the database** with flyway to version the database
