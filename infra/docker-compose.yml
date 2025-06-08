@@ -184,6 +184,17 @@ services:
     volumes:
       - ollama-data:/root/.ollama
 
+  backoffice:
+    build:
+      context: ../services/backoffice
+      network: "host"
+    container_name: survey-backoffice
+    restart: always
+    depends_on:
+      - backend
+    environment:
+      - NODE_ENV=production
+
 volumes:
   db-data:
   caddy-data:

@@ -99,6 +99,14 @@ services:
     volumes:
       - ollama-data:/root/.ollama
 
+  backoffice:
+    build:
+      context: ../services/backoffice
+      network: host
+    container_name: survey-backoffice
+    ports:
+      - "4200:4200"
+
 volumes:
   db-data:
   pgadmin-data:
