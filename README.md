@@ -44,6 +44,7 @@ infra/
   monitoring/
   elk/
   scripts/
+  keycloak/
   docker-compose.yml
   docker-compose.dev.yml
   Caddyfile

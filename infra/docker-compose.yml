@@ -40,7 +40,7 @@ services:
     image: docker.elastic.co/kibana/kibana:8.13.4
     container_name: kibana
     environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_HOSTS=${ELASTIC_SEARCH_URL}
       - SERVER_BASEPATH=/monitoring
       - SERVER_REWRITEBASEPATH=true
     depends_on:
@@ -61,7 +61,7 @@ services:
       - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
       - STRIPE_PRICE_ID=${STRIPE_PRICE_ID}
       - STRIPE_FRONTEND_URL=${STRIPE_FRONTEND_URL}
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${POSTGRES_DB}
+      - SPRING_DATASOURCE_URL=${POSTGRES_URL}
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       - FIREBASE_API_KEY=${FIREBASE_API_KEY}
@@ -123,7 +123,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      BACKUP_TARGET: /backups               # inside the container
+      BACKUP_TARGET: /backups              # inside the container
       BACKUP_SCHEDULE: "0 3 * * *"         # At 03:00 every day (cron syntax, container’s TZ)
       BACKUP_ON_START: TRUE
       BACKUP_KEEP_DAYS: "31"
@@ -152,7 +152,7 @@ services:
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
       - ./monitoring/grafana/provisioning/dashboards:/var/lib/grafana/dashboards
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=${POSTGRES_PASSWORD}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
       - GF_USERS_ALLOW_SIGN_UP=false
       - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s:%(http_port)s/grafana
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
@@ -173,8 +173,8 @@ services:
       network: "host"
     container_name: ai-analytics
     environment:
-      - OLLAMA_URL=http://ollama:11434
-      - OLLAMA_MODEL=llama3
+      - OLLAMA_URL=${OLLAMA_URL}
+      - OLLAMA_MODEL=${OLLAMA_MODEL}
     depends_on:
       - ollama
 
@@ -204,8 +204,6 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
     volumes:
       - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
-    ports:
-      - "8080:8080"
 
 volumes:
   db-data:
