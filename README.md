@@ -14,23 +14,22 @@ _Cloud‑native survey engine with end‑to‑end observability._
 ## Key Features
 
 -  **Seamless CI / CD** | Independent pipelines for UI & API, auto‑promote from staging to prod 
--  **Security** | Google Sign-in, Firebase Auth, JWT gateway, api routes protected, secure cookies, Keycloak for Backoffice
+-  **Security** | Keycloak, Google Sign-in, Firebase Auth, JWT gateway, api routes protected, secure cookies
 -  **Security scanning** | OWASP Dependency Check and npm audit via GitHub Actions
 -  **RateLimiter** | Bucket4J
--  **PostgreSQL as the database** with flyway to version the database
+-  **Data Layer** PostgreSQL, Flyway to versioned schema migrations
 -  **Database restore** one liner `make restore FILE=backups/{file}`
--  **Periodic rotating backups** Till 30 days
--  **Docker for local development** 
+-  **Periodic rotating backups** 30 days retention
 -  **Instrumentation**| Sentry frontend & backend (error tracking)
--  **Payment**| Stripe (to buy credits)
+-  **Payment**| Stripe (credit purchase flow)
 -  **Emails** | Sendgrid (when buy a survey)
 -  **Theme** | Dark/White theme
 -  **Observability:** Logstash + Elasticsearch + Kibana + Grafana  
 -  **Monitoring** | Prometheus + Grafana (Latency, Error Rate, Traffic, Saturation) 
 -  **Unit/Integration Test** | Vitest + JaCoCo + Codecov + TestContainers
 -  **Stress tests** with k6 (nightly via GitHub Actions)
- -  **LLMs** | analytics project connected to LLM models to provide AI service insights
- -  **Delivery** GitHub Actions · Docker · Caddy reverse‑proxy
+-  **LLMs** | analytics project connected to LLM models to provide AI service insights
+-  **Delivery** GitHub Actions · Docker · Caddy reverse‑proxy
 
 ## Project Structure
 

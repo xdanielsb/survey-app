@@ -11,8 +11,11 @@ http://localhost {
       }
         reverse_proxy kibana:5601
     }
-    handle /admin* {
+    handle_path /backoffice/* {
       reverse_proxy backoffice:4200
+    }
+    handle_path /keycloak/* {
+      reverse_proxy keycloak:8080
     }
     handle /grafana* {
       uri strip_prefix /grafana
