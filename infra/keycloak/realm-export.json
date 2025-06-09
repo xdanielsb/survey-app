@@ -1,6 +1,14 @@
 {
   "realm": "survey",
   "enabled": true,
+  "roles": {
+    "realm": [
+      { "name": "admin" },
+      { "name": "superadmin" },
+      { "name": "manager" },
+      { "name": "customer" }
+    ]
+  },
   "clients": [
     {
       "clientId": "backoffice",

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import Keycloak, { KeycloakInstance } from 'keycloak-js';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -8,8 +9,12 @@ export class KeycloakService {
   private keycloak!: KeycloakInstance;
 
   init(): Promise<void> {
+    if (!environment.keycloakUrl) {
+      throw new Error('KEYCLOAK_URL is not defined in environment variables');
+    }
+    console.log(environment.keycloakUrl);
     this.keycloak = new Keycloak({
-      url: 'http://localhost:8080',
+      url: environment.keycloakUrl,
       realm: 'survey',
       clientId: 'backoffice'
     });
