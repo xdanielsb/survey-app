@@ -43,6 +43,10 @@ public class UserService {
             });
   }
 
+  public java.util.List<User> getAllUsers() {
+    return userRepository.findAll();
+  }
+
   public User getCurrentUser() {
     var auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null || !auth.isAuthenticated()) {

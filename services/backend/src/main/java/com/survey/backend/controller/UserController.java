@@ -4,6 +4,8 @@ import com.survey.backend.dto.UserDTO;
 import com.survey.backend.entity.User;
 import com.survey.backend.helper.UserMapper;
 import com.survey.backend.security.RequireAuth;
+import com.survey.backend.security.RequireRole;
+import com.survey.backend.security.RoleType;
 import com.survey.backend.service.UserService;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,13 @@ public class UserController {
 
     User saved = userService.saveUser(uid, email);
     return ResponseEntity.ok(UserMapper.toDTO(saved));
+  }
+
+  @GetMapping
+  @RequireRole({RoleType.ADMIN})
+  public ResponseEntity<java.util.List<UserDTO>> getUsers() {
+    var users = userService.getAllUsers().stream().map(UserMapper::toDTO).toList();
+    return ResponseEntity.ok(users);
   }
 
   @GetMapping("/credits")
