@@ -15,7 +15,7 @@ dev-logs:
 	docker compose -f infra/docker-compose.dev.yml logs -f
 
 prod-up:
-	docker compose -f infra/docker-compose.yml --env-file infra/.env up --build -d
+	docker compose -f infra/docker-compose.yml --env-file infra/.env up -d
 
 prod-down:
 	docker compose -f infra/docker-compose.yml down
@@ -36,4 +36,4 @@ prod-ps:
 	docker compose -f infra/docker-compose.yml ps
 
 prod-restart:
-		docker compose -f infra/docker-compose.yml restart $(SERVICE)
+	docker compose -f infra/docker-compose.yml restart $(SERVICE)

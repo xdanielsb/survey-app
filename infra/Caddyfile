@@ -2,7 +2,7 @@ http://localhost {
     handle_path /api/* {
         reverse_proxy backend:8080
     }
-    handle_path /analytics/* {
+    handle_path /analytics* {
         reverse_proxy analytics:8000
     }
     handle /monitoring* {
@@ -11,15 +11,17 @@ http://localhost {
       }
         reverse_proxy kibana:5601
     }
-    handle_path /backoffice/* {
+    handle_path /backoffice* {
       reverse_proxy backoffice:4200
     }
-    handle_path /keycloak/* {
+    handle /keycloak* {
       reverse_proxy keycloak:8080
     }
     handle /grafana* {
       uri strip_prefix /grafana
       reverse_proxy grafana:3000
     }
-    reverse_proxy /* frontend:5173
+    handle {
+      reverse_proxy /* frontend:5173
+    }
 }
