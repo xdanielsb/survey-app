@@ -1,5 +1,4 @@
 <script setup lang="ts" strict>
-/* ─────────────────── imports ─────────────────── */
 import { ref, reactive, onMounted, computed } from 'vue'
 import { createSurvey } from '@/services/surveyService'
 import { getUserCredits } from '@/services/creditService'
@@ -10,8 +9,10 @@ import type { SurveyForm } from '@/validation/surveySchema'
 import { ValidationError } from 'yup'
 import { logger } from '@/plugins/logger'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/authStore'
 
 const router = useRouter()
+const authStore = useAuthStore()
 const surveyTitle = ref('')
 const questions = ref([{ text: '' }])
 const surveyCredits = ref<number | null>(null)
@@ -36,6 +37,10 @@ const removeQuestion = (i: number) => {
 }
 
 onMounted(async () => {
+  if (!authStore.isAuthenticated) {
+    surveyCredits.value = null
+    return
+  }
   try {
     surveyCredits.value = (await getUserCredits()).credits
   } catch (err) {

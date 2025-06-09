@@ -129,6 +129,10 @@ const credits = ref<number | null>(null)
 const authStore = useAuthStore()
 
 async function loadCredits() {
+  if (!authStore.isAuthenticated) {
+    credits.value = null
+    return
+  }
   try {
     const { credits: c } = await getUserCredits()
     credits.value = c
