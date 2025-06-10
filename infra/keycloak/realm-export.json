@@ -1,20 +1,62 @@
-{
-  "realm": "${KEYCLOAK_REALM}",
-  "enabled": true,
-  "roles": {
-    "realm": [
-      { "name": "admin" },
-      { "name": "superadmin" },
-      { "name": "manager" },
-      { "name": "customer" }
+[
+  {
+    "realm": "survey-production",
+    "enabled": true,
+    "roles": {
+      "realm": [
+        { "name": "admin" },
+        { "name": "superadmin" },
+        { "name": "manager" },
+        { "name": "customer" }
+      ]
+    },
+    "clients": [
+      {
+        "clientId": "backoffice",
+        "publicClient": true,
+        "redirectUris": ["${HOSTNAME}"],
+        "webOrigins": ["*"]
+      }
     ]
   },
-  "clients": [
-    {
-      "clientId": "backoffice",
-      "publicClient": true,
-      "redirectUris": ["http://localhost:4200/*"],
-      "webOrigins": ["*"]
-    }
-  ]
-}
+  {
+    "realm": "survey-staging",
+    "enabled": true,
+    "roles": {
+      "realm": [
+        { "name": "admin" },
+        { "name": "superadmin" },
+        { "name": "manager" },
+        { "name": "customer" }
+      ]
+    },
+    "clients": [
+      {
+        "clientId": "backoffice",
+        "publicClient": true,
+        "redirectUris": ["staging.${HOSTNAME}"],
+        "webOrigins": ["*"]
+      }
+    ]
+  },
+  {
+    "realm": "survey-development",
+    "enabled": true,
+    "roles": {
+      "realm": [
+        { "name": "admin" },
+        { "name": "superadmin" },
+        { "name": "manager" },
+        { "name": "customer" }
+      ]
+    },
+    "clients": [
+      {
+        "clientId": "backoffice",
+        "publicClient": true,
+        "redirectUris": ["http://localhost:4200/*"],
+        "webOrigins": ["*"]
+      }
+    ]
+  }
+]

@@ -60,8 +60,8 @@ services:
       KEYCLOAK_URL: ${KEYCLOAK_URL}
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
-      KC_SPI_ADMIN_ALLOWED_SYSTEM_VARIABLES: KEYCLOAK_REALM
+      HOSTNAME: ${HOSTNAME}
+      KC_SPI_ADMIN_ALLOWED_SYSTEM_VARIABLES: HOSTNAME
     volumes:
       - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
     depends_on:
