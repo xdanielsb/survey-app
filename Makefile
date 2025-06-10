@@ -24,7 +24,7 @@ prod-logs:
 	docker compose -f infra/docker-compose.yml logs -f
 
 prod-log-service:
-	docker compose -f infra/docker-compose.yml logs -f keycloak $(SERVICE)
+	docker compose -f infra/docker-compose.yml logs -f $(SERVICE)
 
 caddy-reload: ## Usage: make caddy-reload CONTAINER=<container-name>
 	docker exec $(CONTAINER) caddy reload --config /etc/caddy/Caddyfile --adapter caddyfile

@@ -204,25 +204,6 @@ services:
     environment:
       - NODE_ENV=production
 
-  keycloak:
-    image: quay.io/keycloak/keycloak:24.0.4
-    command: >
-      start-dev
-      --import-realm
-      --http-enabled=true
-      --http-relative-path=/keycloak
-      --hostname-strict=false
-      --proxy-headers xforwarded
-    container_name: keycloak
-    environment:
-      KEYCLOAK_URL: ${KEYCLOAK_URL}
-      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
-      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
-      KC_SPI_ADMIN_ALLOWED_SYSTEM_VARIABLES: KEYCLOAK_REALM
-    volumes:
-      - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
-
 volumes:
   db-data:
   caddy-data:

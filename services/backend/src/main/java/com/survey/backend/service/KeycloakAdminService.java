@@ -32,7 +32,7 @@ public class KeycloakAdminService {
   @Value("${keycloak.admin.password}")
   private String password;
 
-  private static final Logger log = LoggerFactory.getLogger(UserService.class);
+  private static final Logger log = LoggerFactory.getLogger(KeycloakAdminService.class);
 
   private Keycloak getInstance() {
     log.info("Connecting to Keycloak at {}", serverUrl);
