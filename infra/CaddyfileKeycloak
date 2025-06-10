@@ -1,0 +1,3 @@
+keycloak.localhost {
+   reverse_proxy keycloak:8080
+}

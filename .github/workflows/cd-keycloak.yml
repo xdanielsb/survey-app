@@ -1,0 +1,61 @@
+name: Deploy keycloak
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: keycloak
+    concurrency:
+      group: deploy-prod-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Copy project files to production server
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "."
+          target: "/root/survey-app"
+          strip_components: 0
+          rm: false
+          overwrite: true
+
+      - name: Upload .env file
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cat << 'EOF' > /root/survey-app/infra/.env
+              ${{ secrets.ENV_FILE }}
+            EOF
+
+      - name: Upload Caddyfile
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cat << 'EOF' > /root/survey-app/infra/Caddyfile
+              ${{ secrets.CADDYFILE_KEYCLOAK }}
+            EOF
+
+      - name: Deploy with Docker Compose (Production)
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /root/survey-app
+            docker compose -f infra/docker-compose.keycloak.yml down
+            docker compose -f infra/docker-compose.keycloak.yml --env-file infra/.env up -d --build
