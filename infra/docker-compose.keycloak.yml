@@ -23,7 +23,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./CaddyfileKeycloak:/etc/caddy/Caddyfile
       - caddy-data:/data
     depends_on:
       - keycloak
@@ -50,17 +50,20 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.4
     command: >
-      start-dev
+      start
       --import-realm
       --http-enabled=true
       --hostname-strict=false
       --proxy-headers xforwarded
     container_name: keycloak
     environment:
-      KEYCLOAK_URL: ${KEYCLOAK_URL}
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
       HOSTNAME: ${HOSTNAME}
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
       KC_SPI_ADMIN_ALLOWED_SYSTEM_VARIABLES: HOSTNAME
     volumes:
       - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json

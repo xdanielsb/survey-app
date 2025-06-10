@@ -8,20 +8,20 @@ jobs:
     runs-on: ubuntu-latest
     environment: keycloak
     concurrency:
-      group: deploy-prod-${{ github.ref }}
+      group: deploy-keycloak-${{ github.ref }}
       cancel-in-progress: true
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Copy project files to production server
+      - name: Copy keycloak resources to production server
         uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.HOST }}
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "."
+          source: "infra/docker-compose.keycloak.yml,infra/keycloak"
           target: "/root/survey-app"
           strip_components: 0
           rm: false
@@ -45,7 +45,7 @@ jobs:
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cat << 'EOF' > /root/survey-app/infra/Caddyfile
+            cat << 'EOF' > /root/survey-app/infra/CaddyfileKeycloak
               ${{ secrets.CADDYFILE_KEYCLOAK }}
             EOF
 
