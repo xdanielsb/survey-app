@@ -1,4 +1,4 @@
-.PHONY: restore dev-up dev-down dev-logs prod-up prod-down prod-logs caddy-reload container-exec prod-ps prod-restart
+.PHONY: restore dev-up dev-down dev-logs prod-up prod-down prod-logs caddy-reload container-exec prod-ps prod-restart prod-log-service dev-ps
 
 # Usage: make restore FILE=backups/survey-20250601-101329.sql.gz
 restore:
@@ -23,6 +23,9 @@ prod-down:
 prod-logs:
 	docker compose -f infra/docker-compose.yml logs -f
 
+prod-log-service:
+	docker compose -f infra/docker-compose.yml logs -f keycloak $(SERVICE)
+
 caddy-reload: ## Usage: make caddy-reload CONTAINER=<container-name>
 	docker exec $(CONTAINER) caddy reload --config /etc/caddy/Caddyfile --adapter caddyfile
 
@@ -37,3 +40,6 @@ prod-ps:
 
 prod-restart:
 	docker compose -f infra/docker-compose.yml restart $(SERVICE)
+
+dev-ps:
+	docker compose -f infra/docker-compose.dev.yml ps

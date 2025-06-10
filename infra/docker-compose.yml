@@ -31,6 +31,10 @@ services:
   logstash:
     image: docker.elastic.co/logstash/logstash:8.13.4
     container_name: logstash
+    environment:
+      # DO NOT USE QUOTES they will be passed as characters in the url
+      - ELASTIC_SEARCH_URL=${ELASTIC_SEARCH_URL}
+      - ENVIRONMENT=${ENVIRONMENT}
     volumes:
       - ./elk/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
     depends_on:
