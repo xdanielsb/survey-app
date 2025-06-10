@@ -1,5 +1,5 @@
 {
-  "realm": "survey",
+  "realm": "${KEYCLOAK_REALM}",
   "enabled": true,
   "roles": {
     "realm": [

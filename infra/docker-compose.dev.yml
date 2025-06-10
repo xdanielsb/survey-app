@@ -106,6 +106,8 @@ services:
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: secret
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
+      KC_SPI_ADMIN_ALLOWED_SYSTEM_VARIABLES: KEYCLOAK_REALM
     volumes:
       - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
     ports:
