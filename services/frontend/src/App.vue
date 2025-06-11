@@ -15,6 +15,7 @@ const authStore = useAuthStore()
 const userEmail = computed(() => (authStore.isAuthenticated ? authStore.email : null))
 const showLogin = ref(false)
 const premium = computed(() => authStore.isPremium)
+const isAdmin = computed(() => Array.isArray(authStore.roles) && authStore.roles.includes('admin'))
 const themeStore = useThemeStore()
 
 /* env pill classes */
@@ -108,6 +109,14 @@ onMounted(() => {
         >
           Buy Credits
         </button>
+
+        <a
+          v-if="isAdmin"
+          href="/backoffice"
+          class="px-4 py-1.5 rounded-full bg-[color:var(--color-primary-600)] text-white font-medium shadow-[var(--shadow-card)] hover:bg-[color:var(--color-primary-700)] transition"
+        >
+          Admin Panel
+        </a>
 
         <button
           @click="themeStore.toggle()"
