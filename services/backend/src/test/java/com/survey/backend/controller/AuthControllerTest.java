@@ -6,8 +6,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.survey.backend.dto.LoginRequestDTO;
-import com.survey.backend.entity.Role;
 import com.survey.backend.entity.User;
+import com.survey.backend.service.KeycloakAdminService;
 import com.survey.backend.service.UserService;
 import java.util.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +32,7 @@ public class AuthControllerTest {
   @MockBean private UserService userService;
 
   @MockBean private RestTemplate restTemplate;
+  @MockBean private KeycloakAdminService keycloakAdminService;
 
   private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -56,16 +57,10 @@ public class AuthControllerTest {
     loginRequest.setPassword("password");
     String email = "test@example.com";
 
-    Role customerRole = new Role(1L, "CUSTOMER");
-    User mockUser =
-        User.builder()
-            .uid(firebaseUid)
-            .roles(Set.of(customerRole))
-            .email("x@test.com")
-            .isPremium(true)
-            .build();
+    User mockUser = User.builder().uid(firebaseUid).email("x@test.com").isPremium(true).build();
 
     Mockito.when(userService.saveUser(firebaseUid, email)).thenReturn(mockUser);
+    Mockito.when(keycloakAdminService.getUserRoles(email)).thenReturn(List.of("CUSTOMER"));
 
     mockMvc
         .perform(

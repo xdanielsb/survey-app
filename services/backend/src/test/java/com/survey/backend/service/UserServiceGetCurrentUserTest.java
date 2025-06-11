@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.survey.backend.entity.User;
-import com.survey.backend.repository.RoleRepository;
 import com.survey.backend.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +22,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 class UserServiceGetCurrentUserTest {
 
   @Mock private UserRepository userRepository;
-  @Mock private RoleRepository roleRepository;
   @InjectMocks private UserService userService;
 
   @AfterEach

@@ -2,9 +2,9 @@ package com.survey.backend.controller;
 
 import com.survey.backend.dto.*;
 import com.survey.backend.helper.SurveyMapper;
+import com.survey.backend.security.KeycloakRole;
 import com.survey.backend.security.RequireAuth;
 import com.survey.backend.security.RequireRole;
-import com.survey.backend.security.RoleType;
 import com.survey.backend.service.AnalyticsService;
 import com.survey.backend.service.SurveyService;
 import com.survey.backend.service.UserService;
@@ -76,7 +76,7 @@ public class SurveyController {
     return ResponseEntity.ok(surveyService.getAllSurveys(pageable, query));
   }
 
-  @RequireRole({RoleType.ADMIN})
+  @RequireRole({KeycloakRole.ADMIN})
   @DeleteMapping("/delete/{id}")
   public ResponseEntity<Void> deleteSurvey(@PathVariable Long id) {
     surveyService.deleteSurvey(id);

@@ -1,6 +1,6 @@
 package com.survey.backend.security;
 
-public enum RoleType {
+public enum KeycloakRole {
   ADMIN,
   MANAGER,
   CUSTOMER

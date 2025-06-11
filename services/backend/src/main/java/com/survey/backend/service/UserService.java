@@ -1,10 +1,9 @@
 package com.survey.backend.service;
 
-import com.survey.backend.entity.Role;
 import com.survey.backend.entity.User;
-import com.survey.backend.repository.RoleRepository;
 import com.survey.backend.repository.UserRepository;
-import java.util.Set;
+import com.survey.backend.security.KeycloakRole;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserService {
   private final UserRepository userRepository;
-  private final RoleRepository roleRepository;
   private final KeycloakAdminService keycloakAdminService;
 
   private static final Logger log = LoggerFactory.getLogger(UserService.class);
@@ -34,20 +32,9 @@ public class UserService {
             })
         .orElseGet(
             () -> {
-              Role customerRole =
-                  roleRepository
-                      .findByName("CUSTOMER")
-                      .orElseThrow(() -> new IllegalStateException("CUSTOMER role not found"));
-              User user =
-                  User.builder()
-                      .uid(uid)
-                      .email(email)
-                      .isPremium(false)
-                      .roles(Set.of(customerRole))
-                      .build();
+              User user = User.builder().uid(uid).email(email).isPremium(false).build();
               User saved = userRepository.save(user);
-              keycloakAdminService.createUser(
-                  email, saved.getRoles().stream().map(Role::getName).toList());
+              keycloakAdminService.createUser(email, List.of(KeycloakRole.CUSTOMER.name()));
               return saved;
             });
   }

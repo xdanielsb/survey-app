@@ -2,7 +2,6 @@ package com.survey.backend.service;
 
 import com.survey.backend.dto.LoginRequestDTO;
 import com.survey.backend.dto.LoginResponseDTO;
-import com.survey.backend.entity.Role;
 import com.survey.backend.entity.User;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +18,7 @@ public class LoginService {
 
   private final RestTemplate restTemplate;
   private final UserService userService;
+  private final KeycloakAdminService keycloakAdminService;
 
   @Value("${firebase.api.key}")
   private String firebaseApiKey;
@@ -47,7 +47,7 @@ public class LoginService {
     String firebaseUid = (String) response.getBody().get("localId");
 
     User user = userService.saveUser(firebaseUid, request.getEmail());
-    List<String> roles = user.getRoles().stream().map(Role::getName).toList();
+    List<String> roles = keycloakAdminService.getUserRoles(request.getEmail());
 
     return new LoginResponseDTO(idToken, roles, user.isPremium());
   }

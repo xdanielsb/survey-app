@@ -12,6 +12,7 @@ import com.survey.backend.repository.UserRepository;
 import com.survey.backend.service.KeycloakAdminService;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,6 +35,8 @@ public class UserControllerTest extends IntegrationTest {
   @Test
   void createUser_savesUserAndReturnsOk() throws Exception {
     var requestBody = Map.of("uid", "firebase-123", "email", "test@user.com");
+    Mockito.when(keycloakAdminService.getUserRoles("test@user.com"))
+        .thenReturn(java.util.List.of("CUSTOMER"));
 
     mockMvc
         .perform(

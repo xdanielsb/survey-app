@@ -4,6 +4,7 @@ import com.survey.backend.dto.UserDTO;
 import com.survey.backend.entity.User;
 import com.survey.backend.helper.UserMapper;
 import com.survey.backend.security.RequireAuth;
+import com.survey.backend.service.KeycloakAdminService;
 import com.survey.backend.service.UserService;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,8 @@ public class UserController {
 
   private final UserService userService;
 
+  private final KeycloakAdminService keycloakAdminService;
+
   @PostMapping("/create")
   public ResponseEntity<UserDTO> createUser(@RequestBody Map<String, String> body) {
     String uid = body.get("uid");
@@ -28,7 +31,8 @@ public class UserController {
     }
 
     User saved = userService.saveUser(uid, email);
-    return ResponseEntity.ok(UserMapper.toDTO(saved));
+    var roles = keycloakAdminService.getUserRoles(email);
+    return ResponseEntity.ok(UserMapper.toDTO(saved, roles));
   }
 
   @GetMapping("/credits")

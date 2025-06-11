@@ -4,10 +4,8 @@ import com.google.firebase.auth.AuthErrorCode;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
-import com.survey.backend.entity.Role;
-import com.survey.backend.entity.User;
 import com.survey.backend.exception.ExpiredTokenException;
-import com.survey.backend.repository.UserRepository;
+import com.survey.backend.service.KeycloakAdminService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -17,7 +15,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,10 +29,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class FirebaseAuthFilter extends OncePerRequestFilter {
 
   private static final Logger log = LoggerFactory.getLogger(FirebaseAuthFilter.class);
-  private final UserRepository userRepository;
+  private final KeycloakAdminService keycloakAdminService;
 
-  public FirebaseAuthFilter(UserRepository userRepository) {
-    this.userRepository = userRepository;
+  public FirebaseAuthFilter(KeycloakAdminService keycloakAdminService) {
+    this.keycloakAdminService = keycloakAdminService;
   }
 
   @Override
@@ -54,15 +51,9 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
 
     if (decoded.isPresent()) {
       FirebaseToken token = decoded.get();
-
-      // Load user + roles
+      // Load roles from Keycloak
       List<GrantedAuthority> authorities =
-          userRepository
-              .findByUid(token.getUid())
-              .map(User::getRoles)
-              .orElse(Set.of()) // fallback to empty set if user not found
-              .stream()
-              .map(Role::getName)
+          keycloakAdminService.getUserRoles(token.getEmail()).stream()
               .map(SimpleGrantedAuthority::new)
               .collect(Collectors.toList());
 

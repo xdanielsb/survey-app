@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 
 import com.survey.backend.dto.LoginRequestDTO;
 import com.survey.backend.dto.LoginResponseDTO;
-import com.survey.backend.entity.Role;
 import com.survey.backend.entity.User;
 import java.util.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +25,7 @@ class LoginServiceTest {
   @Mock private RestTemplate restTemplate;
   @Mock private UserService userService;
   @InjectMocks private LoginService loginService;
+  @Mock private KeycloakAdminService keycloakAdminService;
 
   @BeforeEach
   void setUp() {
@@ -45,15 +45,9 @@ class LoginServiceTest {
     when(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(Map.class)))
         .thenReturn(new ResponseEntity<>(firebaseResp, HttpStatus.OK));
 
-    Role customerRole = new Role(1L, "CUSTOMER");
-    User user =
-        User.builder()
-            .uid("uid123")
-            .email("test@example.com")
-            .roles(Set.of(customerRole))
-            .isPremium(true)
-            .build();
+    User user = User.builder().uid("uid123").email("test@example.com").isPremium(true).build();
     when(userService.saveUser("uid123", "test@example.com")).thenReturn(user);
+    when(keycloakAdminService.getUserRoles("test@example.com")).thenReturn(List.of("CUSTOMER"));
 
     LoginResponseDTO result = loginService.login(req);
 

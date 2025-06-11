@@ -67,4 +67,18 @@ public class KeycloakAdminService {
     rr.roles().list().forEach(role -> log.info("Available role: {}", role.getName()));
     rr.users().get(userId).roles().realmLevel().add(roleReps);
   }
+
+  public List<String> getUserRoles(String email) {
+    Keycloak kc = getInstance();
+    UsersResource users = kc.realm(realm).users();
+    List<UserRepresentation> result = users.search(email, true);
+    if (result.isEmpty()) {
+      log.warn("User {} not found in Keycloak", email);
+      return List.of();
+    }
+    String userId = result.get(0).getId();
+    return users.get(userId).roles().realmLevel().listAll().stream()
+        .map(RoleRepresentation::getName)
+        .toList();
+  }
 }

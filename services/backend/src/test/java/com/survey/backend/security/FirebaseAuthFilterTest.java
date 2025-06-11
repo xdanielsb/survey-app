@@ -6,7 +6,7 @@ import static org.mockito.Mockito.*;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
-import com.survey.backend.repository.UserRepository;
+import com.survey.backend.service.KeycloakAdminService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,12 +25,12 @@ class FirebaseAuthFilterTest {
   private HttpServletRequest request;
   private HttpServletResponse response;
   private FilterChain chain;
-  private UserRepository userRepository;
+  private KeycloakAdminService keycloakAdminService;
 
   @BeforeEach
   void setUp() {
-    userRepository = mock(UserRepository.class);
-    filter = new FirebaseAuthFilter(userRepository);
+    keycloakAdminService = mock(KeycloakAdminService.class);
+    filter = new FirebaseAuthFilter(keycloakAdminService);
     request = mock(HttpServletRequest.class);
     response = mock(HttpServletResponse.class);
     chain = mock(FilterChain.class);
