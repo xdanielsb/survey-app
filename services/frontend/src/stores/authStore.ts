@@ -4,7 +4,7 @@ import Cookies from 'js-cookie'
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: Cookies.get('token') || null,
-    roles: JSON.parse(Cookies.get('roles') || '[]'),
+    roles: JSON.parse(Cookies.get('roles') || '[]') as string[],
     email: Cookies.get('email') || null,
     isAuthenticated: !!Cookies.get('token') && !!Cookies.get('email'),
     isPremium: Cookies.get('isPremium') === 'true',

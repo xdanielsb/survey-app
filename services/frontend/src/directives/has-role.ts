@@ -5,7 +5,9 @@ export const vRole = {
   mounted(el: HTMLElement, binding: DirectiveBinding<string | string[]>) {
     const authStore = useAuthStore()
     const roles = Array.isArray(binding.value) ? binding.value : [binding.value]
-    const hasRole = roles.some((role) => authStore.roles.includes(role))
+    const hasRole = roles.some((role) =>
+      authStore.roles.some((userRole) => userRole.toLowerCase() === String(role).toLowerCase()),
+    )
 
     if (!hasRole) {
       const tooltipText = `Requires role: ${roles.join(', ')}`

@@ -60,4 +60,12 @@ describe('vRole directive', () => {
     const button = wrapper.find('button')
     expect(button.attributes('aria-disabled')).toBeUndefined()
   })
+  it('matches roles case-insensitively', () => {
+    const wrapper = mount(TestComponent, {
+      global: { directives: { role: vRole } },
+      props: { role: 'AdMiN' },
+    })
+    const button = wrapper.find('button')
+    expect(button.attributes('aria-disabled')).toBeUndefined()
+  })
 })
