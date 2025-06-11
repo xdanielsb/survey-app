@@ -55,16 +55,16 @@ services:
       --http-enabled=true
       --hostname-strict=false
       --proxy-headers xforwarded
+      --spi-admin-allowed-system-variables=DOMAIN_URL
     container_name: keycloak
     environment:
+      DOMAIN_URL: ${DOMAIN_URL}
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-      HOSTNAME: ${HOSTNAME}
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
       KC_DB_USERNAME: ${POSTGRES_USER}
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
-      KC_SPI_ADMIN_ALLOWED_SYSTEM_VARIABLES: HOSTNAME
     volumes:
       - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
     depends_on:

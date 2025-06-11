@@ -94,12 +94,12 @@ services:
     command: > 
       start-dev
       --import-realm
+      --spi-admin-allowed-system-variables=DOMAIN_URL
     container_name: keycloak
     environment:
+      DOMAIN_URL: ${DOMAIN_URL}
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: secret
-      HOSTNAME: localhost
-      KC_SPI_ADMIN_ALLOWED_SYSTEM_VARIABLES: HOSTNAME
     volumes:
       - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
     ports:
