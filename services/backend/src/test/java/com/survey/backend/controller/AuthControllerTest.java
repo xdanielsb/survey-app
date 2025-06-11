@@ -36,18 +36,27 @@ public class AuthControllerTest {
 
   private ObjectMapper objectMapper = new ObjectMapper();
 
-  private final String firebaseToken = "mock-firebase-token";
-  private final String firebaseUid = "firebase-uid-123";
+  private final String keycloakToken = "mock-access-token";
+  private final String keycloakUid = "kc-uid-123";
 
   @BeforeEach
   public void setup() {
-    Map<String, Object> firebaseResponse = new HashMap<>();
-    firebaseResponse.put("idToken", firebaseToken);
-    firebaseResponse.put("localId", firebaseUid);
+    Map<String, Object> tokenResponse = new HashMap<>();
+    tokenResponse.put("access_token", keycloakToken);
 
-    ResponseEntity<Map> mockResponse = new ResponseEntity<>(firebaseResponse, HttpStatus.OK);
+    ResponseEntity<Map> tokenResp = new ResponseEntity<>(tokenResponse, HttpStatus.OK);
     Mockito.when(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(Map.class)))
-        .thenReturn(mockResponse);
+        .thenReturn(tokenResp);
+
+    Map<String, Object> infoResponse = new HashMap<>();
+    infoResponse.put("sub", keycloakUid);
+    infoResponse.put("email", "test@example.com");
+
+    ResponseEntity<Map> infoResp = new ResponseEntity<>(infoResponse, HttpStatus.OK);
+    Mockito.when(
+            restTemplate.exchange(
+                anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(Map.class)))
+        .thenReturn(infoResp);
   }
 
   @Test
@@ -57,9 +66,9 @@ public class AuthControllerTest {
     loginRequest.setPassword("password");
     String email = "test@example.com";
 
-    User mockUser = User.builder().uid(firebaseUid).email("x@test.com").isPremium(true).build();
+    User mockUser = User.builder().uid(keycloakUid).email("x@test.com").isPremium(true).build();
 
-    Mockito.when(userService.saveUser(firebaseUid, email)).thenReturn(mockUser);
+    Mockito.when(userService.saveUser(keycloakUid, email)).thenReturn(mockUser);
     Mockito.when(keycloakAdminService.getUserRoles(email)).thenReturn(List.of("CUSTOMER"));
 
     mockMvc
@@ -68,23 +77,23 @@ public class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest)))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.token").value(firebaseToken))
+        .andExpect(jsonPath("$.token").value(keycloakToken))
         .andExpect(jsonPath("$.roles[0]").value("CUSTOMER"))
         .andExpect(jsonPath("$.premium").value(true));
   }
 
   @Test
-  public void testLoginFailsWhenFirebaseResponseIsInvalid() throws Exception {
+  public void testLoginFailsWhenKeycloakResponseIsInvalid() throws Exception {
     LoginRequestDTO loginRequest = new LoginRequestDTO();
     loginRequest.setEmail("user@example.com");
     loginRequest.setPassword("password");
 
-    // Firebase returns 200 OK but no idToken (invalid credentials)
-    Map<String, Object> firebaseResponse = Map.of("someOtherField", "value");
+    // Keycloak returns 200 OK but no access token (invalid credentials)
+    Map<String, Object> badTokenResp = Map.of("error", "invalid_grant");
 
     Mockito.when(
             restTemplate.postForEntity(Mockito.anyString(), Mockito.any(), Mockito.eq(Map.class)))
-        .thenReturn(new ResponseEntity<>(firebaseResponse, HttpStatus.OK));
+        .thenReturn(new ResponseEntity<>(badTokenResp, HttpStatus.OK));
 
     mockMvc
         .perform(

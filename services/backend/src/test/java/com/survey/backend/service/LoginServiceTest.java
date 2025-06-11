@@ -8,14 +8,12 @@ import com.survey.backend.dto.LoginRequestDTO;
 import com.survey.backend.dto.LoginResponseDTO;
 import com.survey.backend.entity.User;
 import java.util.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.*;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -27,31 +25,30 @@ class LoginServiceTest {
   @InjectMocks private LoginService loginService;
   @Mock private KeycloakAdminService keycloakAdminService;
 
-  @BeforeEach
-  void setUp() {
-    ReflectionTestUtils.setField(loginService, "firebaseApiKey", "dummy-key");
-  }
+  private final String keycloakToken = "token123";
+  private final String keycloakUid = "uid123";
 
   @Test
   void login_success_returnsTokenAndRoles() {
+    Map<String, Object> tokenResp = Map.of("access_token", keycloakToken);
+    when(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(Map.class)))
+        .thenReturn(new ResponseEntity<>(tokenResp, HttpStatus.OK));
+
+    Map<String, Object> infoResp = Map.of("sub", keycloakUid, "email", "test@example.com");
+    when(restTemplate.exchange(
+            anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(Map.class)))
+        .thenReturn(new ResponseEntity<>(infoResp, HttpStatus.OK));
     LoginRequestDTO req = new LoginRequestDTO();
     req.setEmail("test@example.com");
     req.setPassword("pw");
 
-    Map<String, Object> firebaseResp = new HashMap<>();
-    firebaseResp.put("idToken", "token123");
-    firebaseResp.put("localId", "uid123");
-
-    when(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(Map.class)))
-        .thenReturn(new ResponseEntity<>(firebaseResp, HttpStatus.OK));
-
-    User user = User.builder().uid("uid123").email("test@example.com").isPremium(true).build();
-    when(userService.saveUser("uid123", "test@example.com")).thenReturn(user);
+    User user = User.builder().uid(keycloakUid).email("test@example.com").isPremium(true).build();
+    when(userService.saveUser(keycloakUid, "test@example.com")).thenReturn(user);
     when(keycloakAdminService.getUserRoles("test@example.com")).thenReturn(List.of("CUSTOMER"));
 
     LoginResponseDTO result = loginService.login(req);
 
-    assertEquals("token123", result.getToken());
+    assertEquals(keycloakToken, result.getToken());
     assertEquals(List.of("CUSTOMER"), result.getRoles());
     assertTrue(result.isPremium());
   }
@@ -62,9 +59,9 @@ class LoginServiceTest {
     req.setEmail("bad@example.com");
     req.setPassword("wrong");
 
-    Map<String, Object> firebaseResp = Map.of("noToken", "value");
+    Map<String, Object> badResp = Map.of("error", "invalid_grant");
     when(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(Map.class)))
-        .thenReturn(new ResponseEntity<>(firebaseResp, HttpStatus.OK));
+        .thenReturn(new ResponseEntity<>(badResp, HttpStatus.OK));
 
     assertThrows(ResponseStatusException.class, () -> loginService.login(req));
   }

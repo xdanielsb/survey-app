@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -20,35 +22,60 @@ public class LoginService {
   private final UserService userService;
   private final KeycloakAdminService keycloakAdminService;
 
-  @Value("${firebase.api.key}")
-  private String firebaseApiKey;
+  @Value("${keycloak.url}")
+  private String keycloakUrl;
+
+  @Value("${keycloak.realm}")
+  private String keycloakRealm;
+
+  @Value("${keycloak.client-id:backoffice}")
+  private String keycloakClientId;
+
+  @Value("${keycloak.client-secret}")
+  private String keycloakClientSecret;
 
   public LoginResponseDTO login(LoginRequestDTO request) {
-    String firebaseUrl =
-        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key="
-            + firebaseApiKey;
-
-    Map<String, Object> payload =
-        Map.of(
-            "email", request.getEmail(),
-            "password", request.getPassword(),
-            "returnSecureToken", true);
+    String tokenUrl =
+        String.format("%s/realms/%s/protocol/openid-connect/token", keycloakUrl, keycloakRealm);
+    String userInfoUrl =
+        String.format("%s/realms/%s/protocol/openid-connect/userinfo", keycloakUrl, keycloakRealm);
 
     HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-    HttpEntity<?> entity = new HttpEntity<>(payload, headers);
-    ResponseEntity<Map> response = restTemplate.postForEntity(firebaseUrl, entity, Map.class);
-    if (!response.getStatusCode().is2xxSuccessful() || !response.getBody().containsKey("idToken")) {
+    MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+    form.add("grant_type", "password");
+    form.add("client_id", keycloakClientId);
+    form.add("client_secret", keycloakClientSecret);
+    form.add("username", request.getEmail());
+    form.add("password", request.getPassword());
+    form.add("scope", "openid profile email");
+
+    HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(form, headers);
+
+    ResponseEntity<Map> response = restTemplate.postForEntity(tokenUrl, entity, Map.class);
+    if (!response.getStatusCode().is2xxSuccessful()
+        || !response.getBody().containsKey("access_token")) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
     }
 
-    String idToken = (String) response.getBody().get("idToken");
-    String firebaseUid = (String) response.getBody().get("localId");
+    String accessToken = (String) response.getBody().get("access_token");
 
-    User user = userService.saveUser(firebaseUid, request.getEmail());
-    List<String> roles = keycloakAdminService.getUserRoles(request.getEmail());
+    HttpHeaders infoHeaders = new HttpHeaders();
+    infoHeaders.setBearerAuth(accessToken);
+    HttpEntity<Void> infoEntity = new HttpEntity<>(infoHeaders);
+    ResponseEntity<Map> infoResp =
+        restTemplate.exchange(userInfoUrl, HttpMethod.GET, infoEntity, Map.class);
+    if (!infoResp.getStatusCode().is2xxSuccessful()) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+    }
+    Map info = infoResp.getBody();
+    String uid = (String) info.get("sub");
+    String email = info.getOrDefault("email", request.getEmail()).toString();
 
-    return new LoginResponseDTO(idToken, roles, user.isPremium());
+    User user = userService.saveUser(uid, email);
+    List<String> roles = keycloakAdminService.getUserRoles(email);
+
+    return new LoginResponseDTO(accessToken, roles, user.isPremium());
   }
 }

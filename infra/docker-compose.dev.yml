@@ -94,12 +94,14 @@ services:
     command: > 
       start-dev
       --import-realm
-      --spi-admin-allowed-system-variables=DOMAIN_URL
+      --spi-admin-allowed-system-variables=DOMAIN_URL,KC_CLIENT_STAGING_BACKEND_SECRET,KC_CLIENT_PROD_BACKEND_SECRET
     container_name: keycloak
     environment:
       DOMAIN_URL: ${DOMAIN_URL}
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: secret
+      KC_CLIENT_STAGING_BACKEND_SECRET: ${KC_CLIENT_STAGING_BACKEND_SECRET}
+      KC_CLIENT_PROD_BACKEND_SECRET: ${KC_CLIENT_PROD_BACKEND_SECRET}
     volumes:
       - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
     ports:
