@@ -13,19 +13,6 @@ services:
     ports:
       - "5432:5432"
 
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@surveyapp.com
-      PGADMIN_DEFAULT_PASSWORD: secret
-    ports:
-      - "8081:80"
-    volumes:
-      - pgadmin-data:/var/lib/pgadmin
-    depends_on:
-      - db
-
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
     container_name: elasticsearch
@@ -94,7 +81,6 @@ services:
     depends_on:
       - ollama
 
-
   ollama:
     image: ollama/ollama:latest
     container_name: ollama
@@ -105,17 +91,19 @@ services:
 
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.4
-    command: start-dev --import-realm
+    command: > 
+      start-dev
+      --import-realm
     container_name: keycloak
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: secret
-      HOSTNAME: ${HOSTNAME}
+      HOSTNAME: localhost
       KC_SPI_ADMIN_ALLOWED_SYSTEM_VARIABLES: HOSTNAME
     volumes:
       - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
     ports:
-      - "8082:8080"
+      - "8080:8080"
 
 volumes:
   db-data:

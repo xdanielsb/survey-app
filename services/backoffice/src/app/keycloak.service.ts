@@ -15,7 +15,7 @@ export class KeycloakService {
     console.log(environment.keycloakUrl);
     this.keycloak = new Keycloak({
       url: environment.keycloakUrl,
-      realm: 'survey',
+      realm: environment.realm,
       clientId: 'backoffice'
     });
     return this.keycloak.init({ onLoad: 'login-required' }).then(() => undefined);
