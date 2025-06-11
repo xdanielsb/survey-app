@@ -1,6 +1,8 @@
 package com.survey.backend.service;
 
+import com.survey.backend.dto.UserDTO;
 import com.survey.backend.entity.User;
+import com.survey.backend.helper.UserMapper;
 import com.survey.backend.repository.UserRepository;
 import com.survey.backend.security.KeycloakRole;
 import java.util.List;
@@ -60,5 +62,11 @@ public class UserService {
     return userRepository
         .findByUid(uid)
         .orElseThrow(() -> new UsernameNotFoundException("User not found for uid: " + uid));
+  }
+
+  public List<UserDTO> getAllUsers() {
+    return userRepository.findAll().stream()
+        .map(u -> UserMapper.toDTO(u, keycloakAdminService.getUserRoles(u.getEmail())))
+        .toList();
   }
 }

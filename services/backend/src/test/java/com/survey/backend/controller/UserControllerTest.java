@@ -10,6 +10,7 @@ import com.survey.backend.IntegrationTest;
 import com.survey.backend.entity.User;
 import com.survey.backend.repository.UserRepository;
 import com.survey.backend.service.KeycloakAdminService;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -78,5 +79,20 @@ public class UserControllerTest extends IntegrationTest {
         .perform(get("/users/credits"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.credits").value(7));
+  }
+
+  @Test
+  @WithMockUser(authorities = {"ADMIN"})
+  void getUsers_returnsAllUsers() throws Exception {
+    userRepository.save(User.builder().uid("u1").email("u1@test.com").build());
+    userRepository.save(User.builder().uid("u2").email("u2@test.com").build());
+    Mockito.when(keycloakAdminService.getUserRoles(Mockito.anyString()))
+        .thenReturn(List.of("ADMIN"));
+
+    mockMvc
+        .perform(get("/users"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$[0].email").value("u1@test.com"))
+        .andExpect(jsonPath("$[1].email").value("u2@test.com"));
   }
 }

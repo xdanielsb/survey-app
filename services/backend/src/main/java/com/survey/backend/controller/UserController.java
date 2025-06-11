@@ -3,7 +3,9 @@ package com.survey.backend.controller;
 import com.survey.backend.dto.UserDTO;
 import com.survey.backend.entity.User;
 import com.survey.backend.helper.UserMapper;
+import com.survey.backend.security.KeycloakRole;
 import com.survey.backend.security.RequireAuth;
+import com.survey.backend.security.RequireRole;
 import com.survey.backend.service.KeycloakAdminService;
 import com.survey.backend.service.UserService;
 import java.util.Map;
@@ -40,5 +42,11 @@ public class UserController {
   public ResponseEntity<Map<String, Integer>> getCredits() {
     User user = userService.getCurrentUser();
     return ResponseEntity.ok(Map.of("credits", user.getSurveyCredits()));
+  }
+
+  @GetMapping
+  @RequireRole({KeycloakRole.ADMIN, KeycloakRole.MANAGER})
+  public ResponseEntity<java.util.List<UserDTO>> getUsers() {
+    return ResponseEntity.ok(userService.getAllUsers());
   }
 }
