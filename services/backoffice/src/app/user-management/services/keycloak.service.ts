@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import Keycloak, { KeycloakInstance } from 'keycloak-js'
+import Keycloak from 'keycloak-js'
 import { environment } from '../../../environments/environment'
 import Cookies from 'js-cookie'
 
@@ -7,7 +7,7 @@ import Cookies from 'js-cookie'
   providedIn: 'root',
 })
 export class KeycloakService {
-  private keycloak!: KeycloakInstance
+  private keycloak!: Keycloak
 
   init(): Promise<void> {
     if (!environment.keycloakUrl) {

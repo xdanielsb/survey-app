@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { RouterOutlet } from '@angular/router'
-import { NgFor } from '@angular/common'
+import { NgFor, NgIf } from '@angular/common'
 import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatButtonModule } from '@angular/material/button'
 import { MatIconModule } from '@angular/material/icon'
@@ -11,13 +11,8 @@ import { KeycloakService } from '../../services/keycloak.service'
 
 @Component({
   selector: 'app-root',
-  imports: [
-    NgFor,
-    MatToolbarModule,
-    MatButtonModule,
-    MatIconModule,
-    MatMenuModule,
-  ],
+  standalone: true,
+  imports: [NgFor, NgIf, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
