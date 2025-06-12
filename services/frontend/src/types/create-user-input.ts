@@ -1,4 +1,3 @@
 export interface CreateUserInput {
-  uid: string
-  email: string | null
+  email: string
 }

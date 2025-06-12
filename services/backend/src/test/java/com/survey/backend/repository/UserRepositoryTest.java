@@ -23,7 +23,6 @@ class UserRepositoryTest {
   void decrementCreditIfAvailable_shouldDecrementCreditsWhenAvailable() {
     // given
     User user = new User();
-    user.setUid("uid123");
     user.setEmail("email@example.com");
     user.setSurveyCredits(2);
     user = userRepository.save(user);
@@ -45,7 +44,6 @@ class UserRepositoryTest {
   void decrementCreditIfAvailable_shouldDoNothingWhenCreditsAreZero() {
     // given
     User user = new User();
-    user.setUid("uid124");
     user.setEmail("email@example.com");
     user.setSurveyCredits(0);
     user = userRepository.save(user);

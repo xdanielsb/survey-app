@@ -25,7 +25,7 @@ public class PaymentController {
   @PostMapping("/session")
   public Map<String, String> createSession() throws StripeException {
     User user = userService.getCurrentUser();
-    log.info("Payment started by: " + user.getUid());
+    log.info("Payment started by: " + user.getEmail());
     String sessionId = paymentService.createCheckoutSession(user);
     return Map.of("sessionId", sessionId);
   }

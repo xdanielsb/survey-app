@@ -25,14 +25,13 @@ public class UserController {
 
   @PostMapping("/create")
   public ResponseEntity<UserDTO> createUser(@RequestBody Map<String, String> body) {
-    String uid = body.get("uid");
     String email = body.get("email");
 
-    if (uid == null || email == null) {
+    if (email == null) {
       return ResponseEntity.badRequest().build();
     }
 
-    User saved = userService.saveUser(uid, email);
+    User saved = userService.saveUser(email);
     var roles = keycloakAdminService.getUserRoles(email);
     return ResponseEntity.ok(UserMapper.toDTO(saved, roles));
   }

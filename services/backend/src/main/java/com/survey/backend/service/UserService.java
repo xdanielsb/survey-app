@@ -23,18 +23,12 @@ public class UserService {
 
   private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
-  public User saveUser(String uid, String email) {
+  public User saveUser(String email) {
     return userRepository
-        .findByUid(uid)
-        .map(
-            existing -> {
-              existing.setEmail(email); // update email if changed
-              log.info("Updating existing user with uid: {} and email: {}", uid, email);
-              return userRepository.save(existing);
-            })
+        .findByEmail(email)
         .orElseGet(
             () -> {
-              User user = User.builder().uid(uid).email(email).isPremium(false).build();
+              User user = User.builder().email(email).isPremium(false).build();
               User saved = userRepository.save(user);
               keycloakAdminService.createUser(email, List.of(KeycloakRole.CUSTOMER.name()));
               return saved;
@@ -47,21 +41,21 @@ public class UserService {
       throw new AccessDeniedException("Not authenticated");
     }
 
-    String uid;
+    String email;
 
     Object principal = auth.getPrincipal();
 
     if (principal instanceof String) {
-      uid = (String) principal;
+      email = (String) principal;
     } else if (principal instanceof UserDetails userDetails) {
-      uid = userDetails.getUsername();
+      email = userDetails.getUsername();
     } else {
       throw new IllegalStateException("Unexpected principal type: " + principal.getClass());
     }
 
     return userRepository
-        .findByUid(uid)
-        .orElseThrow(() -> new UsernameNotFoundException("User not found for uid: " + uid));
+        .findByEmail(email)
+        .orElseThrow(() -> new UsernameNotFoundException("User not found for email: " + email));
   }
 
   public List<UserDTO> getAllUsers() {

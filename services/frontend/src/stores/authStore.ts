@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import Cookies from 'js-cookie'
+import { keycloak } from '@/keycloak.ts'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -41,6 +42,13 @@ export const useAuthStore = defineStore('auth', {
     },
 
     logout() {
+      if (keycloak.authenticated) {
+        try {
+          keycloak.logout({ redirectUri: window.location.origin })
+        } catch (e) {
+          console.error('Keycloak logout failed:', e)
+        }
+      }
       this.token = null
       this.email = null
       this.roles = []

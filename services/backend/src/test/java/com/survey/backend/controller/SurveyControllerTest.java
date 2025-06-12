@@ -224,7 +224,7 @@ class SurveyControllerTest {
       username = "u1",
       authorities = {"CUSTOMER"})
   void getAiInsights_returnsInsights_whenUserHasCredits() throws Exception {
-    var user = User.builder().uid("u1").surveyCredits(2).build();
+    var user = User.builder().surveyCredits(2).build();
     when(userService.getCurrentUser()).thenReturn(user);
 
     SurveyResultDTO result = SurveyResultDTO.builder().surveyId(5L).surveyTitle("Demo").build();
@@ -244,7 +244,7 @@ class SurveyControllerTest {
       username = "u1",
       authorities = {"CUSTOMER"})
   void getAiInsights_forbidden_whenNoCredits() throws Exception {
-    var user = User.builder().uid("u1").surveyCredits(0).build();
+    var user = User.builder().surveyCredits(0).build();
     when(userService.getCurrentUser()).thenReturn(user);
 
     mockMvc.perform(get("/surveys/2/insights")).andExpect(status().isForbidden());

@@ -37,7 +37,6 @@ public class AuthControllerTest {
   private ObjectMapper objectMapper = new ObjectMapper();
 
   private final String keycloakToken = "mock-access-token";
-  private final String keycloakUid = "kc-uid-123";
 
   @BeforeEach
   public void setup() {
@@ -49,7 +48,6 @@ public class AuthControllerTest {
         .thenReturn(tokenResp);
 
     Map<String, Object> infoResponse = new HashMap<>();
-    infoResponse.put("sub", keycloakUid);
     infoResponse.put("email", "test@example.com");
 
     ResponseEntity<Map> infoResp = new ResponseEntity<>(infoResponse, HttpStatus.OK);
@@ -66,9 +64,9 @@ public class AuthControllerTest {
     loginRequest.setPassword("password");
     String email = "test@example.com";
 
-    User mockUser = User.builder().uid(keycloakUid).email("x@test.com").isPremium(true).build();
+    User mockUser = User.builder().email("x@test.com").isPremium(true).build();
 
-    Mockito.when(userService.saveUser(keycloakUid, email)).thenReturn(mockUser);
+    Mockito.when(userService.saveUser(email)).thenReturn(mockUser);
     Mockito.when(keycloakAdminService.getUserRoles(email)).thenReturn(List.of("CUSTOMER"));
 
     mockMvc

@@ -14,7 +14,7 @@ _Cloud‑native survey engine with end‑to‑end observability._
 ## Key Features
 
 -  **Seamless CI / CD** | Independent pipelines for UI & API, auto‑promote from staging to prod 
--  **Security** | Keycloak, Google Sign-in, Firebase Auth, JWT gateway, api routes protected, secure cookies
+-  **Security** | Keycloak, Google Sign-in  JWT gateway, api routes protected, secure cookies
 -  **Keycloak** | Multi-realm configuration (production, staging, development)
 -  **Security scanning** | OWASP Dependency Check and npm audit via GitHub Actions
 -  **RateLimiter** | Bucket4J

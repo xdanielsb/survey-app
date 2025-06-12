@@ -14,7 +14,6 @@ import lombok.Setter;
 @Builder
 public class UserDTO {
   private Long id;
-  private String uid;
   private String email;
   private int surveyCredits;
   private boolean premium;

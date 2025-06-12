@@ -60,12 +60,9 @@
 
           <router-link
             to="/create-survey"
-            class="relative inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-white bg-[color:var(--color-primary-600)] shadow-[var(--shadow-soft)] hover:bg-[color:var(--color-primary-700)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-primary-500)] transition"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-white bg-[color:var(--color-primary-600)] shadow-[var(--shadow-soft)] hover:bg-[color:var(--color-primary-700)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-primary-500)] transition"
           >
             + Create Survey
-            <span
-              class="absolute inset-0 rounded-full animate-ping bg-[color:var(--color-primary-600)] opacity-10"
-            />
           </router-link>
         </div>
       </section>

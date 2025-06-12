@@ -73,7 +73,7 @@ public class LoginService {
     String uid = (String) info.get("sub");
     String email = info.getOrDefault("email", request.getEmail()).toString();
 
-    User user = userService.saveUser(uid, email);
+    User user = userService.saveUser(email);
     List<String> roles = keycloakAdminService.getUserRoles(email);
 
     return new LoginResponseDTO(accessToken, roles, user.isPremium());

@@ -8,7 +8,6 @@ public class UserMapper {
   public static UserDTO toDTO(User user, List<String> roles) {
     return UserDTO.builder()
         .id(user.getId())
-        .uid(user.getUid())
         .email(user.getEmail())
         .surveyCredits(user.getSurveyCredits())
         .premium(user.isPremium())

@@ -31,10 +31,10 @@ class UserServiceGetCurrentUserTest {
 
   @Test
   void returnsUser_whenAuthenticatedWithStringPrincipal() {
-    User user = User.builder().uid("uid123").email("test@example.com").build();
-    when(userRepository.findByUid("uid123")).thenReturn(Optional.of(user));
+    User user = User.builder().email("test@example.com").build();
+    when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(user));
 
-    var auth = new UsernamePasswordAuthenticationToken("uid123", "pw", List.of());
+    var auth = new UsernamePasswordAuthenticationToken("test@example.com", "pw", List.of());
     SecurityContextHolder.getContext().setAuthentication(auth);
 
     User result = userService.getCurrentUser();
@@ -50,7 +50,7 @@ class UserServiceGetCurrentUserTest {
 
   @Test
   void throwsUsernameNotFound_whenUserMissing() {
-    when(userRepository.findByUid("missing")).thenReturn(Optional.empty());
+    when(userRepository.findByEmail("missing")).thenReturn(Optional.empty());
 
     var auth = new UsernamePasswordAuthenticationToken("missing", "pw", List.of());
     SecurityContextHolder.getContext().setAuthentication(auth);

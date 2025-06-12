@@ -26,7 +26,6 @@ class LoginServiceTest {
   @Mock private KeycloakAdminService keycloakAdminService;
 
   private final String keycloakToken = "token123";
-  private final String keycloakUid = "uid123";
 
   @Test
   void login_success_returnsTokenAndRoles() {
@@ -34,7 +33,7 @@ class LoginServiceTest {
     when(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(Map.class)))
         .thenReturn(new ResponseEntity<>(tokenResp, HttpStatus.OK));
 
-    Map<String, Object> infoResp = Map.of("sub", keycloakUid, "email", "test@example.com");
+    Map<String, Object> infoResp = Map.of("email", "test@example.com");
     when(restTemplate.exchange(
             anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(Map.class)))
         .thenReturn(new ResponseEntity<>(infoResp, HttpStatus.OK));
@@ -42,8 +41,8 @@ class LoginServiceTest {
     req.setEmail("test@example.com");
     req.setPassword("pw");
 
-    User user = User.builder().uid(keycloakUid).email("test@example.com").isPremium(true).build();
-    when(userService.saveUser(keycloakUid, "test@example.com")).thenReturn(user);
+    User user = User.builder().email("test@example.com").isPremium(true).build();
+    when(userService.saveUser("test@example.com")).thenReturn(user);
     when(keycloakAdminService.getUserRoles("test@example.com")).thenReturn(List.of("CUSTOMER"));
 
     LoginResponseDTO result = loginService.login(req);

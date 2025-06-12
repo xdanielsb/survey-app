@@ -37,7 +37,6 @@ class PaymentControllerTest {
   void testCreateSession_returnsSessionId() throws Exception {
     // Arrange
     User mockUser = new User();
-    mockUser.setUid("abc123");
     mockUser.setEmail("test@user.com");
 
     when(userService.getCurrentUser()).thenReturn(mockUser);

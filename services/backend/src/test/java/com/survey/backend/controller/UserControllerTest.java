@@ -35,7 +35,7 @@ public class UserControllerTest extends IntegrationTest {
 
   @Test
   void createUser_savesUserAndReturnsOk() throws Exception {
-    var requestBody = Map.of("uid", "firebase-123", "email", "test@user.com");
+    var requestBody = Map.of("email", "test@user.com");
     Mockito.when(keycloakAdminService.getUserRoles("test@user.com"))
         .thenReturn(java.util.List.of("CUSTOMER"));
 
@@ -45,35 +45,21 @@ public class UserControllerTest extends IntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestBody)))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.uid").value("firebase-123"))
         .andExpect(jsonPath("$.email").value("test@user.com"))
         .andExpect(jsonPath("$.premium").value(false))
         .andExpect(jsonPath("$.roles[0]").value("CUSTOMER"));
 
-    var saved = userRepository.findByUid("firebase-123");
+    var saved = userRepository.findByEmail("test@user.com");
     assertThat(saved).isPresent();
     assertThat(saved.get().getEmail()).isEqualTo("test@user.com");
   }
 
   @Test
-  void createUser_returnsBadRequest_whenMissingFields() throws Exception {
-    var invalidBody = Map.of("uid", "missing-email");
-
-    mockMvc
-        .perform(
-            post("/users/create")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(invalidBody)))
-        .andExpect(status().isBadRequest());
-  }
-
-  @Test
   @WithMockUser(
-      username = "test-uid-123",
+      username = "credits@email.com",
       authorities = {"CUSTOMER"})
   void getCredits_returnsSurveyCredits() throws Exception {
-    userRepository.save(
-        User.builder().uid("test-uid-123").email("credits@test.com").surveyCredits(7).build());
+    userRepository.save(User.builder().email("credits@email.com").surveyCredits(7).build());
 
     mockMvc
         .perform(get("/users/credits"))
@@ -84,8 +70,8 @@ public class UserControllerTest extends IntegrationTest {
   @Test
   @WithMockUser(authorities = {"ADMIN"})
   void getUsers_returnsAllUsers() throws Exception {
-    userRepository.save(User.builder().uid("u1").email("u1@test.com").build());
-    userRepository.save(User.builder().uid("u2").email("u2@test.com").build());
+    userRepository.save(User.builder().email("u1@test.com").build());
+    userRepository.save(User.builder().email("u2@test.com").build());
     Mockito.when(keycloakAdminService.getUserRoles(Mockito.anyString()))
         .thenReturn(List.of("ADMIN"));
 

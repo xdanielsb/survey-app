@@ -40,7 +40,6 @@ class SurveyServiceTest {
     // Arrange
     User user = new User();
     user.setId(1L);
-    user.setUid("admin-user");
     user.setEmail("user@example.com");
     user.setSurveyCredits(1);
 
@@ -72,7 +71,6 @@ class SurveyServiceTest {
   void createSurvey_shouldFailWhenNoCredits() {
     // Arrange
     User user = new User();
-    user.setUid("uid123");
     user.setEmail("user@example.com");
     user.setSurveyCredits(0);
 

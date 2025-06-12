@@ -12,19 +12,27 @@ import 'vue-toast-notification/dist/theme-default.css'
 import FloatingVue from 'floating-vue'
 import 'floating-vue/dist/style.css'
 
-const app = createApp(App)
+import { initializeKeycloak, syncAuthFromKeycloak } from '@/keycloak.ts'
 
-Sentry.init({
-  app,
-  dsn: import.meta.env.SENTRY_AUTH_DSN,
-  sendDefaultPii: true,
-})
+async function bootstrap() {
+  await initializeKeycloak().then(() => {
+    const app = createApp(App)
+    Sentry.init({
+      app,
+      dsn: import.meta.env.SENTRY_AUTH_DSN,
+      sendDefaultPii: true,
+    })
 
-app.use(router)
-app.use(ToastPlugin)
-app.use(createPinia())
-app.use(FloatingVue)
+    app.use(router)
+    app.use(ToastPlugin)
+    app.use(createPinia())
+    app.use(FloatingVue)
 
-app.directive('role', vRole)
+    app.directive('role', vRole)
 
-app.mount('#app')
+    app.mount('#app')
+    syncAuthFromKeycloak()
+  });
+}
+
+bootstrap()

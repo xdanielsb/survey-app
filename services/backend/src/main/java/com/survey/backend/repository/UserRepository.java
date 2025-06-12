@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-  Optional<User> findByUid(String uid);
+  Optional<User> findByEmail(String email);
 
   @Modifying
   @Query(

@@ -7,10 +7,6 @@ FROM eclipse-temurin:17-jdk
 WORKDIR /app
 COPY --from=builder /app/target/*.jar app.jar
 
-
-ARG FIREBASE_API_KEY
-ENV FIREBASE_API_KEY=$FIREBASE_API_KEY
-
 ARG LOGSTASH_HOST
 ENV LOGSTASH_HOST=$LOGSTASH_HOST
 

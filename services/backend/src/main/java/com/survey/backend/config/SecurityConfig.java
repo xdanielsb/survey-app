@@ -1,6 +1,6 @@
 package com.survey.backend.config;
 
-import com.survey.backend.security.FirebaseAuthFilter;
+import com.survey.backend.security.KeycloakAuthenticationFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +19,8 @@ import org.springframework.stereotype.Component;
 public class SecurityConfig {
 
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http, FirebaseAuthFilter firebaseAuthFilter)
+  public SecurityFilterChain filterChain(
+      HttpSecurity http, KeycloakAuthenticationFilter keycloakAuthenticationFilter)
       throws Exception {
     http.securityMatcher("/**")
         .authorizeHttpRequests(
@@ -28,7 +29,8 @@ public class SecurityConfig {
                     // Public routes (auth and some surveys)
                     .requestMatchers(
                         "/auth/login",
-                        "/users/**",
+                        "/users",
+                        "/users/create",
                         "/payments/webhook",
                         "/payments/webhook/**",
                         "/surveys",
@@ -51,12 +53,11 @@ public class SecurityConfig {
                         "/payments/verify",
                         "/users/credits")
                     .authenticated()
-
                     // Everything else is denied
                     .anyRequest()
                     .denyAll())
         .anonymous(AbstractHttpConfigurer::disable)
-        .addFilterBefore(firebaseAuthFilter, UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(keycloakAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
         .exceptionHandling(
             ex ->
                 ex.authenticationEntryPoint(

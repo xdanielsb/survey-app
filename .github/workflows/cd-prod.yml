@@ -49,17 +49,6 @@ jobs:
               ${{ secrets.CADDY_FILE }}
             EOF
 
-      - name: Upload Firebase Service Account
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.HOST }}
-          username: root
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cat << 'EOF' > /root/survey-app/services/backend/src/main/resources/firebase-service-account.json
-              ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-            EOF
-
       - name: Upload Env Configuration Backoffice
         uses: appleboy/ssh-action@v1
         with:
