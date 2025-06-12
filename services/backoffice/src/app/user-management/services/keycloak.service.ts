@@ -34,7 +34,19 @@ export class KeycloakService {
     this.keycloak?.logout()
   }
 
+  login(): void {
+    this.keycloak?.login()
+  }
+
   getToken(): string | undefined {
     return this.keycloak?.token
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.keycloak?.authenticated
+  }
+
+  getUsername(): string | undefined {
+    return this.keycloak?.tokenParsed?.['preferred_username'] as string | undefined
   }
 }
