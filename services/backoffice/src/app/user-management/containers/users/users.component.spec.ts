@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing'
 import { UsersComponent } from './users.component'
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing'
 
 describe('UsersComponent', () => {
   beforeEach(async () => {
