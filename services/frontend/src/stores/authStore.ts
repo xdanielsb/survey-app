@@ -18,17 +18,15 @@ export const useAuthStore = defineStore('auth', {
       this.email = email
       this.isAuthenticated = true
       this.isPremium = isPremium
-      Cookies.set('token', token, { secure: true, sameSite: 'strict', expires: 1 / 24 })
-      Cookies.set('email', email, { secure: true, sameSite: 'strict', expires: 1 / 24 })
+      Cookies.set('token', token, { secure: true, sameSite: 'strict'})
+      Cookies.set('email', email, { secure: true, sameSite: 'strict' })
       Cookies.set('roles', JSON.stringify(roles), {
         secure: true,
         sameSite: 'strict',
-        expires: 1 / 24,
       })
       Cookies.set('isPremium', String(isPremium), {
         secure: true,
         sameSite: 'strict',
-        expires: 1 / 24,
       })
     },
 
@@ -37,7 +35,6 @@ export const useAuthStore = defineStore('auth', {
       Cookies.set('isPremium', String(premium), {
         secure: true,
         sameSite: 'strict',
-        expires: 1 / 24,
       })
     },
 
