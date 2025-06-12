@@ -8,13 +8,14 @@ export function initKeycloak(keycloak: KeycloakService) {
 }
 
 import { routes } from './app.routes'
-import { provideHttpClient } from '@angular/common/http'
+import { provideHttpClient, withInterceptors } from '@angular/common/http'
+import { authInterceptor } from './user-management/interceptors/auth.interceptor'
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([authInterceptor])),
     {
       provide: APP_INITIALIZER,
       useFactory: initKeycloak,

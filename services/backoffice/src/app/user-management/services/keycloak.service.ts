@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core'
 import Keycloak, { KeycloakInstance } from 'keycloak-js'
 import { environment } from '../../../environments/environment'
+import Cookies from 'js-cookie'
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +19,15 @@ export class KeycloakService {
       realm: environment.realm,
       clientId: 'backoffice',
     })
-    return this.keycloak.init({ onLoad: 'login-required' }).then(() => undefined)
+    return this.keycloak.init({ onLoad: 'login-required' }).then(() => {
+      const token = this.keycloak?.token
+      if (token) {
+        Cookies.set('token', token, {
+          secure: true,
+          sameSite: 'strict',
+        })
+      }
+    })
   }
 
   logout(): void {
