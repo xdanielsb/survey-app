@@ -7,7 +7,6 @@ import { MatButtonModule } from '@angular/material/button'
 import { MatIconModule } from '@angular/material/icon'
 import { MatListModule } from '@angular/material/list'
 import { KeycloakService } from '../../services/keycloak.service'
-import { UsersComponent } from '../users/users.component'
 
 @Component({
   selector: 'app-layout',
@@ -21,7 +20,6 @@ import { UsersComponent } from '../users/users.component'
     MatButtonModule,
     MatIconModule,
     MatListModule,
-    UsersComponent,
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss',

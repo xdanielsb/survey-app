@@ -1,0 +1,30 @@
+<h1>Payments</h1>
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>Id</th>
+    <td mat-cell *matCellDef="let p">{{ p.id }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="email">
+    <th mat-header-cell *matHeaderCellDef>Email</th>
+    <td mat-cell *matCellDef="let p">{{ p.email }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="amountCents">
+    <th mat-header-cell *matHeaderCellDef>Amount (cents)</th>
+    <td mat-cell *matCellDef="let p">{{ p.amountCents }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="creditsGranted">
+    <th mat-header-cell *matHeaderCellDef>Credits</th>
+    <td mat-cell *matCellDef="let p">{{ p.creditsGranted }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="status">
+    <th mat-header-cell *matHeaderCellDef>Status</th>
+    <td mat-cell *matCellDef="let p">{{ p.status }}</td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>

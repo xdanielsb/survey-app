@@ -7,3 +7,12 @@
 .content {
   padding: 16px;
 }
+
+.sidenav {
+  width: 200px;
+  background-color: var(--color-neutral-100);
+}
+
+html.dark .sidenav {
+  background-color: var(--color-neutral-800);
+}
