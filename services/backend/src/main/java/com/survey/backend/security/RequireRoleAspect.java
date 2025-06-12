@@ -10,7 +10,6 @@ import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -32,11 +31,15 @@ public class RequireRoleAspect {
 
     Set<String> userRoles =
         auth.getAuthorities().stream()
-            .map(GrantedAuthority::getAuthority)
+            .map(
+                grantedAuthority ->
+                    grantedAuthority.getAuthority().toLowerCase()) // Convert to lowercase
             .collect(Collectors.toSet());
 
     boolean hasMatch =
-        Arrays.stream(requireRole.value()).map(Enum::name).anyMatch(userRoles::contains);
+        Arrays.stream(requireRole.value())
+            .map(role -> role.name().toLowerCase()) // Convert to lowercase
+            .anyMatch(userRoles::contains);
 
     if (!hasMatch) {
       log.error(
