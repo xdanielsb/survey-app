@@ -13,6 +13,7 @@ import com.survey.backend.repository.PaymentRepository;
 import com.survey.backend.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +48,10 @@ public class PaymentService {
 
   public Optional<Payment> findBySessionId(String sessionId) {
     return paymentRepository.findByStripeSessionId(sessionId);
+  }
+
+  public List<Payment> getAllPayments() {
+    return paymentRepository.findAll();
   }
 
   public String createCheckoutSession(User user) throws StripeException {

@@ -51,7 +51,8 @@ public class SecurityConfig {
                         "/payments/verify/**",
                         "/payments/session",
                         "/payments/verify",
-                        "/users/credits")
+                        "/users/credits",
+                        "/payments")
                     .authenticated()
                     // Everything else is denied
                     .anyRequest()

@@ -1,12 +1,17 @@
 package com.survey.backend.controller;
 
 import com.stripe.exception.StripeException;
+import com.survey.backend.dto.PaymentDTO;
 import com.survey.backend.entity.Payment;
 import com.survey.backend.entity.User;
+import com.survey.backend.helper.PaymentMapper;
+import com.survey.backend.security.KeycloakRole;
+import com.survey.backend.security.RequireRole;
 import com.survey.backend.service.PaymentService;
 import com.survey.backend.service.UserService;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,5 +60,15 @@ public class PaymentController {
             "status", payment.getStatus(),
             "email", payment.getEmail(),
             "creditsGranted", payment.getCreditsGranted()));
+  }
+
+  @GetMapping
+  @RequireRole({KeycloakRole.ADMIN, KeycloakRole.MANAGER})
+  public ResponseEntity<java.util.List<PaymentDTO>> getPayments() {
+    var payments =
+        paymentService.getAllPayments().stream()
+            .map(PaymentMapper::toDTO)
+            .collect(Collectors.toList());
+    return ResponseEntity.ok(payments);
   }
 }

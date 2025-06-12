@@ -8,6 +8,7 @@ import com.survey.backend.entity.Payment;
 import com.survey.backend.entity.User;
 import com.survey.backend.service.PaymentService;
 import com.survey.backend.service.UserService;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,5 +109,31 @@ class PaymentControllerTest {
     mockMvc
         .perform(MockMvcRequestBuilders.get("/payments/verify").param("session_id", sessionId))
         .andExpect(status().isNotFound());
+  }
+
+  @Test
+  @WithMockUser(authorities = {"ADMIN"})
+  void getPayments_returnsAllPayments() throws Exception {
+    Payment p1 =
+        Payment.builder()
+            .id(1L)
+            .email("a@test.com")
+            .amountCents(500)
+            .creditsGranted(1)
+            .status("PAID")
+            .build();
+
+    when(paymentService.getAllPayments()).thenReturn(List.of(p1));
+
+    mockMvc
+        .perform(MockMvcRequestBuilders.get("/payments"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$[0].email").value("a@test.com"))
+        .andExpect(jsonPath("$[0].status").value("PAID"));
+  }
+
+  @Test
+  void getPayments_whenNotAuthenticated_returns401() throws Exception {
+    mockMvc.perform(MockMvcRequestBuilders.get("/payments")).andExpect(status().isUnauthorized());
   }
 }
