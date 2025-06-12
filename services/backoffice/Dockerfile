@@ -1,4 +1,5 @@
-FROM node:18-alpine AS builder
+FROM node:20.19.0-alpine AS builder
+
 WORKDIR /app
 COPY . .
 
@@ -9,9 +10,13 @@ ENV KEYCLOAK_URL=$KEYCLOAK_URL
 RUN npm install
 RUN npm run build -- --base-href=$BASE_HREF
 
-FROM node:18-alpine AS runner
+# Use same compatible Node version for runtime
+FROM node:20.19.0-alpine AS runner
+
 WORKDIR /app
 COPY --from=builder /app /app
+
 RUN npm install -g serve
+
 EXPOSE 4200
 CMD ["serve", "-s", "dist/backoffice/browser", "-l", "4200"]
