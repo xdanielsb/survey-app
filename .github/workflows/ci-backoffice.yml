@@ -1,0 +1,45 @@
+name: Backoffice CI
+
+on:
+  push:
+    paths:
+      - 'services/backoffice/**'
+      - '.github/workflows/ci-backoffice.yml'
+    branches: [ master ]
+  pull_request:
+    paths:
+      - 'services/backoffice/**'
+      - '.github/workflows/ci-backoffice.yml'
+    branches: [ master ]
+
+jobs:
+  backoffice-tests:
+    name: Run Angular Backoffice Tests
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: services/backoffice
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('services/backoffice/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Karma tests
+        run: npx ng test --watch=false --browsers=ChromeHeadless

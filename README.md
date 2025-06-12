@@ -5,9 +5,11 @@ _Cloud‑native survey engine with end‑to‑end observability._
 ![Backend CI](https://github.com/xdanielsb/survey-app/actions/workflows/ci-backend.yml/badge.svg)
 ![Frontend CI](https://github.com/xdanielsb/survey-app/actions/workflows/ci-frontend.yml/badge.svg)
 ![Analytics CI](https://github.com/xdanielsb/survey-app/actions/workflows/ci-analytics.yml/badge.svg)
+![Backoffice CI](https://github.com/xdanielsb/survey-app/actions/workflows/ci-backoffice.yml/badge.svg)
 [![Frontend Coverage](https://img.shields.io/codecov/c/github/xdanielsb/survey-app?flag=frontend&label=frontend%20coverage&branch=master)](https://app.codecov.io/gh/xdanielsb/survey-app/flags/frontend)
 [![Backend Coverage](https://img.shields.io/codecov/c/github/xdanielsb/survey-app?flag=backend&label=backend%20coverage&branch=master)](https://app.codecov.io/gh/xdanielsb/survey-app/flags/backend)
 [![Analytics Coverage](https://img.shields.io/codecov/c/github/xdanielsb/survey-app?flag=analytics&label=analytics%20coverage&branch=master)](https://app.codecov.io/gh/xdanielsb/survey-app/flags/analytics)
+[![Backoffice Coverage](https://img.shields.io/codecov/c/github/xdanielsb/survey-app?flag=backoffice&label=backoffice%20coverage&branch=master)](https://app.codecov.io/gh/xdanielsb/survey-app/flags/backoffice)
 ![License](https://img.shields.io/github/license/xdanielsb/survey-app)
 ![Release](https://img.shields.io/github/v/tag/xdanielsb/survey-app)
 
