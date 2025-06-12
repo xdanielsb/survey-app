@@ -8,6 +8,14 @@
     <mat-toolbar color="primary">
       <span class="flex-spacer"></span>
       <span *ngIf="isLoggedIn" class="mr-2">{{ username }}</span>
+      <button
+        mat-icon-button
+        (click)="toggleTheme()"
+        [attr.aria-label]="dark ? 'Switch to light mode' : 'Switch to dark mode'"
+      >
+        <mat-icon *ngIf="!dark">dark_mode</mat-icon>
+        <mat-icon *ngIf="dark">light_mode</mat-icon>
+      </button>
       <button mat-button *ngIf="!isLoggedIn" (click)="login()">Login</button>
       <button mat-button *ngIf="isLoggedIn" (click)="logout()">Logout</button>
     </mat-toolbar>

@@ -27,7 +27,11 @@ import { UsersComponent } from '../users/users.component'
   styleUrl: './layout.component.scss',
 })
 export class LayoutComponent {
-  constructor(private keycloak: KeycloakService) {}
+  dark = false
+  constructor(private keycloak: KeycloakService) {
+    this.dark = localStorage.getItem('theme') === 'dark'
+    this.updateThemeClass()
+  }
 
   login() {
     this.keycloak.login()
@@ -43,5 +47,20 @@ export class LayoutComponent {
 
   get isLoggedIn(): boolean {
     return this.keycloak.isLoggedIn()
+  }
+
+  toggleTheme() {
+    this.dark = !this.dark
+    localStorage.setItem('theme', this.dark ? 'dark' : 'light')
+    this.updateThemeClass()
+  }
+
+  private updateThemeClass() {
+    const html = document.documentElement
+    if (this.dark) {
+      html.classList.add('dark')
+    } else {
+      html.classList.remove('dark')
+    }
   }
 }
