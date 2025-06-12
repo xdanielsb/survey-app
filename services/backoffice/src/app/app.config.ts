@@ -1,14 +1,14 @@
-import { ApplicationConfig, APP_INITIALIZER, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { ApplicationConfig, APP_INITIALIZER, provideZoneChangeDetection } from '@angular/core'
+import { provideRouter } from '@angular/router'
 
-import { KeycloakService } from './user-management/services/keycloak.service';
+import { KeycloakService } from './user-management/services/keycloak.service'
 
 export function initKeycloak(keycloak: KeycloakService) {
-  return () => keycloak.init();
+  return () => keycloak.init()
 }
 
-import { routes } from './app.routes';
-import {provideHttpClient} from '@angular/common/http';
+import { routes } from './app.routes'
+import { provideHttpClient } from '@angular/common/http'
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,7 +19,7 @@ export const appConfig: ApplicationConfig = {
       provide: APP_INITIALIZER,
       useFactory: initKeycloak,
       multi: true,
-      deps: [KeycloakService]
-    }
-  ]
-};
+      deps: [KeycloakService],
+    },
+  ],
+}

@@ -1,19 +1,19 @@
 <h1>Users</h1>
 <table>
   <thead>
-  <tr>
-    <th>Id</th>
-    <th>Email</th>
-    <th>Credits</th>
-    <th>Premium</th>
-  </tr>
+    <tr>
+      <th>Id</th>
+      <th>Email</th>
+      <th>Credits</th>
+      <th>Premium</th>
+    </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let user of users">
-    <td>{{ user.id }}</td>
-    <td>{{ user.email }}</td>
-    <td>{{ user.surveyCredits }}</td>
-    <td>{{ user.premium }}</td>
-  </tr>
+    <tr *ngFor="let user of users">
+      <td>{{ user.id }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.surveyCredits }}</td>
+      <td>{{ user.premium }}</td>
+    </tr>
   </tbody>
 </table>

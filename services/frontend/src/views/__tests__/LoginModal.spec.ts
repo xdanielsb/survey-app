@@ -9,13 +9,6 @@ vi.mock('@/services/authService', () => ({
 vi.mock('@/services/toastService', () => ({
   toastService: { success: vi.fn(), error: vi.fn() },
 }))
-vi.mock('firebase/auth', () => ({
-  signInWithPopup: vi.fn(),
-}))
-vi.mock('@/firebase.ts', () => ({
-  auth: {},
-  googleProvider: {},
-}))
 vi.mock('@/stores/authStore.ts', () => ({
   useAuthStore: () => ({ login: vi.fn() }),
 }))
