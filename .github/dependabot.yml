@@ -1,25 +1,68 @@
 version: 2
+
 updates:
   - package-ecosystem: "npm"
-    directory: "/frontend"
+    directory: "/services/frontend"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 2
+    open-pull-requests-limit: 3
+
+  - package-ecosystem: "docker"
+    directory: "/services/frontend"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
+
+  - package-ecosystem: "npm"
+    directory: "/services/backoffice"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
+
+  - package-ecosystem: "docker"
+    directory: "/services/backoffice"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
 
   - package-ecosystem: "maven"
-    directory: "/backend"
+    directory: "/services/backend"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 2
+    open-pull-requests-limit: 3
 
   - package-ecosystem: "docker"
-    directory: "/backend"
+    directory: "/services/backend"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 1
+    open-pull-requests-limit: 3
+
+  - package-ecosystem: "pip"
+    directory: "/services/analytics"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
 
   - package-ecosystem: "docker"
-    directory: "/frontend"
+    directory: "/services/analytics"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 1
+    open-pull-requests-limit: 3
+
+  - package-ecosystem: "pip"
+    directory: "/services/exports"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
+
+  - package-ecosystem: "docker"
+    directory: "/services/exports"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
