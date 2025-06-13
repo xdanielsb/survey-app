@@ -35,7 +35,7 @@ pydantic==2.11.5
     # via
     #   analytics (pyproject.toml)
     #   fastapi
-pydantic-core==2.33.2
+pydantic-core==2.35.1
     # via pydantic
 python-logstash==0.4.8
     # via analytics (pyproject.toml)
