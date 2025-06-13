@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing'
 import { PaymentsComponent } from './payments.component'
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing'
 
 describe('PaymentsComponent', () => {
   beforeEach(async () => {

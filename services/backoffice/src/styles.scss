@@ -1,19 +1,17 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+@include mat.core();
 
-html,
-body {
-  height: 100%;
-}
-body {
-  margin: 0;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
-}
+/* 2.  Design‑token CSS variables
+   -----------------------------------------------------------
+   NOTE:  These values are IDENTICAL to services/frontend/src/assets/styles/global.css
+          so colour, typography & shadows feel exactly the same everywhere.
+*/
 
 :root {
-  /* Typography */
-  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system;
+  --font-sans:
+    'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', sans-serif;
 
-  /* Colors: Neutrals */
   --color-neutral-50: #f9fafb;
   --color-neutral-100: #f3f4f6;
   --color-neutral-200: #e5e7eb;
@@ -25,21 +23,40 @@ body {
   --color-neutral-800: #1f2937;
   --color-neutral-900: #111827;
 
-  /* Primary */
   --color-primary-50: #eff6ff;
   --color-primary-100: #dbeafe;
   --color-primary-200: #bfdbfe;
   --color-primary-300: #93c5fd;
   --color-primary-400: #60a5fa;
-  --color-primary-500: #3b82f6;
+  --color-primary-500: #3b82f6; /* base */
   --color-primary-600: #2563eb;
   --color-primary-700: #1d4ed8;
   --color-primary-800: #1e40af;
   --color-primary-900: #1e3a8a;
+
+  --color-accent-400: oklch(0.92 0.19 114.08);
+
+  --color-success: #10b981; /* emerald‑500 */
+  --color-warning: #f59e0b; /* amber‑500 */
+  --color-danger: #ef4444; /* red‑500 */
+
+  --shadow-soft: 0 10px 40px rgba(0 0 0 / 0.04);
+  --shadow-card: 0 1px 2px rgba(0 0 0 / 0.06);
+  --radius-sm: 0.375rem;
+  --radius-lg: 1rem;
+
+  --mdc-theme-primary: var(--color-primary-600);
+  --mdc-theme-on-primary: #fff;
+  --mdc-theme-secondary: var(--color-accent-400);
+  --mdc-theme-on-secondary: #000;
+  --mdc-theme-surface: var(--color-neutral-50);
+  --mdc-theme-on-surface: var(--color-neutral-800);
+  --mdc-theme-background: var(--color-neutral-50);
 }
 
 html.dark {
   color-scheme: dark;
+
   --color-neutral-50: #18181b;
   --color-neutral-100: #27272a;
   --color-neutral-200: #3f3f46;
@@ -61,25 +78,94 @@ html.dark {
   --color-primary-700: #93c5fd;
   --color-primary-800: #bfdbfe;
   --color-primary-900: #dbeafe;
+
+  --color-accent-400: oklch(0.84 0.18 117.33);
+
+  --mdc-theme-primary: var(--color-primary-400);
+  --mdc-theme-on-primary: #fff;
+  --mdc-theme-surface: var(--color-neutral-800);
+  --mdc-theme-on-surface: var(--color-neutral-100);
+  --mdc-theme-background: var(--color-neutral-900);
+  --mat-list-list-item-label-text-color: #fff;
+  --mat-list-list-item-container-color: rgba(255, 255, 255, 0.2);
 }
 
-mat-toolbar.mat-primary {
-  background-color: var(--color-primary-600);
-  color: #fff;
+html,
+body {
+  height: 100%;
 }
 
-html.dark mat-toolbar.mat-primary {
-  background-color: var(--color-primary-400);
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--mdc-theme-background);
+  color: var(--mdc-theme-on-surface);
+  -webkit-font-smoothing: antialiased;
+  transition:
+    background-color 0.25s var(--ease-fluid),
+    color 0.25s var(--ease-fluid);
 }
 
-mat-sidenav {
-  color: var(--color-neutral-900);
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0 0 0.5em;
+  font-weight: 600;
 }
 
-html.dark mat-sidenav {
-  color: var(--color-neutral-900);
+p {
+  margin: 0 0 1em;
+  line-height: 1.6;
 }
 
-mat-nav-list a.mat-list-item {
-  color: inherit;
+.flex-spacer {
+  flex: 1 1 auto;
+}
+.grid-center {
+  display: grid;
+  place-items: center;
+}
+.shadow-card {
+  box-shadow: var(--shadow-card);
+}
+.radius-lg {
+  border-radius: var(--radius-lg);
+}
+
+.mat-toolbar,
+.mat-mdc-toolbar {
+  box-shadow: var(--shadow-soft);
+  background: var(--mdc-theme-primary);
+  color: var(--mdc-theme-on-primary);
+}
+
+.mat-mdc-button-base {
+  font-weight: 500;
+  text-transform: none;
+}
+
+.mat-drawer-side {
+  border-right: 1px solid var(--color-neutral-200);
+  background: var(--mdc-theme-surface);
+}
+html.dark .mat-drawer-side {
+  border-right: 1px solid var(--color-neutral-700);
+}
+
+.mat-mdc-card {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
 }
