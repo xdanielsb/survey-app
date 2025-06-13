@@ -14,12 +14,16 @@
 
     <div class="flex justify-end gap-3">
       <router-link :to="`/surveys/${survey.id}`" class="action-pill primary">
-        <ArrowRightOnRectangleIcon class="w-4 h-4" />
+        <ArrowRightOnRectangleIcon
+          class="w-4 h-4 transition-colors group-hover:text-[color:var(--color-primary-600)]"
+        />
         <span class="hidden sm:inline">Answer</span>
       </router-link>
 
       <router-link :to="`/surveys/${survey.id}/results`" class="action-pill neutral">
-        <ChartBarIcon class="w-4 h-4" />
+        <ChartBarIcon
+          class="w-4 h-4 transition-colors group-hover:text-[color:var(--color-primary-500)]"
+        />
         <span class="hidden sm:inline">Results</span>
       </router-link>
 
@@ -30,17 +34,21 @@
         class="action-pill neutral"
         title="Share on X"
       >
-        <ShareIcon class="w-4 h-4" />
+        <ShareIcon
+          class="w-4 h-4 transition-colors group-hover:text-[color:var(--color-primary-500)]"
+        />
         <span class="hidden sm:inline">Share</span>
       </a>
-
       <button
         v-role="['ADMIN']"
         @click="handleDelete"
-        class="action-pill danger"
+        class="action-pill danger cursor-pointer"
         title="Delete survey"
       >
-        <TrashIcon class="w-4 h-4" />
+        <TrashIcon
+          class="w-4 h-4 transition-colors group-hover:text-[color:var(--color-danger-600)]"
+        />
+        <span class="hidden sm:inline">Delete</span>
       </button>
     </div>
   </li>
