@@ -17,7 +17,22 @@ const showLogin = ref(false)
 const premium = computed(() => authStore.isPremium)
 const isAdmin = computed(() => Array.isArray(authStore.roles) && authStore.roles.includes('admin'))
 const themeStore = useThemeStore()
+const navOption = ref('')
 
+function handleOption() {
+  switch (navOption.value) {
+    case 'buy':
+      buyCredit()
+      break
+    case 'admin':
+      router.push('/backoffice')
+      break
+    case 'logout':
+      logout()
+      break
+  }
+  navOption.value = ''
+}
 /* env pill classes */
 const envClass = computed(() =>
   mode === 'development'
@@ -94,30 +109,6 @@ onMounted(() => {
       </div>
 
       <div class="flex items-center gap-4 text-sm">
-        <span
-          v-if="userEmail"
-          class="inline-flex items-center gap-1 text-[color:var(--color-neutral-700)] truncate max-w-[14rem]"
-        >
-          <span v-if="premium" v-tooltip="'Premium user'" class="text-yellow-500">👑</span>
-          {{ userEmail }}
-        </span>
-
-        <button
-          v-if="authStore.isAuthenticated"
-          @click="buyCredit"
-          class="px-4 py-1.5 rounded-full bg-black text-white font-medium shadow-[var(--shadow-card)] hover:bg-neutral-800 transition"
-        >
-          Buy Credits
-        </button>
-
-        <a
-          v-if="isAdmin"
-          href="/backoffice"
-          class="px-4 py-1.5 rounded-full bg-[color:var(--color-primary-600)] text-white font-medium shadow-[var(--shadow-card)] hover:bg-[color:var(--color-primary-700)] transition"
-        >
-          Admin Panel
-        </a>
-
         <button
           @click="themeStore.toggle()"
           class="p-2 rounded-full hover:bg-[color:var(--color-neutral-100)] transition"
@@ -126,6 +117,20 @@ onMounted(() => {
           <MoonIcon v-if="!themeStore.dark" class="w-5 h-5 text-[color:var(--color-neutral-600)]" />
           <SunIcon v-else class="w-5 h-5 text-[color:var(--color-neutral-600)]" />
         </button>
+        <select
+          v-if="authStore.isAuthenticated"
+          v-model="navOption"
+          @change="handleOption"
+          class="px-3 py-1.5 rounded-[var(--radius-sm)] border shadow-[var(--shadow-card)] bg-[color:var(--color-neutral-100)] text-[color:var(--color-neutral-700)]"
+        >
+          <option disabled value="">
+            <span v-if="premium" v-tooltip="'Premium user'" class="text-yellow-500">👑</span>
+            {{ userEmail }}
+          </option>
+          <option value="buy">Buy Credits</option>
+          <option value="admin" v-if="isAdmin">Admin Panel</option>
+          <option value="logout">Logout</option>
+        </select>
 
         <button
           v-if="!userEmail"
@@ -133,14 +138,6 @@ onMounted(() => {
           class="px-3 py-1.5 rounded-[var(--radius-sm)] bg-[color:var(--color-primary-600)] text-white hover:bg-[color:var(--color-primary-700)] transition"
         >
           Login
-        </button>
-
-        <button
-          v-else
-          @click="logout"
-          class="px-3 py-1.5 rounded-[var(--radius-sm)] bg-red-100 text-red-700 hover:bg-red-200 transition"
-        >
-          Logout
         </button>
       </div>
     </header>

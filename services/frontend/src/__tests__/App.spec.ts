@@ -41,16 +41,14 @@ describe('App.vue', () => {
     expect(hasLogin).toBe(true)
   })
 
-  it('shows user email and logout when logged in', async () => {
+  it('shows user email and dropdown menu when logged in', async () => {
     _auth.isAuthenticated = true
-    _auth.email = 'alice@example.com'
+    _auth.email = 'topg@daniel.com'
     _auth.isPremium = true
     const wrapper = mount(App, { global: { plugins: [createPinia()] } })
     await flushPromises()
-    expect(wrapper.text()).toContain('alice@example.com')
-    const hasBuy = wrapper
-      .findAll('button')
-      .some((b) => b.text().toLowerCase().includes('buy credits'))
-    expect(hasBuy).toBe(true)
+    expect(wrapper.text()).toContain('topg@daniel.com')
+    const options = wrapper.findAll('option').map((o) => o.text().toLowerCase())
+    expect(options).toContain('buy credits')
   })
 })

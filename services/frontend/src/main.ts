@@ -32,7 +32,7 @@ async function bootstrap() {
 
     app.mount('#app')
     syncAuthFromKeycloak()
-  });
+  })
 }
 
 bootstrap()
