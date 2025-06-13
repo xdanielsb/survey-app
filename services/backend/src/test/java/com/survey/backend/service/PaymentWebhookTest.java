@@ -37,6 +37,7 @@ class PaymentWebhookTest {
   @Mock UserRepository userRepo;
 
   @Mock EmailService emailService;
+  @Mock InvoiceService invoiceService;
 
   @BeforeEach
   void setUp() {
@@ -89,6 +90,7 @@ class PaymentWebhookTest {
       // should have granted 1 credit and marked premium
       verify(userRepo).save(argThat(u -> u.getSurveyCredits() == 1 && u.isPremium()));
       verify(emailService).sendCreditPurchaseEmail(user, 1);
+      verify(invoiceService).generateInvoice(payment);
     }
   }
 }

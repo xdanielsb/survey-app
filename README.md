@@ -25,6 +25,7 @@ _Cloud‑native survey engine with end‑to‑end observability._
 -  **Periodic rotating backups** 30 days retention
 -  **Instrumentation**| Sentry frontend, backend, analytics, sentry (error tracking)
 -  **Payment**| Stripe (credit purchase flow)
+-  **Invoice PDF** | Invoice generation for payments
 -  **Emails** | Sendgrid (when buy a survey)
 -  **Theme** | Dark/White theme
 -  **Observability:** Logstash + Elasticsearch + Kibana + Grafana  

@@ -31,6 +31,7 @@ class PaymentServiceCreateSessionTest {
   @Mock private UserRepository userRepo;
 
   @Mock private EmailService emailService;
+  @Mock private InvoiceService invoiceService;
 
   private static final String DUMMY_STRIPE_SECRET = "sk_test_dummy";
   private static final String DUMMY_PRICE_ID = "price_12345";

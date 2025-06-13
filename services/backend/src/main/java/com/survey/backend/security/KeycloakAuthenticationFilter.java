@@ -90,7 +90,10 @@ public class KeycloakAuthenticationFilter extends OncePerRequestFilter {
     } catch (Exception ex) {
       log.error("Token verification failed: {}", ex.getMessage());
       try {
-        response.sendError(HttpStatus.UNAUTHORIZED.value(), "Invalid token");
+        // response.sendError(HttpStatus.UNAUTHORIZED.value(), "Invalid token");
+        response.setHeader(HttpHeaders.WWW_AUTHENTICATE,
+                "Bearer error=\"invalid_token\"");
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
       } catch (IOException e) {
         log.error("Failed to send unauthorized response", e);
       }

@@ -83,12 +83,15 @@ services:
       - KEYCLOAK_REALM=${KEYCLOAK_REALM}
       - KEYCLOAK_CLIENT_ID=${KEYCLOAK_CLIENT_ID}
       - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
+      - INVOICE_STORAGE_PATH=./invoices
     healthcheck:
       test: ["CMD", "curl", "-f", "http://backend:8080/actuator/health"]
       interval: 5s
       timeout: 5s
       retries: 20
       start_period: 10s
+    volumes:
+      - ../invoices:/app/invoices
 
   frontend:
     build:
@@ -215,4 +218,5 @@ volumes:
   es-data:
   prometheus_data:
   ollama-data:
+  invoices:
 
