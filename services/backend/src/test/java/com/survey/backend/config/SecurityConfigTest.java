@@ -40,12 +40,6 @@ class SecurityConfigTest {
     mockMvc.perform(get("/payments/verify?session_id=130")).andExpect(status().isUnauthorized());
     mockMvc.perform(get("/payments")).andExpect(status().isUnauthorized());
     mockMvc.perform(get("/users/credits")).andExpect(status().isUnauthorized());
-    mockMvc
-        .perform(
-            post("/surveys/1/chat")
-                .content("{\"question\":\"hi\"}")
-                .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isUnauthorized());
   }
 
   @Test

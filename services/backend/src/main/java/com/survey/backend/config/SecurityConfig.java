@@ -34,6 +34,7 @@ public class SecurityConfig {
                         "/payments/webhook",
                         "/payments/webhook/**",
                         "/surveys",
+                        "/surveys/*/chat",
                         "/surveys/*",
                         "/surveys/*/responses",
                         "/surveys/*/results",
@@ -46,7 +47,6 @@ public class SecurityConfig {
                     .requestMatchers(
                         "/surveys/create",
                         "/surveys/delete/**",
-                        "/surveys/*/chat",
                         "/payments/verify",
                         "/payments/verify/**",
                         "/payments/session",

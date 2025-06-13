@@ -50,6 +50,16 @@ public class SurveyController {
   @PostMapping("/{id}/chat")
   public ResponseEntity<ChatResponseDTO> chat(
       @PathVariable Long id, @RequestBody ChatRequestDTO request) {
+    try {
+      var user = userService.getCurrentUser();
+      if (user == null || !user.isPremium()) {
+        return ResponseEntity.ok(
+            ChatResponseDTO.builder().answer("Buy a credit and enjoy chatting with a LLM").build());
+      }
+    } catch (Exception ignored) {
+      return ResponseEntity.ok(
+          ChatResponseDTO.builder().answer("Buy a credit and enjoy chatting with a LLM").build());
+    }
     ChatResponseDTO resp = analyticsService.askQuestion(request);
     return ResponseEntity.ok(resp);
   }

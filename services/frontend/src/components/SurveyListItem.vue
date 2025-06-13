@@ -51,6 +51,11 @@
         <span class="hidden sm:inline">Delete</span>
       </button>
     </div>
+    <ConfirmDialog
+      v-model="confirmDeleteOpen"
+      message="Delete this survey?"
+      @confirm="confirmDelete"
+    />
   </li>
 </template>
 
@@ -58,12 +63,15 @@
 import type { Survey } from '@/types/survey'
 import { deleteSurvey } from '@/services/surveyService'
 
+import { toastService } from '@/services/toastService'
+import { ref } from 'vue'
 import {
   ArrowRightOnRectangleIcon,
   ChartBarIcon,
   TrashIcon,
   ShareIcon,
 } from '@heroicons/vue/24/solid'
+import ConfirmDialog from '@/views/ConfirmDialog.vue'
 
 const props = defineProps<{ survey: Survey }>()
 const emit = defineEmits<{ (e: 'deleted', id: number): void }>()
@@ -72,9 +80,19 @@ const shareUrl =
   'https://x.com/share?url=' +
   encodeURIComponent(`${window.location.origin}/surveys/${props.survey.id}`)
 
-async function handleDelete() {
-  if (!confirm('Delete this survey?')) return
-  await deleteSurvey(props.survey.id)
-  emit('deleted', props.survey.id)
+const confirmDeleteOpen = ref(false)
+
+function handleDelete() {
+  confirmDeleteOpen.value = true
+}
+
+async function confirmDelete() {
+  try {
+    await deleteSurvey(props.survey.id)
+    toastService.success('Survey deleted')
+    emit('deleted', props.survey.id)
+  } catch {
+    toastService.error('Error deleting survey')
+  }
 }
 </script>

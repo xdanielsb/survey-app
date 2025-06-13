@@ -96,6 +96,7 @@ jobs:
           name: ${{ matrix.part }}
           fail_ci_if_error: true
           verbose: true
+          arguments: --no-compression
 
       # Always archive raw reports (helps debugging if Codecov rejects them)
       - name: Archive raw coverage artefacts

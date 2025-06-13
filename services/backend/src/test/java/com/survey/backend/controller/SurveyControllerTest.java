@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.survey.backend.dto.*;
 import com.survey.backend.entity.Question;
 import com.survey.backend.entity.Survey;
+import com.survey.backend.entity.User;
 import com.survey.backend.repository.UserRepository;
 import com.survey.backend.service.AnalyticsService;
 import com.survey.backend.service.SurveyService;
@@ -224,6 +225,8 @@ class SurveyControllerTest {
       authorities = {"CUSTOMER"})
   void chat_shouldReturnAnswer() throws Exception {
     ChatResponseDTO resp = ChatResponseDTO.builder().answer("pong").build();
+    when(userService.getCurrentUser())
+        .thenReturn(User.builder().email("u1").isPremium(true).build());
     when(analyticsService.askQuestion(any())).thenReturn(resp);
 
     mockMvc
@@ -233,5 +236,22 @@ class SurveyControllerTest {
                 .content("{\"question\":\"ping\"}"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.answer").value("pong"));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "u2",
+      authorities = {"CUSTOMER"})
+  void chat_shouldPromptUpgrade_whenNotPremium() throws Exception {
+    when(userService.getCurrentUser())
+        .thenReturn(User.builder().email("u2").isPremium(false).build());
+
+    mockMvc
+        .perform(
+            post("/surveys/1/chat")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"question\":\"ping\"}"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.answer").value("Buy a credit and enjoy chatting with a LLM"));
   }
 }
