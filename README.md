@@ -23,7 +23,7 @@ _Cloud‑native survey engine with end‑to‑end observability._
 -  **Data Layer** PostgreSQL, Flyway to versioned schema migrations
 -  **Database restore** one liner `make restore FILE=backups/{file}`
 -  **Periodic rotating backups** 30 days retention
--  **Instrumentation**| Sentry frontend & backend (error tracking)
+-  **Instrumentation**| Sentry frontend, backend, analytics, sentry (error tracking)
 -  **Payment**| Stripe (credit purchase flow)
 -  **Emails** | Sendgrid (when buy a survey)
 -  **Theme** | Dark/White theme

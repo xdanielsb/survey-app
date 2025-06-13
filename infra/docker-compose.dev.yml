@@ -78,6 +78,7 @@ services:
     environment:
       - OLLAMA_URL=http://localhost:11434
       - OLLAMA_MODEL=llama3
+      - SENTRY_AUTH_DSN=${SENTRY_AUTH_DSN}
     depends_on:
       - ollama
       - logstash

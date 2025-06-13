@@ -3,4 +3,5 @@ export const environment = {
   backendUrl: 'http://localhost:8080',
   keycloakUrl: 'http://localhost:8082',
   realm: 'survey-development',
+  sentryDsn: '',
 }

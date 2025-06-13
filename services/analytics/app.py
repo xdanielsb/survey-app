@@ -2,20 +2,27 @@ import logging
 import os
 
 import httpx
+import sentry_sdk
 from fastapi import FastAPI
 from logstash import LogstashFormatterVersion1, TCPLogstashHandler
 from pydantic import BaseModel
+from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 
 OLLAMA_URL = os.getenv("OLLAMA_URL")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3")
 LOGSTASH_HOST = os.getenv("LOGSTASH_HOST", "logstash")
 LOGSTASH_PORT = int(os.getenv("LOGSTASH_PORT", "5000"))
+SENTRY_AUTH_DSN = os.getenv("SENTRY_AUTH_DSN")
 
 logger = logging.getLogger("analytics")
 logger.setLevel(logging.INFO)
 stream_handler = logging.StreamHandler()
 stream_handler.setFormatter(logging.Formatter("%(levelname)s: %(message)s"))
 logger.addHandler(stream_handler)
+
+if SENTRY_AUTH_DSN:
+    sentry_sdk.init(dsn=SENTRY_AUTH_DSN, send_default_pii=True)
+
 try:
     handler = TCPLogstashHandler(LOGSTASH_HOST, LOGSTASH_PORT, version=1)
     handler.setFormatter(LogstashFormatterVersion1())
@@ -45,6 +52,8 @@ def summarize_with_ollama(prompt: str) -> str:
 
 
 app = FastAPI()
+if SENTRY_AUTH_DSN:
+    app.add_middleware(SentryAsgiMiddleware)
 
 
 class ChatRequest(BaseModel):

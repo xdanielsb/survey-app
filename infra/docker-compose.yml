@@ -101,6 +101,7 @@ services:
         VITE_KEYCLOAK_URL: ${KEYCLOAK_URL}
         VITE_KEYCLOAK_REALM: ${KEYCLOAK_REALM}
         VITE_KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}
+        SENTRY_AUTH_DSN=${SENTRY_AUTH_DSN}
     container_name: survey-frontend
     restart: always
     depends_on:
@@ -182,6 +183,7 @@ services:
     environment:
       - OLLAMA_URL=${OLLAMA_URL}
       - OLLAMA_MODEL=${OLLAMA_MODEL}
+      - SENTRY_AUTH_DSN=${SENTRY_AUTH_DSN}
     depends_on:
       - ollama
 
@@ -201,6 +203,7 @@ services:
       - backend
     environment:
       - NODE_ENV=production
+      - SENTRY_AUTH_DSN=${SENTRY_AUTH_DSN}
 
 volumes:
   db-data:
