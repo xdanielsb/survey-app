@@ -8,7 +8,11 @@
       >
         <span
           class="inline-block px-3 py-1 rounded-md"
-          :class="msg.role === 'user' ? 'bg-[color:var(--color-primary-200)]' : 'bg-[color:var(--color-neutral-200)]'"
+          :class="
+            msg.role === 'user'
+              ? 'bg-[color:var(--color-primary-200)]'
+              : 'bg-[color:var(--color-neutral-200)]'
+          "
         >
           {{ msg.content }}
         </span>
