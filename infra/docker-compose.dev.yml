@@ -76,7 +76,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - OLLAMA_URL=http://localhost:11434
+      - OLLAMA_URL=http://ollama:11434
       - OLLAMA_MODEL=llama3
       - SENTRY_AUTH_DSN=${SENTRY_AUTH_DSN}
     depends_on:
@@ -90,6 +90,10 @@ services:
       - "11434:11434"
     volumes:
       - ollama-data:/root/.ollama
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:11434/api/tags"]
+      interval: 10s
+      retries: 5
 
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.4

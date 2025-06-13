@@ -192,6 +192,10 @@ services:
     container_name: ollama
     volumes:
       - ollama-data:/root/.ollama
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:11434/api/tags"]
+      interval: 10s
+      retries: 5
 
   backoffice:
     build:
