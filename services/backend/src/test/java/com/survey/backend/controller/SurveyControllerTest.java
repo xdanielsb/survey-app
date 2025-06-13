@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.survey.backend.dto.*;
 import com.survey.backend.entity.Question;
 import com.survey.backend.entity.Survey;
-import com.survey.backend.entity.User;
 import com.survey.backend.repository.UserRepository;
 import com.survey.backend.service.AnalyticsService;
 import com.survey.backend.service.SurveyService;
@@ -223,33 +222,16 @@ class SurveyControllerTest {
   @WithMockUser(
       username = "u1",
       authorities = {"CUSTOMER"})
-  void getAiInsights_returnsInsights_whenUserHasCredits() throws Exception {
-    var user = User.builder().surveyCredits(2).build();
-    when(userService.getCurrentUser()).thenReturn(user);
-
-    SurveyResultDTO result = SurveyResultDTO.builder().surveyId(5L).surveyTitle("Demo").build();
-    AiInsightsDTO insights = AiInsightsDTO.builder().surveyId(5L).build();
-
-    when(surveyService.getSurveyResults(5L)).thenReturn(Optional.of(result));
-    when(analyticsService.analyzeSurvey(result)).thenReturn(insights);
+  void chat_shouldReturnAnswer() throws Exception {
+    ChatResponseDTO resp = ChatResponseDTO.builder().answer("pong").build();
+    when(analyticsService.askQuestion(any())).thenReturn(resp);
 
     mockMvc
-        .perform(get("/surveys/5/insights"))
+        .perform(
+            post("/surveys/1/chat")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"question\":\"ping\"}"))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.surveyId").value(5L));
-  }
-
-  @Test
-  @WithMockUser(
-      username = "u1",
-      authorities = {"CUSTOMER"})
-  void getAiInsights_forbidden_whenNoCredits() throws Exception {
-    var user = User.builder().surveyCredits(0).build();
-    when(userService.getCurrentUser()).thenReturn(user);
-
-    mockMvc.perform(get("/surveys/2/insights")).andExpect(status().isForbidden());
-
-    Mockito.verifyNoInteractions(surveyService);
-    Mockito.verifyNoInteractions(analyticsService);
+        .andExpect(jsonPath("$.answer").value("pong"));
   }
 }

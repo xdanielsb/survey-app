@@ -11,7 +11,6 @@ import com.survey.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,19 +47,11 @@ public class SurveyController {
         .orElse(ResponseEntity.notFound().build());
   }
 
-  @RequireAuth
-  @GetMapping("/{id}/insights")
-  public ResponseEntity<AiInsightsDTO> getAiInsights(@PathVariable Long id) {
-    var user = userService.getCurrentUser();
-    if (user.getSurveyCredits() <= 0) {
-      return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-    }
-
-    return surveyService
-        .getSurveyResults(id)
-        .map(analyticsService::analyzeSurvey)
-        .map(ResponseEntity::ok)
-        .orElse(ResponseEntity.notFound().build());
+  @PostMapping("/{id}/chat")
+  public ResponseEntity<ChatResponseDTO> chat(
+      @PathVariable Long id, @RequestBody ChatRequestDTO request) {
+    ChatResponseDTO resp = analyticsService.askQuestion(request);
+    return ResponseEntity.ok(resp);
   }
 
   @RequireAuth

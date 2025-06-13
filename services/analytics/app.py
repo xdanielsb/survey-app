@@ -1,5 +1,4 @@
 import os
-from typing import List
 
 import httpx
 from fastapi import FastAPI
@@ -25,49 +24,24 @@ def summarize_with_ollama(prompt: str) -> str:
         raise RuntimeError(f"ollama request failed: {exc}")
 
 
-class QuestionResult(BaseModel):
-    questionId: int
-    questionText: str
-    totalResponses: int
-    averageScore: float
-
-class SurveyResult(BaseModel):
-    surveyId: int
-    surveyTitle: str
-    questionResults: List[QuestionResult]
-
-class QuestionInsight(BaseModel):
-    questionId: int
-    summary: str
-
-class Insights(BaseModel):
-    surveyId: int
-    insights: List[QuestionInsight]
-
 app = FastAPI()
 
-@app.post("/analyze", response_model=Insights)
-def analyze(result: SurveyResult):
-    insights = []
-    for q in result.questionResults:
-        summary = None
-        if OLLAMA_URL:
-            prompt = (
-                f"Question: {q.questionText}\n"
-                f"Average score: {q.averageScore} (1-5). "
-                f"Summarize the sentiment in one short sentence."
-            )
-            try:
-                summary = summarize_with_ollama(prompt)
-            except Exception:
-                summary = None
 
-        if not summary:
-            if q.averageScore >= 4:
-                summary = "Most respondents agree"
-            elif q.averageScore <= 2:
-                summary = "Most respondents disagree"
-            else:
-                summary = "Mixed opinions"
-        insights.append(QuestionInsight(questionId=q.questionId, summary=summary))
-    return Insights(surveyId=result.surveyId, insights=insights)
+class ChatRequest(BaseModel):
+    question: str
+
+
+class ChatResponse(BaseModel):
+    answer: str
+
+@app.post("/ask", response_model=ChatResponse)
+def ask(request: ChatRequest):
+    answer = None
+    if OLLAMA_URL:
+        try:
+            answer = summarize_with_ollama(request.question)
+        except Exception:
+            answer = None
+    if not answer:
+        answer = f"Received question: {request.question}"
+    return ChatResponse(answer=answer)

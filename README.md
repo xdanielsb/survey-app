@@ -31,7 +31,7 @@ _Cloud‑native survey engine with end‑to‑end observability._
 -  **Monitoring** | Prometheus + Grafana (Latency, Error Rate, Traffic, Saturation) 
 -  **Unit/Integration Test** | Vitest + JaCoCo + Codecov + TestContainers
 -  **Stress tests** with k6 (nightly via GitHub Actions)
--  **LLMs** | analytics project connected to LLM models to provide AI service insights
+-  **LLMs** | analytics service exposes an AI chat endpoint to talk about the surveys.
 -  **Delivery** GitHub Actions · Docker · Caddy reverse‑proxy
 
 ## Project Structure

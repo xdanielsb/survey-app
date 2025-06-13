@@ -44,6 +44,7 @@
             :question="q"
           />
         </div>
+        <SurveyChatBox :survey-id="results.surveyId" class="max-w-xl" />
       </template>
     </main>
   </div>
@@ -55,6 +56,7 @@ import { useRoute } from 'vue-router'
 import type { SurveyResults } from '@/types/survey-results'
 import { fetchSurveyResults } from '@/services/surveyService'
 import SurveyResultItem from '@/components/SurveyResultItem.vue'
+import SurveyChatBox from '@/components/SurveyChatBox.vue'
 
 const route = useRoute()
 const results = ref<SurveyResults | null>(null)

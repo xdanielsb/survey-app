@@ -48,3 +48,11 @@ export const createUser = async (data: CreateUserInput): Promise<User> => {
   const response = await api.post<User>('/users/create', data)
   return response.data
 }
+
+export const askSurveyQuestion = async (
+  id: number,
+  question: string,
+): Promise<{ answer: string }> => {
+  const response = await api.post(`/surveys/${id}/chat`, { question })
+  return response.data
+}
