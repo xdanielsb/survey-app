@@ -80,6 +80,7 @@ services:
       - OLLAMA_MODEL=llama3
     depends_on:
       - ollama
+      - logstash
 
   ollama:
     image: ollama/ollama:latest
