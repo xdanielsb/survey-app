@@ -1,5 +1,7 @@
 package com.survey.backend.service;
 
+import static org.springframework.data.domain.Sort.by;
+
 import com.stripe.Stripe;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
@@ -20,8 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import static org.springframework.data.domain.Sort.by;
 
 @Slf4j
 @Service
@@ -54,8 +54,7 @@ public class PaymentService {
   }
 
   public List<Payment> getAllPayments() {
-    return paymentRepository.findAll(
-            by(Sort.Direction.DESC, "createdAt"));
+    return paymentRepository.findAll(by(Sort.Direction.DESC, "createdAt"));
   }
 
   public String createCheckoutSession(User user) throws StripeException {

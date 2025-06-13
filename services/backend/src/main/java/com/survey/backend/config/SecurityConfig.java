@@ -37,7 +37,6 @@ public class SecurityConfig {
                         "/surveys/*",
                         "/surveys/*/responses",
                         "/surveys/*/results",
-                        "/surveys/*/chat",
                         "/actuator/prometheus",
                         "/actuator/health",
                         "/actuator/info")
@@ -47,6 +46,7 @@ public class SecurityConfig {
                     .requestMatchers(
                         "/surveys/create",
                         "/surveys/delete/**",
+                        "/surveys/*/chat",
                         "/payments/verify",
                         "/payments/verify/**",
                         "/payments/session",
