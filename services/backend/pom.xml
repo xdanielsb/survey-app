@@ -193,7 +193,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>3.3.0</version>
+				<version>3.5.0</version>
 				<configuration>
 					<mainClass>com.survey.backend.BackendApplication</mainClass>
 					<excludes>
