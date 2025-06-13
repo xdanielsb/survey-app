@@ -18,7 +18,10 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import static org.springframework.data.domain.Sort.by;
 
 @Slf4j
 @Service
@@ -51,7 +54,8 @@ public class PaymentService {
   }
 
   public List<Payment> getAllPayments() {
-    return paymentRepository.findAll();
+    return paymentRepository.findAll(
+            by(Sort.Direction.DESC, "createdAt"));
   }
 
   public String createCheckoutSession(User user) throws StripeException {

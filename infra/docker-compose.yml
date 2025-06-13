@@ -101,7 +101,7 @@ services:
         VITE_KEYCLOAK_URL: ${KEYCLOAK_URL}
         VITE_KEYCLOAK_REALM: ${KEYCLOAK_REALM}
         VITE_KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}
-        SENTRY_AUTH_DSN=${SENTRY_AUTH_DSN}
+        SENTRY_AUTH_DSN: ${SENTRY_AUTH_DSN}
     container_name: survey-frontend
     restart: always
     depends_on:

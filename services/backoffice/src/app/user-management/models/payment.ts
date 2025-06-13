@@ -4,4 +4,5 @@ export interface Payment {
   amountCents: number
   creditsGranted: number
   status: string
+  createdAt: string
 }

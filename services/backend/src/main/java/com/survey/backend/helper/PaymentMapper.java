@@ -11,6 +11,7 @@ public class PaymentMapper {
         .amountCents(payment.getAmountCents())
         .creditsGranted(payment.getCreditsGranted())
         .status(payment.getStatus())
+        .createdAt(payment.getCreatedAt())
         .build();
   }
 }
