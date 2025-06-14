@@ -7,6 +7,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException.Unauthorized;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestControllerAdvice
@@ -15,7 +16,8 @@ public class GlobalExceptionHandler {
   @ExceptionHandler({
     AccessDeniedException.class,
     SecurityException.class,
-    AuthenticationException.class
+    AuthenticationException.class,
+    Unauthorized.class
   })
   public ResponseEntity<ApiError> onAuth(Throwable ex) {
     return ResponseEntity.status(HttpStatus.FORBIDDEN)
