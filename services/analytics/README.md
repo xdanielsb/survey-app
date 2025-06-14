@@ -26,3 +26,8 @@ pip install pip-tools
 pip-compile --output-file=requirements.txt pyproject.toml
 ```
 
+
+### Development
+```sh
+    uvicorn analytics.main:app --reload
+```
