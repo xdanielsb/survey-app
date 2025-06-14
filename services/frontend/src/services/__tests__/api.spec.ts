@@ -24,14 +24,19 @@ const logger = (await import('@/plugins/logger')).logger
 describe('api response interceptor', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.useFakeTimers()
   })
 
-  it('handles 401 by logging out, showing toast and redirecting', async () => {
+  it('handles 401 by logging out, showing toast, and redirecting', async () => {
     await onResponseError({ response: { status: 401 } }).catch(() => null)
 
     expect(toast.warning).toHaveBeenCalledWith('[Auth] Session expired, please login again.')
-    expect(mockStore.logout).toHaveBeenCalled() // <—
-    expect(router.push).toHaveBeenCalledWith('/login')
+
+    // Simulate the 3-second delay
+    vi.advanceTimersByTime(3000)
+
+    expect(mockStore.logout).toHaveBeenCalled()
+    expect(router.push).toHaveBeenCalledWith('/')
   })
 
   it('logs server HTTP errors', async () => {
