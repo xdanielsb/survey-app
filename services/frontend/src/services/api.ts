@@ -24,11 +24,14 @@ api.interceptors.request.use(
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const onResponseError = async (error: any) => {
-  if (error.response?.status === 403) {
+  if (error.response?.status === 401) {
     const authStore = useAuthStore()
     toastService.warning('[Auth] Session expired, please login again.')
-    authStore.logout()
-    router.push('/')
+    setTimeout(() => {
+      authStore.logout()
+      router.push('/')
+    }, 3000)
+    return Promise.reject(error)
   }
 
   if (error.response) {
@@ -36,7 +39,6 @@ export const onResponseError = async (error: any) => {
   } else {
     logger.error('Axios network/server error:', error)
   }
-
   return Promise.reject(error)
 }
 
