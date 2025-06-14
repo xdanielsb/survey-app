@@ -5,12 +5,12 @@ from typing import Optional
 import sentry_sdk
 from fastapi import FastAPI
 from logstash import LogstashFormatterVersion1, TCPLogstashHandler
-from pydantic import BaseModel
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 
+from analytics.models import ChatRequest, ChatResponse
 from analytics.ollama import OllamaClient
 
-OLLAMA_URL: Optional[str] = os.getenv("OLLAMA_URL", "http://localhost:11434")
+OLLAMA_URL: str = os.getenv("OLLAMA_URL", "http://localhost:11434")
 OLLAMA_MODEL: str =  "tinyllama"
 LOGSTASH_HOST: str = os.getenv("LOGSTASH_HOST", "logstash")
 LOGSTASH_PORT: int = int(os.getenv("LOGSTASH_PORT", "5000"))
@@ -33,30 +33,21 @@ try:
 except Exception as exc:  # noqa: BLE001
     logger.warning("Failed to configure Logstash handler: %s", exc)
 
-ollama_client: Optional[OllamaClient] = None
-if OLLAMA_URL:
-    ollama_client = OllamaClient(OLLAMA_URL, OLLAMA_MODEL, logger=logger)
+ollama_client: OllamaClient = OllamaClient(OLLAMA_URL, OLLAMA_MODEL, logger=logger)
 
 
 app = FastAPI()
 if SENTRY_AUTH_DSN:
     app.add_middleware(SentryAsgiMiddleware)
 
-class ChatRequest(BaseModel):
-    question: str
-
-class ChatResponse(BaseModel):
-    answer: str
 
 @app.post("/ask", response_model=ChatResponse)
 def ask(request: ChatRequest) -> ChatResponse:
     answer: Optional[str] = None
-
-    if ollama_client:
-        try:
-            answer = ollama_client.summarize(request.question)
-        except Exception:  # noqa: BLE001
-            answer = None
+    try:
+        answer = ollama_client.summarize(request.question)
+    except Exception:  # noqa: BLE001
+        answer = None
 
     if not answer:
         answer = f"Received question: {request.question}"
