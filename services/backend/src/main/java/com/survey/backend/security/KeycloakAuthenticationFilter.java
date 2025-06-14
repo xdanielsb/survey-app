@@ -88,7 +88,8 @@ public class KeycloakAuthenticationFilter extends OncePerRequestFilter {
       processAuthenticationResponse(resp.getBody(), response, filterChain, request);
 
     } catch (Exception ex) {
-      log.error("Error during token verification: {} - {}", ex.getClass().getSimpleName(), ex.toString());
+      log.error(
+          "Error during token verification: {} - {}", ex.getClass().getSimpleName(), ex.toString());
       log.error("Token verification failed: {}", ex.getMessage());
       try {
         response.sendError(HttpStatus.UNAUTHORIZED.value(), "Invalid token");
