@@ -46,7 +46,7 @@ jobs:
         run: ruff check .
 
       - name: Type check with mypy
-        run: mypy app.py tests/test_app.py
+        run: mypy src/analytics tests
 
       - name: Run pytest
         run: pytest -q

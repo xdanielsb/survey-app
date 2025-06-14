@@ -85,7 +85,7 @@ jobs:
         working-directory: services/analytics
         run: |
           pip install -e .[test]
-          pytest --cov=app --cov-report=xml --cov-report=html
+          pytest --cov=analytics --cov-report=xml --cov-report=html
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5

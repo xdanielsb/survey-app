@@ -43,3 +43,9 @@ check_untyped_defs = true
 
 [tool.pytest.ini_options]
 addopts = "-vv"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
