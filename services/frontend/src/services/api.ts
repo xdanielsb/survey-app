@@ -24,11 +24,11 @@ api.interceptors.request.use(
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const onResponseError = async (error: any) => {
-  if (error.response?.status === 401) {
+  if (error.response?.status === 403) {
     const authStore = useAuthStore()
     toastService.warning('[Auth] Session expired, please login again.')
     authStore.logout()
-    router.push('/login')
+    router.push('/')
   }
 
   if (error.response) {

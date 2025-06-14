@@ -1,6 +1,7 @@
 package com.survey.backend.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -25,6 +26,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -216,7 +218,7 @@ class SurveyControllerTest {
   void deleteSurvey_shouldFail_withCustomerRole() throws Exception {
     mockMvc.perform(delete("/surveys/delete/1")).andExpect(status().isForbidden());
 
-    Mockito.verifyNoInteractions(surveyService);
+    verifyNoInteractions(surveyService);
   }
 
   @Test
@@ -253,5 +255,24 @@ class SurveyControllerTest {
                 .content("{\"question\":\"ping\"}"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.answer").value("Buy a credit and enjoy chatting with a LLM"));
+  }
+
+  @Test
+  void unauthenticatedRequest_returns401_withReasonPhrase() throws Exception {
+    mockMvc
+        .perform(post("/surveys/create").contentType("application/json").content("{}"))
+        .andExpect(status().isUnauthorized()) // 401
+        .andExpect(status().reason(HttpStatus.UNAUTHORIZED.getReasonPhrase()));
+
+    verifyNoInteractions(surveyService);
+  }
+
+  @Test
+  @WithMockUser(authorities = "CUSTOMER")
+  void forbiddenRequest_returns403_andJsonError() throws Exception {
+    mockMvc
+        .perform(delete("/surveys/delete/1"))
+        .andExpect(status().isForbidden())
+        .andExpect(jsonPath("$.status").value("AUTH_ERROR"));
   }
 }
