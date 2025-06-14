@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from logstash import LogstashFormatterVersion1, TCPLogstashHandler
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 
+from analytics.exceptions import AnalyticException
 from analytics.models import ChatRequest, ChatResponse
 from analytics.ollama import OllamaClient
 
@@ -46,8 +47,8 @@ def ask(request: ChatRequest) -> ChatResponse:
     answer: Optional[str] = None
     try:
         answer = ollama_client.summarize(request.question)
-    except Exception:  # noqa: BLE001
-        answer = None
+    except AnalyticException as exc:
+        logger.error("Analytics error", exc_info=exc)
 
     if not answer:
         answer = f"Received question: {request.question}"

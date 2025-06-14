@@ -6,6 +6,12 @@ from typing import Optional
 
 import httpx
 
+from analytics.exceptions import (
+    ModelPullError,
+    OllamaRequestError,
+    OllamaUnreachable,
+)
+
 
 class OllamaClient:
     """Client for interacting with an Ollama server."""
@@ -36,16 +42,19 @@ class OllamaClient:
                 )
                 time.sleep(wait)
 
-        raise RuntimeError(f"Ollama unreachable after {attempts} attempts: {last_exc}") from last_exc
+        raise OllamaUnreachable(f"Ollama unreachable after {attempts} attempts") from last_exc
 
     def _pull(self) -> None:
         self.logger.info(f"Pulling model '{self.model}' from Ollama…")
-        response = httpx.post(
-            f"{self.url}/api/pull",
-            json={"name": self.model},
-            timeout=httpx.Timeout(self.PULL_TIMEOUT),
-        )
-        response.raise_for_status()
+        try:
+            response = httpx.post(
+                f"{self.url}/api/pull",
+                json={"name": self.model},
+                timeout=httpx.Timeout(self.PULL_TIMEOUT),
+            )
+            response.raise_for_status()
+        except httpx.HTTPError as exc:  # noqa: BLE001
+            raise ModelPullError(f"Failed to pull model '{self.model}': {exc}") from exc
         self.logger.info(f"Model '{self.model}' pulled successfully.")
 
     def _needs_pull(self, response: httpx.Response) -> bool:
@@ -77,9 +86,10 @@ class OllamaClient:
             return data.get("response", "").strip()
 
         except Exception as exc:  # noqa: BLE001
+
             self.logger.error(
                 "Ollama request failed",
                 exc_info=exc,
                 extra={"prompt": prompt, "model": self.model},
             )
-            raise RuntimeError(f"Ollama request failed: {exc}") from exc
+            raise OllamaRequestError(f"Ollama request failed: {exc}") from exc
