@@ -10,7 +10,7 @@ from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 
 from analytics.ollama import OllamaClient
 
-OLLAMA_URL: Optional[str] = os.getenv("OLLAMA_URL")
+OLLAMA_URL: Optional[str] = os.getenv("OLLAMA_URL", "http://localhost:11434")
 OLLAMA_MODEL: str =  "tinyllama"
 LOGSTASH_HOST: str = os.getenv("LOGSTASH_HOST", "logstash")
 LOGSTASH_PORT: int = int(os.getenv("LOGSTASH_PORT", "5000"))
