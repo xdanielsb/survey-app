@@ -196,7 +196,7 @@ services:
     volumes:
       - ollama-data:/root/.ollama
     healthcheck:
-      test: ["CMD", "curl", "-fsS", "http://localhost:11434/api/tags"]
+      test: "bash -c 'cat < /dev/null > /dev/tcp/localhost/11434'"
       interval: 10s
       retries: 5
 
