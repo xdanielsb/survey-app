@@ -20,7 +20,7 @@ idna==3.10
     # via anyio
 pillow==11.2.1
     # via reportlab
-pydantic==2.11.5
+pydantic==2.11.7
     # via fastapi
 pydantic-core==2.33.2
     # via pydantic
