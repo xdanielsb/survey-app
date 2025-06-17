@@ -107,6 +107,7 @@ async function googleLogin() {
             <form @submit.prevent="handleSubmit" class="space-y-4">
               <input
                 v-model="email"
+                v-if="!isSignUp"
                 type="email"
                 required
                 placeholder="Email"
@@ -114,6 +115,7 @@ async function googleLogin() {
               />
               <input
                 v-model="password"
+                v-if="!isSignUp"
                 type="password"
                 required
                 placeholder="Password"

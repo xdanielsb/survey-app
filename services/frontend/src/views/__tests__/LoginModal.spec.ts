@@ -35,6 +35,19 @@ describe('LoginView.vue', () => {
     expect(wrapper.find('input[type="password"]').exists()).toBe(true)
   })
 
+  it('hides credentials when sign-up is selected', async () => {
+    const wrapper = mount(LoginModal, {
+      props: { modelValue: true },
+      global: { stubs: { teleport: true } },
+    })
+
+    const toggleBtn = wrapper.find('button.ml-1')
+    await toggleBtn.trigger('click')
+
+    expect(wrapper.find('input[type="email"]').exists()).toBe(false)
+    expect(wrapper.find('input[type="password"]').exists()).toBe(false)
+  })
+
   it('does not render modal when modelValue is false', () => {
     const wrapper = mount(LoginModal, {
       props: { modelValue: false },
