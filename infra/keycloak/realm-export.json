@@ -2,6 +2,8 @@
   {
     "realm": "survey-production",
     "enabled": true,
+    "registrationAllowed": true,
+    "defaultRoles": ["customer"],
     "roles": {
       "realm": [
         { "name": "admin" },
@@ -57,6 +59,8 @@
   {
     "realm": "survey-staging",
     "enabled": true,
+    "registrationAllowed": true,
+    "defaultRoles": ["customer"],
     "roles": {
       "realm": [
         { "name": "admin" },
@@ -112,6 +116,8 @@
   {
     "realm": "survey-development",
     "enabled": true,
+    "registrationAllowed": true,
+    "defaultRoles": ["customer"],
     "roles": {
       "realm": [
         { "name": "admin" },

@@ -36,3 +36,18 @@ ignore:
   - "services/frontend/src/router/**"
   - "services/frontend/src/services/**"
   - "services/frontend/src/stores/**"
+
+  - "services/backoffice/public/**"
+  - "services/backoffice/angular.json"
+  - "services/backoffice/karma.conf.js"
+  - "services/backoffice/tsconfig.json"
+  - "services/backoffice/tsconfig.app.json"
+  - "services/backoffice/tsconfig.spec.json"
+  - "services/backoffice/src/environments/**"
+  - "services/backoffice/src/main.ts"
+  - "services/backoffice/src/index.html"
+  - "services/backoffice/src/styles.scss"
+
+  - "services/analytics/tests/**"
+
+  - "services/exports/tests/**"
