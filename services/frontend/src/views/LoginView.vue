@@ -32,14 +32,8 @@ async function handleSubmit() {
   /* Sign Up */
   if (isSignUp.value) {
     try {
-      const token = signUpUser(email.value, password.value)
-      if (token) {
-        toastService.success('Account created!')
-        router.push('/')
-        show.value = false
-      } else {
-        errorMsg.value = 'Could not create account'
-      }
+      await signUpUser()
+      // const token = signUpUser(email.value, password.value)
     } catch {
       errorMsg.value = 'Sign-up failed'
     }

@@ -3,7 +3,7 @@ import api from '@/services/api'
 import { useAuthStore } from '@/stores/authStore'
 import type { CreateUserInput } from '@/types/create-user-input.ts'
 import { createUser } from '@/services/surveyService.ts'
-import { getGoogleLoginUrl } from '@/services/keycloakService.ts'
+import { getGoogleLoginUrl, getSignUpUrl } from '@/services/keycloakService.ts'
 
 const authStore = useAuthStore()
 
@@ -38,6 +38,7 @@ export async function loginWithGoogle() {
   return { success: false, message: `Could not login` }
 }
 
-export function signUpUser(email: string, password: string) {
-  return 'token' + email + password
+export async function signUpUser(): Promise<void> {
+  const url = await getSignUpUrl()
+  window.location.href = url
 }

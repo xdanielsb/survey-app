@@ -9,6 +9,7 @@ import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.slf4j.Logger;
@@ -47,6 +48,10 @@ public class KeycloakAdminService {
   }
 
   public void createUser(String email, List<String> roles) {
+    createUser(email, null, roles);
+  }
+
+  public void createUser(String email, String password, List<String> roles) {
     Keycloak kc = getInstance();
     UsersResource users = kc.realm(realm).users();
     UserRepresentation user = new UserRepresentation();
@@ -59,6 +64,15 @@ public class KeycloakAdminService {
     }
     log.info("Created user {} in Keycloak", email);
     String userId = CreatedResponseUtil.getCreatedId(resp);
+
+    if (password != null) {
+      CredentialRepresentation cred = new CredentialRepresentation();
+      cred.setType(CredentialRepresentation.PASSWORD);
+      cred.setValue(password);
+      cred.setTemporary(false);
+      users.get(userId).resetPassword(cred);
+    }
+
     log.info("Assigned roles {} to user {}", roles, email);
     // TODO: verify roles exist before assigning
     RealmResource rr = kc.realm(realm);

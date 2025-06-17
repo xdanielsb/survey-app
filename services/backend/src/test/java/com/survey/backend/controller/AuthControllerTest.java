@@ -6,7 +6,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.survey.backend.dto.LoginRequestDTO;
+import com.survey.backend.dto.SignupRequestDTO;
 import com.survey.backend.entity.User;
+import com.survey.backend.security.KeycloakRole;
 import com.survey.backend.service.KeycloakAdminService;
 import com.survey.backend.service.UserService;
 import java.util.*;
@@ -99,5 +101,23 @@ public class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest)))
         .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  public void testSignupSuccess() throws Exception {
+    SignupRequestDTO req = new SignupRequestDTO();
+    req.setEmail("new@example.com");
+    req.setPassword("pw");
+
+    mockMvc
+        .perform(
+            post("/auth/signup")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+        .andExpect(status().isOk());
+
+    Mockito.verify(keycloakAdminService)
+        .createUser("new@example.com", "pw", List.of(KeycloakRole.CUSTOMER.name()));
+    Mockito.verify(userService).saveUser("new@example.com");
   }
 }

@@ -2,7 +2,9 @@ package com.survey.backend.service;
 
 import com.survey.backend.dto.LoginRequestDTO;
 import com.survey.backend.dto.LoginResponseDTO;
+import com.survey.backend.dto.SignupRequestDTO;
 import com.survey.backend.entity.User;
+import com.survey.backend.security.KeycloakRole;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -77,5 +79,11 @@ public class LoginService {
     List<String> roles = keycloakAdminService.getUserRoles(email);
 
     return new LoginResponseDTO(accessToken, roles, user.isPremium());
+  }
+
+  public void signup(SignupRequestDTO request) {
+    keycloakAdminService.createUser(
+        request.getEmail(), request.getPassword(), List.of(KeycloakRole.CUSTOMER.name()));
+    userService.saveUser(request.getEmail());
   }
 }

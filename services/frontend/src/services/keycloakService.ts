@@ -18,3 +18,9 @@ export async function getGoogleLoginUrl(): Promise<string> {
     redirectUri: window.location.origin,
   })
 }
+
+export async function getSignUpUrl(): Promise<string> {
+  return await keycloak.createRegisterUrl({
+    redirectUri: window.location.origin,
+  })
+}
