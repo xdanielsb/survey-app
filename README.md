@@ -39,11 +39,10 @@ _Cloud‑native survey engine with end‑to‑end observability._
 
 ```
 services/
-  backend/     (spring boot v17)
+  backend/     (spring boot 3 java 17)
   frontend/    (vuejs v3)
   backoffice/  (angular v20)
-  analytics/   (fastapi)
-  exports/     (fastapi) 
+  analytics/   (fastapi python3.12)
 infra/
   monitoring/
   elk/

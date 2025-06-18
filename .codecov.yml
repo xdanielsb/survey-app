@@ -50,4 +50,3 @@ ignore:
 
   - "services/analytics/tests/**"
 
-  - "services/exports/tests/**"
