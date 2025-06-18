@@ -10,7 +10,7 @@ anyio==4.9.0
     # via
     #   httpx
     #   starlette
-certifi==2025.4.26
+certifi==2025.6.15
     # via
     #   httpcore
     #   httpx
