@@ -31,7 +31,7 @@ export const useAuthStore = defineStore('auth', {
     },
 
     updatePremium(premium: boolean) {
-      this.isPremium = true
+      this.isPremium = premium
       Cookies.set('isPremium', String(premium), {
         secure: true,
         sameSite: 'strict',

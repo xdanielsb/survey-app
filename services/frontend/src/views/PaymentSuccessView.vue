@@ -41,7 +41,9 @@ export default {
       try {
         const response = await api.get(`/payments/verify?session_id=${sessionId}`)
         creditsGranted.value = response.data.creditsGranted
-        authStore.updatePremium(!!creditsGranted.value)
+        if (response.data.paid && !authStore.isPremium) {
+          authStore.updatePremium(true)
+        }
       } catch (err) {
         logger.error('Payment verification failed:', err)
         error.value = 'We could not verify your payment. Please contact support.'

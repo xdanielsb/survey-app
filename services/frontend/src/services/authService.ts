@@ -29,7 +29,7 @@ export async function loginWithGoogle() {
   window.location.href = url
   if (authStore.isAuthenticated) {
     const userDB: User = await fetchUser()
-    authStore.login(userDB.email, authStore.token || '', userDB.roles, userDB.premium)
+    authStore.login(userDB.email, authStore.token || '', authStore.roles, userDB.premium)
     return { success: true, message: `Welcome, friend'}!` }
   }
   return { success: false, message: `Could not login` }

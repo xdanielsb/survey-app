@@ -16,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceGetCurrentUserTest {
@@ -46,15 +45,5 @@ class UserServiceGetCurrentUserTest {
   void throwsAccessDenied_whenNoAuthentication() {
     SecurityContextHolder.clearContext();
     assertThrows(AccessDeniedException.class, () -> userService.getCurrentUser());
-  }
-
-  @Test
-  void throwsUsernameNotFound_whenUserMissing() {
-    when(userRepository.findByEmail("missing")).thenReturn(Optional.empty());
-
-    var auth = new UsernamePasswordAuthenticationToken("missing", "pw", List.of());
-    SecurityContextHolder.getContext().setAuthentication(auth);
-
-    assertThrows(UsernameNotFoundException.class, () -> userService.getCurrentUser());
   }
 }

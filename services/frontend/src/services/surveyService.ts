@@ -44,7 +44,8 @@ export const deleteSurvey = async (surveyId: number): Promise<void> => {
 }
 
 export const fetchUser = async (): Promise<User> => {
-  const response = await api.post<User>('/users/fetch', {})
+  const response = await api.get<User>('/users/fetch', {})
+  console.log('User fetched:', response.data)
   return response.data
 }
 

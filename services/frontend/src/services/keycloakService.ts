@@ -10,8 +10,7 @@ export async function getGoogleLoginUrl(): Promise<string> {
     const decoded: UserGmail = jwtDecode(token)
     const email = decoded.email || decoded.preferred_username
     const roles = decoded.realm_access?.roles || []
-
-    authStore.login(email, token, roles, false)
+    authStore.login(email, token, roles, authStore.isPremium)
   }
   return await keycloak.createLoginUrl({
     idpHint: 'google',

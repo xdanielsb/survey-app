@@ -7,7 +7,6 @@ import com.survey.backend.security.RequireAuth;
 import com.survey.backend.security.RequireRole;
 import com.survey.backend.service.KeycloakAdminService;
 import com.survey.backend.service.UserService;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,13 +25,6 @@ public class UserController {
   @RequireAuth
   public ResponseEntity<User> getUser() {
     return ResponseEntity.ok(userService.getCurrentUser());
-  }
-
-  @GetMapping("/credits")
-  @RequireAuth
-  public ResponseEntity<Map<String, Integer>> getCredits() {
-    User user = userService.getCurrentUser();
-    return ResponseEntity.ok(Map.of("credits", user.getSurveyCredits()));
   }
 
   @GetMapping

@@ -1,7 +1,7 @@
 export interface User {
   email: string
-  roles: string[]
   premium: boolean
+  surveyCredits: number
 }
 
 export interface UserGmail {

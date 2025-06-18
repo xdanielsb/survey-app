@@ -1,7 +1,6 @@
 <script setup lang="ts" strict>
 import { ref, reactive, onMounted, computed } from 'vue'
-import { createSurvey } from '@/services/surveyService'
-import { getUserCredits } from '@/services/creditService'
+import { createSurvey, fetchUser } from '@/services/surveyService'
 import { buySurveyCredit } from '@/services/stripeService'
 import { toastService } from '@/services/toastService'
 import { typedSurveySchema } from '@/validation/surveySchema'
@@ -42,7 +41,7 @@ onMounted(async () => {
     return
   }
   try {
-    surveyCredits.value = (await getUserCredits()).credits
+    surveyCredits.value = (await fetchUser()).surveyCredits
   } catch (err) {
     logger.error(JSON.stringify(err))
   }

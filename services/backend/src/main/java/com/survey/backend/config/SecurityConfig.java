@@ -40,7 +40,6 @@ public class SecurityConfig {
     "/payments/verify",
     "/payments/verify/**",
     "/payments/session",
-    "/users/credits",
     "/users/fetch",
     "/payments"
   };

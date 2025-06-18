@@ -33,7 +33,7 @@ export function syncAuthFromKeycloak() {
     const email = decoded.email || decoded.preferred_username
     const roles = decoded.realm_access?.roles || []
     const premium = decoded.premium ?? false
-    authStore.login(email, keycloak.token, roles, premium)
+    authStore.login(email, keycloak.token, roles, authStore.isPremium)
   }
 }
 

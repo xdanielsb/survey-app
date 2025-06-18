@@ -1,6 +1,5 @@
 package com.survey.backend.controller;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -32,53 +31,26 @@ public class UserControllerTest extends IntegrationTest {
 
   @Test
   @WithMockUser(
-          username = "daniel@user.com",
-          authorities = {"CUSTOMER"})
+      username = "daniel@user.com",
+      authorities = {"CUSTOMER"})
   void fetchUser() throws Exception {
-    mockMvc.perform(get("/users/fetch"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.email").value("daniel@user.com"));
+    mockMvc
+        .perform(get("/users/fetch"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.email").value("daniel@user.com"));
   }
 
   @Test
   @WithMockUser(
-          username = "daniel@user.com",
-          authorities = {"CUSTOMER"})
+      username = "daniel@user.com",
+      authorities = {"CUSTOMER"})
   void fetchUserPremium() throws Exception {
     userRepository.save(User.builder().email("daniel@user.com").isPremium(true).build());
-    mockMvc.perform(get("/users/fetch"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.premium")
-                    .value(true))
-            .andExpect(jsonPath("$.email")
-                    .value("daniel@user.com"));
-  }
-
-  @Test
-  @WithMockUser(
-      username = "auto@user.com",
-      authorities = {"CUSTOMER"})
-  void getCredits_createsUserWhenMissing() throws Exception {
     mockMvc
-        .perform(get("/users/credits"))
+        .perform(get("/users/fetch"))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.credits").value(0));
-
-    var saved = userRepository.findByEmail("auto@user.com");
-    assertThat(saved).isPresent();
-  }
-
-  @Test
-  @WithMockUser(
-      username = "credits@email.com",
-      authorities = {"CUSTOMER"})
-  void getCredits_returnsSurveyCredits() throws Exception {
-    userRepository.save(User.builder().email("credits@email.com").surveyCredits(7).build());
-
-    mockMvc
-        .perform(get("/users/credits"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.credits").value(7));
+        .andExpect(jsonPath("$.premium").value(true))
+        .andExpect(jsonPath("$.email").value("daniel@user.com"));
   }
 
   @Test

@@ -108,13 +108,13 @@
 
 <script lang="ts" setup>
 import { ref, watch, watchEffect, computed, onMounted } from 'vue'
-import { fetchSurveys } from '@/services/surveyService'
-import { getUserCredits } from '@/services/creditService'
+import { fetchSurveys, fetchUser } from '@/services/surveyService'
 import { onBeforeRouteUpdate } from 'vue-router'
 import type { Survey } from '@/types/survey'
 import SurveyListItem from '@/components/SurveyListItem.vue'
 import { logger } from '@/plugins/logger'
 import { useAuthStore } from '@/stores/authStore'
+import type { User } from '@/types/user.ts'
 
 /* ---------- reactive state ---------- */
 const surveys = ref<Survey[] | null>(null)
@@ -131,8 +131,9 @@ async function loadCredits() {
     return
   }
   try {
-    const { credits: c } = await getUserCredits()
-    credits.value = c
+    const userDB: User = await fetchUser()
+    authStore.login(userDB.email, authStore.token || '', authStore.roles, userDB.premium)
+    credits.value = userDB.surveyCredits
   } catch {
     logger.error('Failed to load user credits')
   }

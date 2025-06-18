@@ -39,7 +39,6 @@ class SecurityConfigTest {
     mockMvc.perform(post("/payments/session")).andExpect(status().isUnauthorized());
     mockMvc.perform(get("/payments/verify?session_id=130")).andExpect(status().isUnauthorized());
     mockMvc.perform(get("/payments")).andExpect(status().isUnauthorized());
-    mockMvc.perform(get("/users/credits")).andExpect(status().isUnauthorized());
   }
 
   @Test
