@@ -17,7 +17,7 @@ certifi==2025.4.26
     #   sentry-sdk
 click==8.2.1
     # via uvicorn
-fastapi==0.115.12
+fastapi==0.115.13
     # via analytics (pyproject.toml)
 h11==0.16.0
     # via
