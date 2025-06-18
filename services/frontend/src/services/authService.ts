@@ -1,9 +1,9 @@
 import { toastService } from '@/services/toastService'
 import api from '@/services/api'
 import { useAuthStore } from '@/stores/authStore'
-import type { CreateUserInput } from '@/types/create-user-input.ts'
-import { createUser } from '@/services/surveyService.ts'
+import { fetchUser } from '@/services/surveyService.ts'
 import { getGoogleLoginUrl, getSignUpUrl } from '@/services/keycloakService.ts'
+import type { User } from '@/types/user.ts'
 
 const authStore = useAuthStore()
 
@@ -28,10 +28,7 @@ export async function loginWithGoogle() {
   const url = await getGoogleLoginUrl()
   window.location.href = url
   if (authStore.isAuthenticated) {
-    const userPayload: CreateUserInput = {
-      email: authStore.email || '',
-    }
-    const userDB = await createUser(userPayload)
+    const userDB: User = await fetchUser()
     authStore.login(userDB.email, authStore.token || '', userDB.roles, userDB.premium)
     return { success: true, message: `Welcome, friend'}!` }
   }

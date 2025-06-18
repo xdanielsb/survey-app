@@ -2,7 +2,6 @@ package com.survey.backend.controller;
 
 import com.survey.backend.dto.UserDTO;
 import com.survey.backend.entity.User;
-import com.survey.backend.helper.UserMapper;
 import com.survey.backend.security.KeycloakRole;
 import com.survey.backend.security.RequireAuth;
 import com.survey.backend.security.RequireRole;
@@ -23,17 +22,10 @@ public class UserController {
 
   private final KeycloakAdminService keycloakAdminService;
 
-  @PostMapping("/create")
-  public ResponseEntity<UserDTO> createUser(@RequestBody Map<String, String> body) {
-    String email = body.get("email");
-
-    if (email == null) {
-      return ResponseEntity.badRequest().build();
-    }
-
-    User saved = userService.saveUser(email);
-    var roles = keycloakAdminService.getUserRoles(email);
-    return ResponseEntity.ok(UserMapper.toDTO(saved, roles));
+  @GetMapping("/fetch")
+  @RequireAuth
+  public ResponseEntity<User> getUser() {
+    return ResponseEntity.ok(userService.getCurrentUser());
   }
 
   @GetMapping("/credits")

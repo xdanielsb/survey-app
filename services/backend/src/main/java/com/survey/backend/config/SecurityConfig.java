@@ -22,7 +22,6 @@ public class SecurityConfig {
     "/auth/login",
     "/auth/signup",
     "/users",
-    "/users/create",
     "/payments/webhook",
     "/payments/webhook/**",
     "/surveys",
@@ -42,6 +41,7 @@ public class SecurityConfig {
     "/payments/verify/**",
     "/payments/session",
     "/users/credits",
+    "/users/fetch",
     "/payments"
   };
 

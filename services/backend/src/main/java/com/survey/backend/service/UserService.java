@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -55,7 +54,11 @@ public class UserService {
 
     return userRepository
         .findByEmail(email)
-        .orElseThrow(() -> new UsernameNotFoundException("User not found for email: " + email));
+        .orElseGet(
+            () -> {
+              log.info("Auto-creating user for {}", email);
+              return userRepository.save(User.builder().email(email).isPremium(false).build());
+            });
   }
 
   public List<UserDTO> getAllUsers() {

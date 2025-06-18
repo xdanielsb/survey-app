@@ -2,7 +2,6 @@ package com.survey.backend.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,14 +10,12 @@ import com.survey.backend.entity.User;
 import com.survey.backend.repository.UserRepository;
 import com.survey.backend.service.KeycloakAdminService;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -34,24 +31,41 @@ public class UserControllerTest extends IntegrationTest {
   @MockBean private KeycloakAdminService keycloakAdminService;
 
   @Test
-  void createUser_savesUserAndReturnsOk() throws Exception {
-    var requestBody = Map.of("email", "test@user.com");
-    Mockito.when(keycloakAdminService.getUserRoles("test@user.com"))
-        .thenReturn(java.util.List.of("CUSTOMER"));
+  @WithMockUser(
+          username = "daniel@user.com",
+          authorities = {"CUSTOMER"})
+  void fetchUser() throws Exception {
+    mockMvc.perform(get("/users/fetch"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.email").value("daniel@user.com"));
+  }
 
+  @Test
+  @WithMockUser(
+          username = "daniel@user.com",
+          authorities = {"CUSTOMER"})
+  void fetchUserPremium() throws Exception {
+    userRepository.save(User.builder().email("daniel@user.com").isPremium(true).build());
+    mockMvc.perform(get("/users/fetch"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.premium")
+                    .value(true))
+            .andExpect(jsonPath("$.email")
+                    .value("daniel@user.com"));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "auto@user.com",
+      authorities = {"CUSTOMER"})
+  void getCredits_createsUserWhenMissing() throws Exception {
     mockMvc
-        .perform(
-            post("/users/create")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestBody)))
+        .perform(get("/users/credits"))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.email").value("test@user.com"))
-        .andExpect(jsonPath("$.premium").value(false))
-        .andExpect(jsonPath("$.roles[0]").value("CUSTOMER"));
+        .andExpect(jsonPath("$.credits").value(0));
 
-    var saved = userRepository.findByEmail("test@user.com");
+    var saved = userRepository.findByEmail("auto@user.com");
     assertThat(saved).isPresent();
-    assertThat(saved.get().getEmail()).isEqualTo("test@user.com");
   }
 
   @Test
