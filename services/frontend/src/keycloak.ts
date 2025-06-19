@@ -32,7 +32,6 @@ export function syncAuthFromKeycloak() {
     const decoded: UserGmail = jwtDecode(keycloak.token)
     const email = decoded.email || decoded.preferred_username
     const roles = decoded.realm_access?.roles || []
-    const premium = decoded.premium ?? false
     authStore.login(email, keycloak.token, roles, authStore.isPremium)
   }
 }
