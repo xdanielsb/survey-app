@@ -126,24 +126,28 @@ services:
     depends_on:
       - frontend
 
-  db-backup:
-    image: prodrigestivill/postgres-backup-local
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    restart: unless-stopped
+
+  patronx-worker:
+    image: xdanielsb/patronx:latest
+    entrypoint: ["remoulade"]
+    command: ["patronx.tasks"]
     restart: unless-stopped
     environment:
-      POSTGRES_HOST: db
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      BACKUP_TARGET: /backups              # inside the container
-      BACKUP_SCHEDULE: "0 3 * * *"         # At 03:00 every day (cron syntax, container’s TZ)
-      BACKUP_ON_START: TRUE
-      BACKUP_KEEP_DAYS: "31"
-      BACKUP_KEEP_WEEKS: "0"
-      BACKUP_KEEP_MONTHS: "0"
+      AMQP_URL: amqp://guest:guest@rabbitmq:5672/
+      PGHOST: db
+      PGPORT: 5432
+      PGDATABASE: ${POSTGRES_DB}
+      PGUSER: ${POSTGRES_USER}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      BACKUP_DIR: /backups
     volumes:
       - ../backups:/backups
     depends_on:
       - db
+      - rabbitmq
 
   prometheus:
     image: prom/prometheus:v2.54.0

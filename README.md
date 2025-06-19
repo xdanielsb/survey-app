@@ -22,7 +22,7 @@ _Cloud‑native survey engine with end‑to‑end observability._
 -  **RateLimiter** | Bucket4J
 -  **Data Layer** PostgreSQL, Flyway to versioned schema migrations
 -  **Database restore** one liner `make restore FILE=backups/{file}`
--  **Periodic rotating backups** 30 days retention
+-  **Periodic rotating** with [PatronX](https://github.com/xdanielsb/patronx)
 -  **Instrumentation**| Sentry frontend, backend, analytics, sentry (error tracking)
 -  **Payment**| Stripe (credit purchase flow)
 -  **Invoice PDF** | Invoice generation for payments
