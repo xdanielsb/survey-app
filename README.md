@@ -35,6 +35,10 @@ _Cloud‑native survey engine with end‑to‑end observability._
 -  **LLMs** | analytics service exposes an AI chat endpoint to talk about the surveys.
 -  **Delivery** GitHub Actions · Docker · Caddy reverse‑proxy
 
+
+## Docs
+-  **See** [Database Recovery Guide](docs/database-recovery.md) for how to restore the database in case of an incident-  **See** [Database Recovery Guide](docs/database-recovery.md) for how to restore the database in case of an incident.
+
 ## Project Structure
 
 ```
