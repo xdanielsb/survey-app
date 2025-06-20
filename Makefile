@@ -1,7 +1,7 @@
-.PHONY: restore prod-list-backups dev-up dev-down dev-logs prod-up prod-down prod-logs caddy-reload container-exec prod-ps prod-restart prod-log-service dev-ps keycloak-up keycloak-down keycloak-logs keycloak-log-service keycloak-ps keycloak-restart ollama-pull
+.PHONY: prod-restore-db prod-list-backups dev-up dev-down dev-logs prod-up prod-down prod-logs caddy-reload container-exec prod-ps prod-restart prod-log-service dev-ps keycloak-up keycloak-down keycloak-logs keycloak-log-service keycloak-ps keycloak-restart ollama-pull
 
 # Usage: make restore FILE=backups/your_backup.dump
-restore:
+prod-restore-db:
 	@echo "📦 Restoring from: $(FILE)"
 	@./infra/scripts/restore_db.sh --file $(FILE)
 

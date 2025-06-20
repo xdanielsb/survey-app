@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Parse input
 usage() {
   echo "Usage: $0 --file <backup.dump>"
@@ -12,11 +14,8 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-
 [ -z "$FILE" ] && usage
 [ ! -f "$FILE" ] && echo "❌ Backup file not found: $FILE" && exit 1
-
-FILENAME=$(basename "$FILE")
 
 echo "📦 Selected backup: $FILE"
 
@@ -27,9 +26,13 @@ echo "Starting the database only"
 docker compose -f infra/docker-compose.yml up db -d
 
 echo "Restoring database using PatronX"
-docker compose -f infra/docker-compose.yml run --rm --entrypoint patronx patronx-worker restore --inp "/backups/$FILENAME"
+docker compose -f infra/docker-compose.yml run --rm \
+  -v "$(realpath "$FILE"):/tmp/backup.dump" \
+  --entrypoint patronx patronx-worker \
+  restore --inp "/tmp/backup.dump"
 
 echo "Restarting all services"
 docker compose -f infra/docker-compose.yml up -d
 
 echo "✅ Restore complete."
+
