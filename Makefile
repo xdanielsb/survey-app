@@ -1,9 +1,12 @@
-.PHONY: restore dev-up dev-down dev-logs prod-up prod-down prod-logs caddy-reload container-exec prod-ps prod-restart prod-log-service dev-ps keycloak-up keycloak-down keycloak-logs keycloak-log-service keycloak-ps keycloak-restart ollama-pull
+.PHONY: restore prod-list-backups dev-up dev-down dev-logs prod-up prod-down prod-logs caddy-reload container-exec prod-ps prod-restart prod-log-service dev-ps keycloak-up keycloak-down keycloak-logs keycloak-log-service keycloak-ps keycloak-restart ollama-pull
 
-# Usage: make restore FILE=backups/survey-20250601-101329.sql.gz
+# Usage: make restore FILE=backups/your_backup.dump
 restore:
 	@echo "📦 Restoring from: $(FILE)"
 	@./infra/scripts/restore_db.sh --file $(FILE)
+
+prod-list-backups:
+	docker compose -f infra/docker-compose.yml run --rm --entrypoint patronx patronx-worker list
 
 prod-up:
 	docker compose -f infra/docker-compose.yml --env-file infra/.env up -d

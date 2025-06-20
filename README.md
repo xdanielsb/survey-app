@@ -21,8 +21,8 @@ _Cloud‑native survey engine with end‑to‑end observability._
 -  **Security scanning** | OWASP Dependency Check and npm audit via GitHub Actions
 -  **RateLimiter** | Bucket4J
 -  **Data Layer** PostgreSQL, Flyway to versioned schema migrations
--  **Database restore** one liner `make restore FILE=backups/{file}`
--  **Periodic rotating** with [PatronX](https://github.com/xdanielsb/patronx)
+-  **Periodic backups & Database Recovery** with [PatronX](https://github.com/xdanielsb/patronx)
+-  **List backups** `make list-backups` via PatronX
 -  **Instrumentation**| Sentry frontend, backend, analytics, sentry (error tracking)
 -  **Payment**| Stripe (credit purchase flow)
 -  **Invoice PDF** | Invoice generation for payments
