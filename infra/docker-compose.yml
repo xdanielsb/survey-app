@@ -131,7 +131,7 @@ services:
     restart: unless-stopped
 
   patronx-worker:
-    image: xdanielsb/patronx:latest
+    image: xdanielsb/patronx:1.1.0
     entrypoint: ["remoulade"]
     command: ["patronx.tasks"]
     restart: unless-stopped
