@@ -57,7 +57,7 @@ services:
       - "15672:15672"
 
   patronx-worker:
-    image: xdanielsb/patronx:latest
+    image: xdanielsb/patronx:1.1.0
     entrypoint: ["remoulade"]
     command: ["patronx.tasks"]
     restart: unless-stopped
@@ -68,9 +68,9 @@ services:
       PGDATABASE: ${POSTGRES_DB}
       PGUSER: ${POSTGRES_USER}
       PGPASSWORD: ${POSTGRES_PASSWORD}
-      BACKUP_DIR: /backups
+      BACKUP_DIR: '/app/backups'
     volumes:
-      - ../backups:/backups
+      - ../backups:/app/backups
     depends_on:
       - db
       - rabbitmq
