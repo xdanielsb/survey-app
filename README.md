@@ -38,8 +38,7 @@ _Cloud‑native survey engine with end‑to‑end observability._
 
 
 ## Docs
--  **See** [Database Recovery Guide](docs/database-recovery.md) for how to restore the database in case of an incident-  **See** [Database Recovery Guide](docs/database-recovery.md) for how to restore the database in case of an incident.
-
+-  **See** [Database Recovery Guide](docs/database-recovery.md) for how to restore the database in case of an incident
 ## Project Structure
 
 ```
