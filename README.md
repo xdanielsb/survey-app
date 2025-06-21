@@ -23,6 +23,7 @@ _Cloud‑native survey engine with end‑to‑end observability._
 -  **Data Layer** PostgreSQL, Flyway to versioned schema migrations
 -  **Periodic backups & Database Recovery** with [PatronX](https://github.com/xdanielsb/patronx)
 -  **List backups** `make list-backups` via PatronX
+-  **Remote asset store** | Upload backups to S3 using PatronX 
 -  **Instrumentation**| Sentry frontend, backend, analytics, sentry (error tracking)
 -  **Payment**| Stripe (credit purchase flow)
 -  **Invoice PDF** | Invoice generation for payments

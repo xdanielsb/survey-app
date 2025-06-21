@@ -131,7 +131,7 @@ services:
     restart: unless-stopped
 
   patronx-worker:
-    image: xdanielsb/patronx:1.2.0
+    image: xdanielsb/patronx:2.0.0
     entrypoint: ["remoulade"]
     command: ["patronx.tasks"]
     restart: unless-stopped
@@ -143,6 +143,10 @@ services:
       PGUSER: ${POSTGRES_USER}
       PGPASSWORD: ${POSTGRES_PASSWORD}
       BACKUP_DIR: /backups
+      S3_BUCKET: ${S3_BUCKET}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_DEFAULT_REGION: ${AWS_REGION}
     volumes:
       - ../backups:/backups
     depends_on:
