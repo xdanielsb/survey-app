@@ -147,7 +147,7 @@ public class PaymentService {
 
       paymentRepository.save(payment);
       userRepository.save(user);
-      emailService.sendCreditPurchaseEmail(user, payment.getCreditsGranted());
+      emailService.sendCreditPurchaseEmail(payment);
       invoiceService.generateInvoice(payment);
 
       log.info(

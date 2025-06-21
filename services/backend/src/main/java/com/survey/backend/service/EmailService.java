@@ -1,7 +1,7 @@
 package com.survey.backend.service;
 
-import com.survey.backend.entity.User;
+import com.survey.backend.entity.Payment;
 
 public interface EmailService {
-  void sendCreditPurchaseEmail(User user, int credits);
+  void sendCreditPurchaseEmail(Payment payment);
 }

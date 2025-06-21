@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 
 /**
@@ -28,6 +29,7 @@ import org.springframework.test.util.ReflectionTestUtils;
  * it returns an Event whose EventDataObjectDeserializer yields a valid Session.
  */
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("test")
 class PaymentWebhookTest {
 
   @InjectMocks PaymentService cut;
@@ -89,7 +91,7 @@ class PaymentWebhookTest {
           .save(argThat(p -> "PAID".equals(p.getStatus()) && "evt_1".equals(p.getStripeEventId())));
       // should have granted 1 credit and marked premium
       verify(userRepo).save(argThat(u -> u.getSurveyCredits() == 1 && u.isPremium()));
-      verify(emailService).sendCreditPurchaseEmail(user, 1);
+      verify(emailService).sendCreditPurchaseEmail(payment);
       verify(invoiceService).generateInvoice(payment);
     }
   }

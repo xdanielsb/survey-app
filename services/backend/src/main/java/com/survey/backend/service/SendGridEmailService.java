@@ -5,13 +5,18 @@ import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
 import com.survey.backend.controller.PaymentController;
-import com.survey.backend.entity.User;
+import com.survey.backend.entity.Payment;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -25,14 +30,51 @@ public class SendGridEmailService implements EmailService {
   @Value("${sendgrid.from-email}")
   private String fromEmail;
 
+  @Value("${company.website}")
+  private String website;
+
+  @Value("${company.name}")
+  private String companyName;
+
+  @Value("${company.logo-url}")
+  private String logoUrl;
+
   @Override
-  public void sendCreditPurchaseEmail(User user, int credits) {
+  public void sendCreditPurchaseEmail(Payment payment) {
+    int credits = payment.getCreditsGranted();
     Email from = new Email(fromEmail);
-    Email to = new Email(user.getEmail());
+    Email to = new Email(payment.getEmail());
     String subject = "Your credits purchase";
-    String body =
-        "Hello, you have purchased " + credits + " survey credit" + (credits > 1 ? "s" : "") + ".";
-    Content content = new Content("text/plain", body);
+    String body;
+    try {
+      ClassPathResource res = new ClassPathResource("assets/credit_purchase_email.html");
+      body = StreamUtils.copyToString(res.getInputStream(), StandardCharsets.UTF_8);
+    } catch (IOException e) {
+      log.error("Failed to load email template", e);
+      body =
+          "Hello, you have purchased "
+              + credits
+              + " survey credit"
+              + (credits > 1 ? "s" : "")
+              + ".";
+    }
+
+    DateTimeFormatter fmt =
+        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
+    String amount = String.format("%.2f", payment.getAmountCents() / 100.0);
+    body = body.replace("{{credits}}", String.valueOf(credits));
+    body = body.replace("{{plural}}", credits > 1 ? "s" : "");
+    body = body.replace("{{email}}", payment.getEmail());
+    body = body.replace("{{paymentId}}", String.valueOf(payment.getId()));
+    body = body.replace("{{amount}}", amount);
+    body = body.replace("{{currency}}", payment.getCurrency().toUpperCase());
+    body = body.replace("{{date}}", fmt.format(payment.getCreatedAt()));
+    body = body.replace("{{website}}", website);
+    body = body.replace("{{companyName}}", companyName);
+    body = body.replace("{{supportEmail}}", fromEmail);
+    body = body.replace("{{logoUrl}}", logoUrl);
+
+    Content content = new Content("text/html", body);
     Mail mail = new Mail(from, subject, to, content);
 
     SendGrid sg = new SendGrid(apiKey);
