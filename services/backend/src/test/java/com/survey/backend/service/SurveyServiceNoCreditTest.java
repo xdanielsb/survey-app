@@ -21,7 +21,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 @ExtendWith(MockitoExtension.class)
 class SurveyServiceNoCreditTest {
 
-  @InjectMocks SurveyService cut;
+  @InjectMocks SurveyService surveyService;
 
   @Mock SurveyRepository surveyRepo;
 
@@ -47,7 +47,7 @@ class SurveyServiceNoCreditTest {
     dto.setTitle("won't matter");
 
     // Act & Assert: should throw IllegalStateException
-    assertThrows(IllegalStateException.class, () -> cut.createSurvey(dto));
+    assertThrows(IllegalStateException.class, () -> surveyService.createSurvey(dto));
     verifyNoInteractions(surveyRepo);
   }
 }

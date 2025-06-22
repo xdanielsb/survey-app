@@ -14,14 +14,14 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 class InvoiceServiceTest {
 
-  private InvoiceService cut;
+  private InvoiceService invoiceService;
 
   @TempDir Path tempDir;
 
   @BeforeEach
   void setUp() {
-    cut = new InvoiceService();
-    ReflectionTestUtils.setField(cut, "storagePath", tempDir.toString());
+    invoiceService = new InvoiceService();
+    ReflectionTestUtils.setField(invoiceService, "storagePath", tempDir.toString());
   }
 
   @Test
@@ -35,7 +35,7 @@ class InvoiceServiceTest {
             .creditsGranted(3)
             .build();
 
-    cut.generateInvoice(payment);
+    invoiceService.generateInvoice(payment);
 
     Path pdf = tempDir.resolve("payment-42.pdf");
     assertTrue(Files.exists(pdf), "PDF file should be created");

@@ -20,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class SurveyServiceResponseAndDeleteTest {
 
-  @InjectMocks SurveyService cut;
+  @InjectMocks SurveyService surveyService;
 
   @Mock SurveyRepository surveyRepo;
   @Mock QuestionRepository questionRepo;
@@ -49,7 +49,7 @@ class SurveyServiceResponseAndDeleteTest {
                     SurveyResponseDTO.AnswerDTO.builder().questionId(2L).answer("AGREE").build()))
             .build();
 
-    boolean result = cut.saveSurveyResponse(1L, request);
+    boolean result = surveyService.saveSurveyResponse(1L, request);
 
     assertTrue(result);
     verify(responseRepo).save(any(Response.class));
@@ -71,7 +71,7 @@ class SurveyServiceResponseAndDeleteTest {
 
     SurveyResponseDTO request = SurveyResponseDTO.builder().surveyId(99L).build();
 
-    boolean result = cut.saveSurveyResponse(99L, request);
+    boolean result = surveyService.saveSurveyResponse(99L, request);
 
     assertFalse(result);
     verifyNoInteractions(responseRepo);
@@ -94,7 +94,7 @@ class SurveyServiceResponseAndDeleteTest {
                     SurveyResponseDTO.AnswerDTO.builder().questionId(2L).answer("AGREE").build()))
             .build();
 
-    boolean result = cut.saveSurveyResponse(1L, request);
+    boolean result = surveyService.saveSurveyResponse(1L, request);
 
     assertFalse(result);
     verify(answerRepo, never()).saveAll(any());
@@ -105,7 +105,7 @@ class SurveyServiceResponseAndDeleteTest {
     Survey survey = Survey.builder().id(3L).build();
     when(surveyRepo.findById(3L)).thenReturn(Optional.of(survey));
 
-    cut.deleteSurvey(3L);
+    surveyService.deleteSurvey(3L);
 
     verify(surveyRepo).delete(survey);
   }
@@ -114,6 +114,6 @@ class SurveyServiceResponseAndDeleteTest {
   void deleteSurvey_throws_whenSurveyMissing() {
     when(surveyRepo.findById(5L)).thenReturn(Optional.empty());
 
-    assertThrows(EntityNotFoundException.class, () -> cut.deleteSurvey(5L));
+    assertThrows(EntityNotFoundException.class, () -> surveyService.deleteSurvey(5L));
   }
 }

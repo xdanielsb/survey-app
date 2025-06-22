@@ -26,7 +26,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 @ExtendWith(MockitoExtension.class)
 class PaymentWebhookEdgeCasesTest {
 
-  @InjectMocks PaymentService cut;
+  @InjectMocks PaymentService paymentService;
 
   @Mock PaymentRepository paymentRepo;
   @Mock UserRepository userRepo;
@@ -35,7 +35,7 @@ class PaymentWebhookEdgeCasesTest {
 
   @BeforeEach
   void setUp() {
-    ReflectionTestUtils.setField(cut, "webhookSecret", "whsec_test");
+    ReflectionTestUtils.setField(paymentService, "webhookSecret", "whsec_test");
   }
 
   private Event buildEvent(Session session) {
@@ -63,7 +63,7 @@ class PaymentWebhookEdgeCasesTest {
           .when(() -> Webhook.constructEvent(eq("{}"), anyString(), eq("whsec_test")))
           .thenReturn(event);
 
-      cut.handleWebhook("{}", "sig");
+      paymentService.handleWebhook("{}", "sig");
 
       verify(paymentRepo, never()).save(any());
       verifyNoInteractions(userRepo, emailService, invoiceService);
@@ -92,7 +92,7 @@ class PaymentWebhookEdgeCasesTest {
           .when(() -> Webhook.constructEvent(eq("{}"), anyString(), eq("whsec_test")))
           .thenReturn(event);
 
-      cut.handleWebhook("{}", "sig");
+      paymentService.handleWebhook("{}", "sig");
 
       verify(paymentRepo, never()).save(any());
       verifyNoInteractions(userRepo, emailService, invoiceService);

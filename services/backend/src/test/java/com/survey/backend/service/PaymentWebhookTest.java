@@ -32,7 +32,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 @ActiveProfiles("test")
 class PaymentWebhookTest {
 
-  @InjectMocks PaymentService cut;
+  @InjectMocks PaymentService paymentService;
 
   @Mock PaymentRepository paymentRepo;
 
@@ -44,7 +44,7 @@ class PaymentWebhookTest {
   @BeforeEach
   void setUp() {
     // Inject the webhook secret exactly as PaymentService will see it.
-    ReflectionTestUtils.setField(cut, "webhookSecret", "whsec_test");
+    ReflectionTestUtils.setField(paymentService, "webhookSecret", "whsec_test");
   }
 
   @Test
@@ -84,7 +84,7 @@ class PaymentWebhookTest {
           .when(() -> Webhook.constructEvent(eq(dummyPayload), anyString(), eq("whsec_test")))
           .thenReturn(spyEvent);
 
-      cut.handleWebhook(dummyPayload, "t=ignored,v1=ignored");
+      paymentService.handleWebhook(dummyPayload, "t=ignored,v1=ignored");
 
       // should be paid
       verify(paymentRepo)
