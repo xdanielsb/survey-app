@@ -1,7 +1,7 @@
 *.swp
 .idea
-infra/Caddyfile
-infra/.env
+infra/compose/Caddyfile
+infra/compose/.env
 backups/
 secrets/
 *.swo

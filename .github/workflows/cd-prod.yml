@@ -34,7 +34,7 @@ jobs:
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cat << 'EOF' > /root/survey-app/infra/.env
+            cat << 'EOF' > /root/survey-app/infra/compose/.env
               ${{ secrets.ENV_FILE }}
             EOF
 
@@ -45,7 +45,7 @@ jobs:
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cat << 'EOF' > /root/survey-app/infra/Caddyfile
+            cat << 'EOF' > /root/survey-app/infra/compose/Caddyfile
               ${{ secrets.CADDY_FILE }}
             EOF
 
@@ -68,5 +68,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /root/survey-app
-            docker compose -f infra/docker-compose.yml down
-            docker compose -f infra/docker-compose.yml --env-file infra/.env up -d --build
+            docker compose -f infra/compose/docker-compose.yml down
+            docker compose -f infra/compose/docker-compose.yml --env-file infra/compose/.env up -d --build

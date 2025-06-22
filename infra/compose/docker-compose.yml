@@ -9,8 +9,8 @@ services:
       PGDATA: /var/lib/postgresql/data
     volumes:
       - db-data:/var/lib/postgresql/data
-      - ../services/backend/db/init:/docker-entrypoint-initdb.d
-      - ../backups:/backups
+      - ../../services/backend/db/init:/docker-entrypoint-initdb.d
+      - ../../backups:/backups
     healthcheck:
       test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB}", "-U", "${POSTGRES_USER}"]
       interval: 5s
@@ -36,7 +36,7 @@ services:
       - ELASTIC_SEARCH_URL=${ELASTIC_SEARCH_URL}
       - ENVIRONMENT=${ENVIRONMENT}
     volumes:
-      - ./elk/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ../elk/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
     depends_on:
       - elasticsearch
 
@@ -52,7 +52,7 @@ services:
 
   backend:
     build:
-      context: ../services/backend
+      context: ../../services/backend
       network: "host"
     container_name: survey-backend
     restart: always
@@ -94,11 +94,11 @@ services:
       retries: 20
       start_period: 10s
     volumes:
-      - ../invoices:/app/invoices
+      - ../../invoices:/app/invoices
 
   frontend:
     build:
-      context: ../services/frontend
+      context: ../../services/frontend
       network: "host"
       args:
         VITE_BACKEND_URL: ${VITE_BACKEND_URL}
@@ -151,7 +151,7 @@ services:
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_DEFAULT_REGION: ${AWS_REGION}
     volumes:
-      - ../backups:/backups
+      - ../../backups:/backups
     depends_on:
       - db
       - rabbitmq
@@ -160,7 +160,7 @@ services:
     image: prom/prometheus:v2.54.0
     container_name: prometheus
     volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ../monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -171,8 +171,8 @@ services:
     image: grafana/grafana:9.5.7
     container_name: grafana
     volumes:
-      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
-      - ./monitoring/grafana/provisioning/dashboards:/var/lib/grafana/dashboards
+      - ../monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ../monitoring/grafana/provisioning/dashboards:/var/lib/grafana/dashboards
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
       - GF_USERS_ALLOW_SIGN_UP=false
@@ -191,7 +191,7 @@ services:
 
   analytics:
     build:
-      context: ../services/analytics
+      context: ../../services/analytics
       network: "host"
     container_name: ai-analytics
     environment:
@@ -213,7 +213,7 @@ services:
 
   backoffice:
     build:
-      context: ../services/backoffice
+      context: ../../services/backoffice
       network: "host"
     container_name: survey-backoffice
     restart: always

@@ -9,7 +9,7 @@ services:
       PGDATA: /var/lib/postgresql/data
     volumes:
       - db-data:/var/lib/postgresql/data
-      - ../backups:/backups
+      - ../../backups:/backups
     healthcheck:
       test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB}", "-U", "${POSTGRES_USER}"]
       interval: 5s
@@ -50,7 +50,7 @@ services:
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_DEFAULT_REGION: ${AWS_REGION}
     volumes:
-      - ../backups:/backups
+      - ../../backups:/backups
     depends_on:
       - db
       - rabbitmq
@@ -80,7 +80,7 @@ services:
       KC_DB_USERNAME: ${POSTGRES_USER}
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
+      - ../keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
     depends_on:
       - db
 

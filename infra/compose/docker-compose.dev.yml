@@ -9,7 +9,7 @@ services:
       PGDATA: /var/lib/postgresql/data
     volumes:
       - db-data:/var/lib/postgresql/data
-      - ../services/backend/db/init:/docker-entrypoint-initdb.d
+      - ../../services/backend/db/init:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
 
@@ -33,7 +33,7 @@ services:
       - ELASTIC_SEARCH_URL=http://elasticsearch:9200
       - ENVIRONMENT=development
     volumes:
-      - ./elk/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ../elk/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
     depends_on:
       - elasticsearch
 
@@ -74,7 +74,7 @@ services:
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_DEFAULT_REGION: ${AWS_REGION}
     volumes:
-      - ../backups:/app/backups
+      - ../../backups:/app/backups
     depends_on:
       - db
       - rabbitmq
@@ -125,7 +125,7 @@ services:
       GOOGLE_CLIENT_ID_PROD: ${GOOGLE_CLIENT_ID_PROD}
       GOOGLE_CLIENT_SECRET_PROD: ${GOOGLE_CLIENT_SECRET_PROD}
     volumes:
-      - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
+      - ../keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
     ports:
       - "8082:8080"
 
