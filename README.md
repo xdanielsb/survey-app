@@ -48,13 +48,14 @@ services/
   backoffice/  (angular v20)
   analytics/   (fastapi python3.12)
 infra/
-  monitoring/
-  elk/
-  scripts/
-  keycloak/
-  docker-compose.yml
-  docker-compose.dev.yml
-  Caddyfile
+  compose/
+    monitoring/
+    elk/
+    scripts/
+    keycloak/
+    docker-compose.yml
+    docker-compose.dev.yml
+    Caddyfile
 performance/
   stress_tests/
 Makefile
@@ -66,7 +67,7 @@ Makefile
  # db + api + ui + elk
 
  $ make dev-up           # start all services
- # docker compose -f infra/docker-compose.dev.yml --env-file infra/.env up --build --force-recreate -d
+ # docker compose -f infra/compose/docker-compose.dev.yml --env-file infra/compose/.env up --build --force-recreate -d
 
  # stop services
  $ make dev-down

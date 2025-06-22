@@ -20,19 +20,19 @@ done
 echo "📦 Selected backup: $FILE"
 
 echo "Stopping running services"
-docker compose -f infra/docker-compose.yml down
+docker compose -f infra/compose/docker-compose.yml down
 
 echo "Starting the database only"
-docker compose -f infra/docker-compose.yml up db -d
+docker compose -f infra/compose/docker-compose.yml up db -d
 
 echo "Restoring database using PatronX"
-docker compose -f infra/docker-compose.yml run --rm \
+docker compose -f infra/compose/docker-compose.yml run --rm \
   -v "$(realpath "$FILE"):/tmp/backup.dump" \
   --entrypoint patronx patronx-worker \
   restore --inp "/tmp/backup.dump"
 
 echo "Restarting all services"
-docker compose -f infra/docker-compose.yml up -d
+docker compose -f infra/compose/docker-compose.yml up -d
 
 echo "✅ Restore complete."
 
