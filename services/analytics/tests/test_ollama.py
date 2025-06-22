@@ -1,22 +1,14 @@
+import logging
+
 import httpx
 import pytest
 
 from analytics.ollama import ModelPullError, OllamaClient, OllamaUnreachable
 
 
-class DummyLogger:
-    def warning(self, *args, **kwargs):
-        pass
-
-    def info(self, *args, **kwargs):
-        pass
-
-    def error(self, *args, **kwargs):
-        pass
-
-
 def make_client():
-    return OllamaClient("http://ollama", "model", logger=DummyLogger())
+    logger = logging.getLogger("dummy")
+    return OllamaClient("http://ollama", "model", logger=logger)
 
 
 def test_needs_pull_variants():
