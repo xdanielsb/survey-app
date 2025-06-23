@@ -69,7 +69,7 @@ public class AuthControllerTest {
     User mockUser = User.builder().email("x@test.com").isPremium(true).build();
 
     Mockito.when(userService.saveUser(email)).thenReturn(mockUser);
-    Mockito.when(keycloakAdminService.getUserRoles(email)).thenReturn(List.of("CUSTOMER"));
+    Mockito.when(keycloakAdminService.getUserRoles(email)).thenReturn(List.of("Admin"));
 
     mockMvc
         .perform(
@@ -119,5 +119,25 @@ public class AuthControllerTest {
     Mockito.verify(keycloakAdminService)
         .createUser("new@example.com", "pw", List.of(KeycloakRole.CUSTOMER.name()));
     Mockito.verify(userService).saveUser("new@example.com");
+  }
+
+  @Test
+  public void testLoginFailsWhenUserNotAdminOrManager() throws Exception {
+    LoginRequestDTO loginRequest = new LoginRequestDTO();
+    loginRequest.setEmail("test@example.com");
+    loginRequest.setPassword("password");
+
+    String email = "test@example.com";
+
+    User mockUser = User.builder().email("x@test.com").isPremium(false).build();
+    Mockito.when(userService.saveUser(email)).thenReturn(mockUser);
+    Mockito.when(keycloakAdminService.getUserRoles(email)).thenReturn(List.of("CUSTOMER"));
+
+    mockMvc
+        .perform(
+            post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginRequest)))
+        .andExpect(status().isUnauthorized());
   }
 }

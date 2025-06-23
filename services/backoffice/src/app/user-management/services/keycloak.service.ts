@@ -22,6 +22,10 @@ export class KeycloakService {
     return this.keycloak.init({ onLoad: 'login-required' }).then(() => {
       const token = this.keycloak?.token
       if (token) {
+        const roles = (this.keycloak.tokenParsed?.['realm_access']?.['roles'] as string[]) || []
+        if (!roles.map((r) => r.toLowerCase()).includes('admin')) {
+          throw new Error('Unauthorized')
+        }
         Cookies.set('token', token, {
           secure: true,
           sameSite: 'strict',

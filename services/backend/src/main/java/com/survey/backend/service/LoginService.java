@@ -78,6 +78,18 @@ public class LoginService {
     User user = userService.saveUser(email);
     List<String> roles = keycloakAdminService.getUserRoles(email);
 
+    if ("backoffice".equalsIgnoreCase(keycloakClientId)) {
+      boolean hasAccess =
+          roles.stream()
+              .anyMatch(
+                  r ->
+                      r.equalsIgnoreCase(KeycloakRole.ADMIN.name())
+                          || r.equalsIgnoreCase(KeycloakRole.MANAGER.name()));
+      if (!hasAccess) {
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
+      }
+    }
+
     return new LoginResponseDTO(accessToken, roles, user.isPremium());
   }
 
