@@ -39,7 +39,7 @@
   "devDependencies": {
     "@pinia/testing": "^1.0.1",
     "@playwright/test": "^1.51.1",
-    "@tailwindcss/cli": "^4.1.8",
+    "@tailwindcss/cli": "^4.1.10",
     "@tailwindcss/postcss": "^4.1.8",
     "@tailwindcss/vite": "^4.1.8",
     "@tsconfig/node22": "^22.0.1",
