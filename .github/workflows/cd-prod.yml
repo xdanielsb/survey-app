@@ -19,10 +19,10 @@ jobs:
         uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.HOST }}
-          username: root
+          username: deploy
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "."
-          target: "/root/survey-app"
+          target: "/home/deploy/survey-app"
           strip_components: 0
           rm: false
           overwrite: true
@@ -31,10 +31,10 @@ jobs:
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.HOST }}
-          username: root
+          username: deploy
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cat << 'EOF' > /root/survey-app/infra/compose/.env
+            cat << 'EOF' > /home/deploy/survey-app/infra/compose/.env
               ${{ secrets.ENV_FILE }}
             EOF
 
@@ -42,10 +42,10 @@ jobs:
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.HOST }}
-          username: root
+          username: deploy
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cat << 'EOF' > /root/survey-app/infra/compose/Caddyfile
+            cat << 'EOF' > /home/deploy/survey-app/infra/compose/Caddyfile
               ${{ secrets.CADDY_FILE }}
             EOF
 
@@ -53,10 +53,10 @@ jobs:
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.HOST }}
-          username: root
+          username: deploy
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cat << 'EOF' > /root/survey-app/services/backoffice/src/environments/environment.ts
+            cat << 'EOF' > /home/deploy/survey-app/services/backoffice/src/environments/environment.ts
               ${{ secrets.BACKOFFICE_ENVIROMENT_TS }}
             EOF
 
@@ -64,9 +64,9 @@ jobs:
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.HOST }}
-          username: root
+          username: deploy
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /root/survey-app
+            cd /home/deploy/survey-app
             docker compose -f infra/compose/docker-compose.yml down
             docker compose -f infra/compose/docker-compose.yml --env-file infra/compose/.env up -d --build
