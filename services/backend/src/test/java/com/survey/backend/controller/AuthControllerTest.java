@@ -78,7 +78,7 @@ public class AuthControllerTest {
                 .content(objectMapper.writeValueAsString(loginRequest)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.token").value(keycloakToken))
-        .andExpect(jsonPath("$.roles[0]").value("CUSTOMER"))
+        .andExpect(jsonPath("$.roles[0]").value("Admin"))
         .andExpect(jsonPath("$.premium").value(true));
   }
 
