@@ -5,6 +5,7 @@ import { createPinia } from 'pinia'
 
 // Mocks for router, logger, and store
 let _auth = { isAuthenticated: false, email: '', isPremium: false, logout: vi.fn() }
+let _theme = { dark: false, toggle: vi.fn() }
 
 vi.mock('vue-router', () => ({
   useRouter: () => ({ push: vi.fn() }),
@@ -23,11 +24,15 @@ vi.mock('@/plugins/logger', () => ({
 vi.mock('@/stores/authStore', () => ({
   useAuthStore: () => _auth,
 }))
+vi.mock('@/stores/themeStore', () => ({
+  useThemeStore: () => _theme,
+}))
 
 describe('App.vue', () => {
   beforeEach(() => {
     // Reset mock store state before each test
     _auth = { isAuthenticated: false, email: '', isPremium: false, logout: vi.fn() }
+    _theme = { dark: false, toggle: vi.fn() }
   })
   afterEach(() => {
     vi.clearAllMocks()
@@ -50,5 +55,12 @@ describe('App.vue', () => {
     expect(wrapper.text()).toContain('topg@daniel.com')
     const options = wrapper.findAll('option').map((o) => o.text().toLowerCase())
     expect(options).toContain('buy credits')
+  })
+
+  it('calls themeStore.toggle when theme button is clicked', async () => {
+    const wrapper = mount(App, { global: { plugins: [createPinia()] } })
+    const btn = wrapper.find('button[aria-label]')
+    await btn.trigger('click')
+    expect(_theme.toggle).toHaveBeenCalled()
   })
 })
