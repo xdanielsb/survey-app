@@ -1,14 +1,24 @@
 <template>
-  <div class="success-container">
-    <div class="card">
-      <h1>Thank You!</h1>
+  <div class="flex items-center justify-center min-h-[80vh] bg-[color:var(--color-neutral-50)]">
+    <div
+      class="max-w-sm text-center p-8 rounded-[12px] shadow-[0_4px_20px_rgba(0,0,0,0.05)] bg-[color:var(--color-neutral-100)]"
+    >
+      <h1 class="text-2xl mb-4">Thank You!</h1>
       <p>Your payment was successful.</p>
 
-      <div v-if="loading" class="loading">Verifying payment...</div>
-      <div v-else-if="error" class="error">{{ error }}</div>
-      <div v-else class="success">
+      <div v-if="loading" class="italic text-[color:var(--color-neutral-600)] mt-4">
+        Verifying payment...
+      </div>
+      <div v-else-if="error" class="text-[color:var(--color-danger)] mt-4">
+        {{ error }}
+      </div>
+      <div v-else class="text-[color:var(--color-success)] mt-4">
         <p><strong>Credits Added:</strong> {{ creditsGranted }}</p>
-        <router-link to="/" clasHomegs="home-link">Back to Dashboard</router-link>
+        <router-link
+          to="/"
+          class="inline-block mt-6 px-4 py-2.5 rounded-md text-white bg-[color:var(--color-primary-600)] hover:bg-[color:var(--color-primary-700)] transition"
+          >Back to Dashboard</router-link
+        >
       </div>
     </div>
   </div>
@@ -56,63 +66,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-.success-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 80vh;
-  background-color: var(--color-neutral-50);
-}
-
-.card {
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  background: var(--color-neutral-100);
-  text-align: center;
-  max-width: 400px;
-}
-
-h1 {
-  font-size: 1.75rem;
-  margin-bottom: 1rem;
-}
-
-p {
-  font-size: 1rem;
-  margin: 0.5rem 0;
-}
-
-.success {
-  color: var(--color-success);
-  margin-top: 1rem;
-}
-
-.error {
-  color: var(--color-danger);
-  margin-top: 1rem;
-}
-
-.loading {
-  font-style: italic;
-  color: var(--color-neutral-600);
-  margin-top: 1rem;
-}
-
-.home-link {
-  display: inline-block;
-  margin-top: 1.5rem;
-  color: white;
-  background-color: var(--color-primary-600);
-  padding: 0.5rem 1.2rem;
-  border-radius: 6px;
-  text-decoration: none;
-  transition: background 0.2s;
-}
-
-.home-link:hover {
-  background-color: var(--color-primary-700);
-}
-</style>
