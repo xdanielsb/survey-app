@@ -38,7 +38,8 @@ _Cloud‑native survey engine with end‑to‑end observability._
 
 
 ## Docs
--  **See** [Database Recovery Guide](docs/database-recovery.md) for how to restore the database in case of an incident
+-  **See** [Database Recovery Guide](docs/data-recovery.md) for how to restore the database in case of an incident
+-  **See** [Secure Docker Deploy Guide](docs/secure-docker-deploy.md) for deploying in a safe way with docker compsoe with a dedicated non root user
 ## Project Structure
 
 ```
@@ -55,7 +56,11 @@ infra/
   compose/
     docker-compose.yml
     docker-compose.dev.yml
+    docker-compose.keycloak.yml
     Caddyfile
+docs/
+  data-recovery.md
+  secure-docker-deploy.md
 performance/
   stress_tests/
 Makefile
