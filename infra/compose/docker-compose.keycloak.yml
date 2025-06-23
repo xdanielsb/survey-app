@@ -81,6 +81,7 @@ services:
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - ../keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
+      - ../keycloak/user-profile.json:/opt/keycloak/data/import/user-profile.json
     depends_on:
       - db
 

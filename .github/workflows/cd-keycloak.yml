@@ -21,7 +21,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: deploy
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "infra/compose/docker-compose.keycloak.yml,infra/keycloak/realm-export.json,infra/scripts/,Makefile"
+          source: "infra/compose/docker-compose.keycloak.yml,infra/keycloak/,infra/scripts/,Makefile"
           target: "/home/deploy/survey-app"
           strip_components: 0
           rm: false

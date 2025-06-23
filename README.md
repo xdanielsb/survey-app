@@ -40,6 +40,7 @@ _Cloud‑native survey engine with end‑to‑end observability._
 ## Docs
 -  **See** [Database Recovery Guide](docs/data-recovery.md) for how to restore the database in case of an incident
 -  **See** [Secure Docker Deploy Guide](docs/secure-docker-deploy.md) for deploying in a safe way with docker compsoe with a dedicated non root user
+-  **See** [Deploy Keycloak](docs/deploy-keycloak.md) for deploying keycloak
 ## Project Structure
 
 ```
