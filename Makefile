@@ -1,4 +1,4 @@
-.PHONY: prod-restore-db prod-list-backups dev-up dev-down dev-logs prod-up prod-down prod-logs caddy-reload container-exec prod-ps prod-restart prod-log-service dev-ps keycloak-up keycloak-down keycloak-logs keycloak-log-service keycloak-ps keycloak-restart ollama-pull
+.PHONY: prod-restore-db prod-list-backups prod-backup dev-up dev-down dev-logs prod-up prod-down prod-logs caddy-reload container-exec prod-ps prod-restart prod-log-service dev-ps keycloak-up keycloak-down keycloak-logs keycloak-log-service keycloak-ps keycloak-restart ollama-pull
 
 # Usage: make restore FILE=backups/your_backup.dump
 prod-restore-db:
@@ -7,6 +7,9 @@ prod-restore-db:
 
 prod-list-backups:
 	docker compose -f infra/compose/docker-compose.yml run --rm --entrypoint patronx patronx-worker list
+
+prod-backup:
+	docker compose -f infra/compose/docker-compose.yml run --rm --entrypoint patronx patronx-worker backup
 
 prod-up:
 	docker compose -f infra/compose/docker-compose.yml --env-file infra/compose/.env up -d

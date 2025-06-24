@@ -50,7 +50,7 @@ services:
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_DEFAULT_REGION: ${AWS_REGION}
     volumes:
-      - ../../backups:/backups
+      - ../../backups:./backups
     depends_on:
       - db
       - rabbitmq

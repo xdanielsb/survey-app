@@ -68,13 +68,13 @@ services:
       PGDATABASE: ${POSTGRES_DB}
       PGUSER: ${POSTGRES_USER}
       PGPASSWORD: ${POSTGRES_PASSWORD}
-      BACKUP_DIR: '/app/backups'
+      BACKUP_DIR: ./backups
       S3_BUCKET: ${S3_BUCKET}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_DEFAULT_REGION: ${AWS_REGION}
     volumes:
-      - ../../backups:/app/backups
+      - ../../backups:./backups
     depends_on:
       - db
       - rabbitmq
