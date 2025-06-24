@@ -131,30 +131,47 @@ services:
 
   rabbitmq:
     image: rabbitmq:3.13-management
-    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "rabbitmq-diagnostics -q ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping || exit 1" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   patronx-worker:
-    image: xdanielsb/patronx:2.0.0
-    entrypoint: ["remoulade"]
-    command: ["patronx.tasks"]
+    image: xdanielsb/patronx:2.1.0
+    entrypoint: ["patronx"]
+    command: ["start"]
     restart: unless-stopped
     environment:
       AMQP_URL: amqp://guest:guest@rabbitmq:5672/
+      REDIS_URL: redis://redis:6379/0
       PGHOST: db
       PGPORT: 5432
       PGDATABASE: ${POSTGRES_DB}
       PGUSER: ${POSTGRES_USER}
       PGPASSWORD: ${POSTGRES_PASSWORD}
-      BACKUP_DIR: ./backups
+      BACKUP_DIR: /app/backups
       S3_BUCKET: ${S3_BUCKET}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_DEFAULT_REGION: ${AWS_REGION}
     volumes:
-      - ../../backups:./backups
+      - ../../backups:/app/backups
     depends_on:
-      - db
-      - rabbitmq
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
   prometheus:
     image: prom/prometheus:v2.54.0
