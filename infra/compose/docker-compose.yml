@@ -27,6 +27,11 @@ services:
       - ES_JAVA_OPTS=-Xms1g -Xmx1g
     volumes:
       - es-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: "bash -c 'cat < /dev/null > /dev/tcp/localhost/9200"
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   logstash:
     image: docker.elastic.co/logstash/logstash:8.13.4
@@ -39,6 +44,11 @@ services:
       - ../elk/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
     depends_on:
       - elasticsearch
+    healthcheck:
+      test: "bash -c 'cat < /dev/null > /dev/tcp/localhost/5000'"
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.13.4
@@ -49,6 +59,11 @@ services:
       - SERVER_REWRITEBASEPATH=true
     depends_on:
       - elasticsearch
+    healthcheck:
+      test: "bash -c 'cat < /dev/null > /dev/tcp/localhost/5601'"
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   backend:
     build:
@@ -114,6 +129,11 @@ services:
       - backend
     environment:
       - NODE_ENV=production
+    healthcheck:
+      test: "bash -c 'cat < /dev/null > /dev/tcp/localhost/5173'"
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   caddy:
     image: caddy:alpine

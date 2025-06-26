@@ -38,6 +38,17 @@ jobs:
               ${{ secrets.ENV_FILE }}
             EOF
 
+      - name: Upload keycloak custom realm configuration
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: deploy
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cat << 'EOF' > /home/deploy/survey-app/infra/keycloak/realm-export.json
+              ${{ secrets.REALM_EXPORT }}
+            EOF
+
       - name: Upload Caddyfile
         uses: appleboy/ssh-action@v1
         with:

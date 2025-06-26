@@ -27,6 +27,11 @@ services:
       - caddy-data:/data
     depends_on:
       - keycloak
+    healthcheck:
+      test: "bash -c 'cat < /dev/null > /dev/tcp/localhost/80'"
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   rabbitmq:
     image: rabbitmq:4.1.1-management
@@ -105,6 +110,11 @@ services:
       - ../keycloak/user-profile.json:/opt/keycloak/data/import/user-profile.json
     depends_on:
       - db
+    healthcheck:
+      test: "bash -c 'cat < /dev/null > /dev/tcp/localhost/8080'"
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
 volumes:
   db-data:
