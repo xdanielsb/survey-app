@@ -124,6 +124,7 @@ async function googleLogin() {
 
               <button
                 type="submit"
+                :disabled="isSignUp"
                 class="w-full rounded-[var(--radius-sm)] bg-[color:var(--color-primary-600)] py-2.5 text-sm font-semibold text-white hover:bg-[color:var(--color-primary-700)] transition"
               >
                 {{ isSignUp ? 'Create Account' : 'Login' }}
