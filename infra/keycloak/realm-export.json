@@ -24,8 +24,8 @@
         "authenticateByDefault": false,
         "linkOnly": false,
         "config": {
-          "clientId": "${GOOGLE_CLIENT_ID_STAGING}",
-          "clientSecret": "${GOOGLE_CLIENT_SECRET_STAGING}",
+          "clientId": "${GOOGLE_CLIENT_ID_DEVELOPMENT}",
+          "clientSecret": "${GOOGLE_CLIENT_SECRET_DEVELOPMENT}",
           "defaultScope": "email profile"
         }
       }
