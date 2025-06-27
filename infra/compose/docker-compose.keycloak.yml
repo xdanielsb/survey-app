@@ -28,7 +28,7 @@ services:
     depends_on:
       - keycloak
     healthcheck:
-      test: "bash -c 'cat < /dev/null > /dev/tcp/localhost/80'"
+      test: ["CMD-SHELL", "netstat -tulpn | grep -q ':443 .*LISTEN'"]
       interval: 10s
       timeout: 5s
       retries: 10

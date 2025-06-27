@@ -125,7 +125,7 @@ services:
     environment:
       - NODE_ENV=production
     healthcheck:
-      test: "bash -c 'cat < /dev/null > /dev/tcp/localhost/5173'"
+      test: ["CMD-SHELL", "netstat -tulpn | grep -q ':5173 .*LISTEN'"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -143,6 +143,11 @@ services:
       - caddy-data:/data
     depends_on:
       - frontend
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -tulpn | grep -q ':443 .*LISTEN'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   rabbitmq:
     image: rabbitmq:4.1.1-management
@@ -201,6 +206,12 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yml'
     depends_on:
       - node-exporter
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -tulpn | grep -q ':9090 .*LISTEN'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
 
   grafana:
     image: grafana/grafana:12.0.2
@@ -215,6 +226,13 @@ services:
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
     depends_on:
       - prometheus
+    healthcheck:
+      test: "bash -c 'cat < /dev/null > /dev/tcp/localhost/3000'"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+
 
   node-exporter:
     image: prom/node-exporter:v1.9.1
@@ -223,6 +241,12 @@ services:
       - '--path.rootfs=/host'
     volumes:
       - '/:/host:ro,rslave'
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -tulpn | grep -q ':9100 .*LISTEN'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
 
   analytics:
     build:
@@ -235,6 +259,7 @@ services:
       - SENTRY_AUTH_DSN=${SENTRY_AUTH_DSN}
     depends_on:
       - ollama
+
 
   ollama:
     image: ollama/ollama:0.1.39
@@ -257,6 +282,12 @@ services:
     environment:
       - NODE_ENV=production
       - SENTRY_AUTH_DSN=${SENTRY_AUTH_DSN}
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -tulpn | grep -q ':4200 .*LISTEN'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
 
 volumes:
   db-data:
