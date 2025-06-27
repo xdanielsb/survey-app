@@ -259,6 +259,12 @@ services:
       - SENTRY_AUTH_DSN=${SENTRY_AUTH_DSN}
     depends_on:
       - ollama
+    healthcheck:
+      test: "bash -c 'cat < /dev/null > /dev/tcp/localhost/8000'"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
 
 
   ollama:
