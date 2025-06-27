@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 import Cookies from 'js-cookie'
 import { keycloak } from '@/keycloak.ts'
+import type { UserGmail } from '@/types/user.ts'
+import { jwtDecode } from 'jwt-decode'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -18,16 +20,17 @@ export const useAuthStore = defineStore('auth', {
       this.email = email
       this.isAuthenticated = true
       this.isPremium = isPremium
-      Cookies.set('token', token, { secure: true, sameSite: 'strict' })
-      Cookies.set('email', email, { secure: true, sameSite: 'strict' })
-      Cookies.set('roles', JSON.stringify(roles), {
+      const decoded: UserGmail = jwtDecode(token)
+      const expiresAt = decoded.exp || null
+      const cookieOptions = {
         secure: true,
-        sameSite: 'strict',
-      })
-      Cookies.set('isPremium', String(isPremium), {
-        secure: true,
-        sameSite: 'strict',
-      })
+        sameSite: 'strict' as const,
+        ...(expiresAt ? { expires: new Date(expiresAt * 1000) } : {}),
+      }
+      Cookies.set('token', token, cookieOptions)
+      Cookies.set('email', email, cookieOptions)
+      Cookies.set('roles', JSON.stringify(roles), cookieOptions)
+      Cookies.set('isPremium', String(isPremium), cookieOptions)
     },
 
     updatePremium(premium: boolean) {
