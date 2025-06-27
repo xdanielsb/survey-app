@@ -27,18 +27,12 @@
         <span class="hidden sm:inline">Results</span>
       </router-link>
 
-      <a
-        :href="shareUrl"
-        target="_blank"
-        rel="noopener"
-        class="action-pill neutral"
-        title="Share on X"
-      >
+      <button type="button" @click="share" class="action-pill neutral" title="Share">
         <ShareIcon
           class="w-4 h-4 transition-colors group-hover:text-[color:var(--color-primary-500)]"
         />
         <span class="hidden sm:inline">Share</span>
-      </a>
+      </button>
       <button
         v-role="['ADMIN']"
         @click="handleDelete"
@@ -81,6 +75,17 @@ const shareUrl =
   encodeURIComponent(`${window.location.origin}/surveys/${props.survey.id}`)
 
 const confirmDeleteOpen = ref(false)
+
+function share() {
+  const url = `${window.location.origin}/surveys/${props.survey.id}`
+  if (navigator.share) {
+    navigator.share({ title: props.survey.title, url }).catch(() => {
+      window.open(shareUrl, '_blank', 'noopener')
+    })
+  } else {
+    window.open(shareUrl, '_blank', 'noopener')
+  }
+}
 
 function handleDelete() {
   confirmDeleteOpen.value = true
