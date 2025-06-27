@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:16
+    image: postgres:17.5
     restart: always
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
@@ -18,7 +18,7 @@ services:
       start_period: 10s
 
   caddy:
-    image: caddy:alpine
+    image: caddy:2.10.0-alpine
     ports:
       - "80:80"
       - "443:443"
@@ -43,7 +43,7 @@ services:
       retries: 10
 
   redis:
-    image: redis:7-alpine
+    image: redis:8.0.2-alpine
     healthcheck:
       test: [ "CMD-SHELL", "redis-cli ping || exit 1" ]
       interval: 5s
@@ -68,8 +68,8 @@ services:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_DEFAULT_REGION: ${AWS_REGION}
-      BACKUP_CRON: "0 */12 * * *"     # Every 12 hours at minute 0 (e.g., 00:00, 12:00)
-      CLEANUP_CRON: "0 3 * * *"       # Once daily at 3:00 AM
+      BACKUP_CRON: "0 */12 * * *"
+      CLEANUP_CRON: "0 3 * * *"
     volumes:
       - ../../backups:/app/backups
     depends_on:
@@ -79,7 +79,6 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
-
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.0.0
@@ -111,4 +110,3 @@ services:
 volumes:
   db-data:
   caddy-data:
-

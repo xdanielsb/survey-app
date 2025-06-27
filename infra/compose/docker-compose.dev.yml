@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:16
+    image: postgres:17.5
     restart: always
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
@@ -19,7 +19,7 @@ services:
       retries: 5
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.0.3
     container_name: elasticsearch
     environment:
       - discovery.type=single-node
@@ -28,18 +28,17 @@ services:
     ports:
       - "9200:9200"
     healthcheck:
-      test: "bash -c 'cat < /dev/null > /dev/tcp/localhost/9200"
+      test: "bash -c 'cat < /dev/null > /dev/tcp/localhost/9200'"
       interval: 10s
       timeout: 5s
       retries: 10
 
   logstash:
-    image: docker.elastic.co/logstash/logstash:8.13.4
+    image: docker.elastic.co/logstash/logstash:9.0.3
     container_name: logstash
     ports:
       - "5000:5000"
     environment:
-      # DO NOT USE QUOTES they will be passed as characters in the url
       - ELASTIC_SEARCH_URL=http://elasticsearch:9200
       - ENVIRONMENT=development
     volumes:
@@ -53,12 +52,12 @@ services:
       retries: 10
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:8.13.4
+    image: docker.elastic.co/kibana/kibana:9.0.3
     container_name: kibana
     ports:
       - "5601:5601"
     environment:
-      - ELASTICSEARCH_HOSTS="http://elasticsearch:9200"
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
       - ELASTICSEARCH_USERNAME=admin
       - ELASTICSEARCH_PASSWORD=secret
     depends_on:
@@ -79,7 +78,7 @@ services:
       retries: 10
 
   redis:
-    image: redis:7-alpine
+    image: redis:8.0.2-alpine
     healthcheck:
       test: [ "CMD-SHELL", "redis-cli ping || exit 1" ]
       interval: 5s
@@ -137,14 +136,13 @@ services:
       retries: 10
 
   ollama:
-    image: ollama/ollama:latest
+    image: ollama/ollama:0.1.39
     container_name: ollama
     ports:
       - "11434:11434"
     volumes:
       - ollama-data:/root/.ollama
     healthcheck:
-      # sends nothing to cat, cat sends nothing to the port just to cheeck connection
       test: "bash -c 'cat < /dev/null > /dev/tcp/localhost/11434'"
       interval: 10s
       retries: 5
@@ -173,4 +171,3 @@ volumes:
   db-data:
   pgadmin-data:
   ollama-data:
-
