@@ -1,13 +1,44 @@
 <!DOCTYPE html>
-<html lang="">
-  <head>
-    <meta charset="UTF-8">
-    <link rel="icon" href="/favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Survey</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+<html lang="en" class="scroll-smooth antialiased text-gray-900 bg-white dark:bg-black dark:text-white">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" href="/favicon.ico">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Next-Gen Survey Platform</title>
+  <meta name="description" content="An intelligent, responsive, and next-gen survey platform. Built for scale. Designed for people." />
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+
+  <link rel="manifest" href="/site.webmanifest" />
+
+  <meta property="og:title" content="Next-Gen Survey Platform" />
+  <meta property="og:description" content="Redefining data collection with design, intelligence, and impact." />
+  <meta property="og:type" content="website" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Next-Gen Survey Platform" />
+  <meta name="twitter:description" content="Redefining data collection with design, intelligence, and impact." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="preload" href="/src/main.ts" as="script" type="module" />
+
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:;" />
+  <meta name="referrer" content="no-referrer" />
+</head>
+
+<body class="min-h-screen flex items-center justify-center text-base font-inter">
+<noscript>
+  <strong>This app requires JavaScript to run properly. Please enable it in your browser.</strong>
+</noscript>
+
+<div id="app" class="w-full h-full"></div>
+
+<!-- Entry Script -->
+<script type="module" src="/src/main.ts"></script>
+</body>
 </html>
