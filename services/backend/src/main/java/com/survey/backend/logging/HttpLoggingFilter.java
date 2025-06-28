@@ -21,38 +21,17 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 public class HttpLoggingFilter extends OncePerRequestFilter {
 
   private static final Logger log = LoggerFactory.getLogger(HttpLoggingFilter.class);
-  private static final int MAX_BODY_LOG_LENGTH = 2000;
+
+  private static final int MAX_BODY_LENGTH = 2000;
   private static final List<String> SENSITIVE_KEYS = List.of("password", "token", "secret");
   private static final Set<String> SENSITIVE_HEADERS = Set.of("authorization");
-
-  private String sanitizeBody(String body) {
-    for (String key : SENSITIVE_KEYS) {
-      body =
-          body.replaceAll("(?i)\"" + key + "\"\\s*:\\s*\".*?\"", "\"" + key + "\":\"[REDACTED]\"");
-    }
-    return body;
-  }
-
-  private Map<String, String> sanitizeHeaders(Map<String, String> headers) {
-    return headers.entrySet().stream()
-        .collect(
-            Collectors.toMap(
-                Map.Entry::getKey,
-                entry ->
-                    SENSITIVE_HEADERS.contains(entry.getKey().toLowerCase())
-                        ? "[REDACTED]"
-                        : entry.getValue()));
-  }
-
-  private boolean isPrometheusActuatorRequest(String path) {
-    return path.startsWith("/actuator");
-  }
 
   @Override
   protected void doFilterInternal(
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
-    if (isPrometheusActuatorRequest(request.getRequestURI())) {
+
+    if (shouldSkipLogging(request)) {
       filterChain.doFilter(request, response);
       return;
     }
@@ -64,37 +43,97 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
     filterChain.doFilter(wrappedRequest, wrappedResponse);
     long duration = System.currentTimeMillis() - startTime;
 
-    Map<String, Object> logMap = new LinkedHashMap<>();
-    logMap.put("method", request.getMethod());
-    logMap.put("path", request.getRequestURI());
-    logMap.put("query", request.getQueryString());
-    logMap.put("status", response.getStatus());
-    logMap.put("duration_ms", duration);
-    logMap.put("remote_ip", request.getRemoteAddr());
-    logMap.put("user_agent", request.getHeader("User-Agent"));
+    logRequest(wrappedRequest, wrappedResponse, duration);
+    wrappedResponse.copyBodyToResponse(); // Ensure response body is propagated
+  }
 
-    // Extract headers
+  private boolean shouldSkipLogging(HttpServletRequest request) {
+    String path = request.getRequestURI();
+    return path != null && path.startsWith("/actuator");
+  }
+
+  private String getClientIpAddress(HttpServletRequest request) {
+    String[] headerNames = {
+      "X-Forwarded-For",
+      "X-Real-IP",
+      "Proxy-Client-IP",
+      "WL-Proxy-Client-IP",
+      "HTTP_CLIENT_IP",
+      "HTTP_X_FORWARDED_FOR"
+    };
+
+    for (String header : headerNames) {
+      String ip = request.getHeader(header);
+      if (ip != null && !ip.isEmpty() && !"unknown".equalsIgnoreCase(ip)) {
+        return ip.split(",")[0].trim(); // In case of multiple IPs
+      }
+    }
+
+    return request.getRemoteAddr();
+  }
+
+  private void logRequest(
+      ContentCachingRequestWrapper request, HttpServletResponse response, long duration) {
+    Map<String, Object> logDetails = new LinkedHashMap<>();
+    logDetails.put("method", request.getMethod());
+    logDetails.put("path", request.getRequestURI());
+    logDetails.put("query", request.getQueryString());
+    logDetails.put("status", response.getStatus());
+    logDetails.put("duration_ms", duration);
+    logDetails.put("remote_ip", this.getClientIpAddress(request));
+    logDetails.put("user_agent", request.getHeader("User-Agent"));
+    logDetails.put("headers", sanitizeHeaders(extractHeaders(request)));
+
+    String requestBody = getRequestBody(request);
+    if (!requestBody.isBlank()) {
+      logDetails.put("body", sanitizeBody(requestBody));
+    }
+
+    log.info("HTTP Request Log: {}", logDetails);
+  }
+
+  private Map<String, String> extractHeaders(HttpServletRequest request) {
     Map<String, String> headers = new LinkedHashMap<>();
     Enumeration<String> headerNames = request.getHeaderNames();
+
     while (headerNames.hasMoreElements()) {
-      String header = headerNames.nextElement();
-      headers.put(header, request.getHeader(header));
-    }
-    logMap.put("headers", sanitizeHeaders(headers));
-
-    // Request body
-    String requestBody = new String(wrappedRequest.getContentAsByteArray(), StandardCharsets.UTF_8);
-    String subRequestBody =
-        requestBody.length() > MAX_BODY_LOG_LENGTH
-            ? requestBody.substring(0, MAX_BODY_LOG_LENGTH) + "...(truncated)"
-            : requestBody;
-
-    if (!requestBody.isBlank()) {
-      logMap.put("body", sanitizeBody(subRequestBody));
+      String name = headerNames.nextElement();
+      headers.put(name, request.getHeader(name));
     }
 
-    log.info("HTTP Request Log: {}", logMap);
+    return headers;
+  }
 
-    wrappedResponse.copyBodyToResponse(); // Important to commit response
+  private Map<String, String> sanitizeHeaders(Map<String, String> headers) {
+    return headers.entrySet().stream()
+        .collect(
+            Collectors.toMap(
+                Map.Entry::getKey,
+                entry ->
+                    SENSITIVE_HEADERS.contains(entry.getKey().toLowerCase())
+                        ? "[REDACTED]"
+                        : entry.getValue(),
+                (v1, v2) -> v1,
+                LinkedHashMap::new));
+  }
+
+  private String sanitizeBody(String body) {
+    String sanitized = body;
+    for (String key : SENSITIVE_KEYS) {
+      sanitized =
+          sanitized.replaceAll(
+              "(?i)\"" + key + "\"\\s*:\\s*\".*?\"", "\"" + key + "\":\"[REDACTED]\"");
+    }
+    return sanitized;
+  }
+
+  private String getRequestBody(ContentCachingRequestWrapper request) {
+    byte[] content = request.getContentAsByteArray();
+    if (content.length == 0) return "";
+
+    String body = new String(content, StandardCharsets.UTF_8);
+    return body.length() > MAX_BODY_LENGTH
+        ? body.substring(0, MAX_BODY_LENGTH) + "...(truncated)"
+        : body;
   }
 }
