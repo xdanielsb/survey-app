@@ -63,6 +63,22 @@ jobs:
               ${{ secrets.BACKOFFICE_ENVIROMENT_TS }}
             EOF
 
+      - name: Add robots.txt for staging
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: deploy
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cat <<'EOF' > /home/deploy/survey-app/services/frontend/public/robots.txt
+            User-agent: *
+            Disallow: /
+            EOF
+            cat <<'EOF' > /home/deploy/survey-app/services/backoffice/public/robots.txt
+            User-agent: *
+            Disallow: /
+            EOF
+
       - name: Deploy with Docker Compose
         uses: appleboy/ssh-action@v1
         with:
