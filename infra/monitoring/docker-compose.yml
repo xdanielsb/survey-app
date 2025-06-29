@@ -1,0 +1,122 @@
+services:
+  caddy:
+    image: caddy:2.10.0-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - KIBANA_USER=${KIBANA_USER}
+      - KIBANA_PASS_HASH=${KIBANA_PASS_HASH}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy-data:/data
+    depends_on:
+      kibana:
+        condition: service_healthy
+      grafana:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -tulpn | grep -q ':443 .*LISTEN'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.0.3
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: "bash -c 'cat < /dev/null > /dev/tcp/localhost/9200'"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:9.0.3
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=${ELASTIC_SEARCH_URL}
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      test: "bash -c 'cat < /dev/null > /dev/tcp/localhost/5601'"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  prometheus:
+    image: prom/prometheus:v3.4.2
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -tulpn | grep -q ':9090 .*LISTEN'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  grafana:
+    image: grafana/grafana:12.0.2
+    container_name: grafana
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/provisioning/dashboards:/var/lib/grafana/dashboards
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=${GRAFANA_SERVER_URL}
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    healthcheck:
+      test: "bash -c 'cat < /dev/null > /dev/tcp/localhost/3000'"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  node-exporter:
+    image: prom/node-exporter:v1.9.1
+    container_name: node-exporter
+    command:
+      - '--path.rootfs=/host'
+    volumes:
+      - '/:/host:ro,rslave'
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -tulpn | grep -q ':9100 .*LISTEN'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:9.0.3
+    container_name: logstash
+    environment:
+      - ELASTIC_SEARCH_URL=${ELASTIC_SEARCH_URL}
+      - ENVIRONMENT=${ENVIRONMENT}
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./elk/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      test: "bash -c 'cat < /dev/null > /dev/tcp/localhost/5000'"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  caddy-data:
+  es-data:
+  prometheus_data:

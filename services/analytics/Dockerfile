@@ -9,4 +9,7 @@ RUN pip install --no-cache-dir -e .
 ARG SENTRY_AUTH_DSN
 ENV SENTRY_AUTH_DSN=$SENTRY_AUTH_DSN
 
+ARG ENVIRONMENT
+ENV ENVIRONMENT=$ENVIRONMENT
+
 CMD ["uvicorn", "analytics.main:app", "--host", "0.0.0.0", "--port", "8000"]

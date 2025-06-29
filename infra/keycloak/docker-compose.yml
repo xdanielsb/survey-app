@@ -23,7 +23,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./CaddyfileKeycloak:/etc/caddy/Caddyfile
+      - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy-data:/data
     depends_on:
       - keycloak

@@ -5,22 +5,8 @@ http://localhost {
     handle_path /analytics* {
         reverse_proxy analytics:8000
     }
-    handle /monitoring* {
-      basic_auth {
-        {$KIBANA_USER} {$KIBANA_PASS_HASH}
-      }
-        reverse_proxy kibana:5601
-    }
     handle_path /backoffice* {
       reverse_proxy backoffice:4200
-    }
-    handle /grafana* {
-      reverse_proxy grafana:3000 {
-        header_up Host {host}
-        header_up X-Real-IP {remote}
-        header_up X-Forwarded-For {remote}
-        header_up X-Forwarded-Proto {scheme}
-      }
     }
     handle {
       reverse_proxy /* frontend:5173

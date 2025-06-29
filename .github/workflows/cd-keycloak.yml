@@ -21,7 +21,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: deploy
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "infra/compose/docker-compose.keycloak.yml,infra/keycloak/,infra/scripts/,Makefile"
+          source: "infra/keycloak/,infra/scripts/,Makefile,makefiles/keycloak.mk"
           target: "/home/deploy/survey-app"
           strip_components: 0
           rm: false
@@ -34,7 +34,7 @@ jobs:
           username: deploy
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cat << 'EOF' > /home/deploy/survey-app/infra/compose/.env
+            cat << 'EOF' > /home/deploy/survey-app/infra/keycloak/.env
               ${{ secrets.ENV_FILE }}
             EOF
 
@@ -56,7 +56,7 @@ jobs:
           username: deploy
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cat << 'EOF' > /home/deploy/survey-app/infra/compose/CaddyfileKeycloak
+            cat << 'EOF' > /home/deploy/survey-app/infra/keycloak/Caddyfile
               ${{ secrets.CADDYFILE_KEYCLOAK }}
             EOF
 
@@ -68,5 +68,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/deploy/survey-app
-            docker compose -f infra/compose/docker-compose.keycloak.yml down
-            docker compose -f infra/compose/docker-compose.keycloak.yml --env-file infra/compose/.env up -d --build
+            docker compose -f infra/keycloak/docker-compose.yml down --remove-orphans
+            docker compose -f infra/keycloak/docker-compose.yml --env-file infra/keycloak/.env up -d --build

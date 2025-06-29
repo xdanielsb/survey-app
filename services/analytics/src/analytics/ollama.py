@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 import time
-from typing import Optional
+from typing import Optional, Union
 
 import httpx
 
@@ -20,7 +20,9 @@ class OllamaClient:
     GENERATE_TIMEOUT = 300
     PULL_TIMEOUT = 60
 
-    def __init__(self, url: str, model: str, logger: Optional[logging.Logger] = None) -> None:
+
+    def __init__(self, url: str, model: str, logger: Optional[Union[logging.Logger, logging.LoggerAdapter]] = None):
+
         self.url = url.rstrip("/")
         self.model = model
         self.logger = logger or logging.getLogger(self.__class__.__name__.lower())

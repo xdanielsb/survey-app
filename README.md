@@ -39,8 +39,9 @@ _Cloud‑native survey engine with end‑to‑end observability._
 
 ## Docs
 -  **See** [Database Recovery Guide](docs/data-recovery.md) for how to restore the database in case of an incident
--  **See** [Secure Docker Deploy Guide](docs/secure-docker-deploy.md) for deploying in a safe way with docker compsoe with a dedicated non root user
+-  **See** [Secure Docker Deploy Guide](docs/secure-deploy.md) for deploying in a safe way with docker compsoe with a dedicated non root user
 -  **See** [Deploy Keycloak](docs/deploy-keycloak.md) for deploying keycloak
+-  **See** [Monitoring Configuration](docs/monitoring-config.md) for customizing Prometheus targets
 ## Project Structure
 
 ```
@@ -50,14 +51,18 @@ services/
   backoffice/  (angular v20)
   analytics/   (fastapi python3.12)
 infra/
-  monitoring/
-  elk/
   scripts/
   keycloak/
+    docker-compose.yml
+    Caddyfile
+  monitoring/
+    elk/
+    grafana/
+    docker-compose.yml
+    Caddyfile
   compose/
     docker-compose.yml
     docker-compose.dev.yml
-    docker-compose.keycloak.yml
     Caddyfile
 docs/
   data-recovery.md

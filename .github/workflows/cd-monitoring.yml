@@ -1,5 +1,4 @@
-
-name: Deploy to staging
+name: Deploy to monitoring
 
 on:
   push:
@@ -10,9 +9,9 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: staging
+    environment: monitoring
     concurrency:
-      group: deploy-staging-${{ github.ref }}
+      group: deploy-monitoring-${{ github.ref }}
       cancel-in-progress: true
 
     steps:
@@ -25,7 +24,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: deploy
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "."
+          source: "infra/monitoring/,infra/scripts/,Makefile,makefiles/monitoring.mk"
           target: "/home/deploy/survey-app"
           strip_components: 0
           rm: false
@@ -38,7 +37,7 @@ jobs:
           username: deploy
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cat << 'EOF' > /home/deploy/survey-app/infra/compose/.env
+            cat << 'EOF' > /home/deploy/survey-app/infra/monitoring/.env
               ${{ secrets.ENV_FILE }}
             EOF
 
@@ -49,35 +48,19 @@ jobs:
           username: deploy
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cat << 'EOF' > /home/deploy/survey-app/infra/compose/Caddyfile
+            cat << 'EOF' > /home/deploy/survey-app/infra/monitoring/Caddyfile
               ${{ secrets.CADDY_FILE }}
             EOF
 
-      - name: Upload Env Configuration Backoffice
+      - name: Upload Prometheus config
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.HOST }}
           username: deploy
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cat << 'EOF' > /home/deploy/survey-app/services/backoffice/src/environments/environment.ts
-              ${{ secrets.BACKOFFICE_ENVIROMENT_TS }}
-            EOF
-
-      - name: Add robots.txt for staging
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.HOST }}
-          username: deploy
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cat <<'EOF' > /home/deploy/survey-app/services/frontend/public/robots.txt
-            User-agent: *
-            Disallow: /
-            EOF
-            cat <<'EOF' > /home/deploy/survey-app/services/backoffice/public/robots.txt
-            User-agent: *
-            Disallow: /
+            cat << 'EOF' > /home/deploy/survey-app/infra/monitoring/prometheus.yml
+              ${{ secrets.PROMETHEUS_FILE }}
             EOF
 
       - name: Deploy with Docker Compose
@@ -88,5 +71,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/deploy/survey-app
-            docker compose -f infra/compose/docker-compose.yml down --remove-orphans
-            docker compose -f infra/compose/docker-compose.yml --env-file infra/compose/.env up -d --build
+            docker compose -f infra/monitoring/docker-compose.yml down --remove-orphans
+            docker compose -f infra/monitoring/docker-compose.yml --env-file infra/monitoring/.env up -d --build

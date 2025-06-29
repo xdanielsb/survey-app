@@ -9,7 +9,7 @@ scrape_configs:
       #  here check the targets
       #  http://localhost:9090/targets?search=
       - targets:
-          - 'backend:8080'
+          - 'localhost:8080'
 
   - job_name: 'node-exporter'
     static_configs:

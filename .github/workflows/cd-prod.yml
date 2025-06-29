@@ -68,5 +68,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/deploy/survey-app
-            docker compose -f infra/compose/docker-compose.yml down
+            docker compose -f infra/compose/docker-compose.yml down --remove-orphans
             docker compose -f infra/compose/docker-compose.yml --env-file infra/compose/.env up -d --build

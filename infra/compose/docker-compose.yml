@@ -18,52 +18,6 @@ services:
       retries: 20
       start_period: 10s
 
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:9.0.3
-    container_name: elasticsearch
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      - ES_JAVA_OPTS=-Xms1g -Xmx1g
-    volumes:
-      - es-data:/usr/share/elasticsearch/data
-    healthcheck:
-      test: "bash -c 'cat < /dev/null > /dev/tcp/localhost/9200'"
-      interval: 10s
-      timeout: 5s
-      retries: 10
-
-  logstash:
-    image: docker.elastic.co/logstash/logstash:9.0.3
-    container_name: logstash
-    environment:
-      - ELASTIC_SEARCH_URL=${ELASTIC_SEARCH_URL}
-      - ENVIRONMENT=${ENVIRONMENT}
-    volumes:
-      - ../elk/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-    depends_on:
-      - elasticsearch
-    healthcheck:
-      test: "bash -c 'cat < /dev/null > /dev/tcp/localhost/5000'"
-      interval: 10s
-      timeout: 5s
-      retries: 10
-
-  kibana:
-    image: docker.elastic.co/kibana/kibana:9.0.3
-    container_name: kibana
-    environment:
-      - ELASTICSEARCH_HOSTS=${ELASTIC_SEARCH_URL}
-      - SERVER_BASEPATH=/monitoring
-      - SERVER_REWRITEBASEPATH=true
-    depends_on:
-      - elasticsearch
-    healthcheck:
-      test: "bash -c 'cat < /dev/null > /dev/tcp/localhost/5601'"
-      interval: 10s
-      timeout: 5s
-      retries: 10
-
   backend:
     build:
       context: ../../services/backend
@@ -72,7 +26,6 @@ services:
     restart: always
     depends_on:
       - db
-      - logstash
       - analytics
     environment:
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
@@ -82,8 +35,8 @@ services:
       - SPRING_DATASOURCE_URL=${POSTGRES_URL}
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
-      - LOGSTASH_HOST=logstash
-      - LOGSTASH_PORT=5000
+      - LOGSTASH_HOST=${LOGSTASH_HOST}
+      - LOGSTASH_PORT=${LOGSTASH_PORT}
       - SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
       - SENTRY_AUTH_DSN=${SENTRY_AUTH_DSN}
       - ANALYTICS_URL=${ANALYTICS_URL}  
@@ -98,6 +51,7 @@ services:
       - COMPANY_NAME=${COMPANY_NAME}
       - COMPANY_WEBSITE=${COMPANY_WEBSITE}
       - COMPANY_LOGO_URL=${COMPANY_LOGO_URL}
+      - ENVIRONMENT=${ENVIRONMENT}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://backend:8080/actuator/health"]
       interval: 5s
@@ -123,7 +77,7 @@ services:
     depends_on:
       - backend
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=${ENVIRONMENT}
     healthcheck:
       test: ["CMD-SHELL", "netstat -tulpn | grep -q ':5173 .*LISTEN'"]
       interval: 10s
@@ -184,6 +138,8 @@ services:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_DEFAULT_REGION: ${AWS_REGION}
+      LOGSTASH_HOST: ${LOGSTASH_HOST}
+      LOGSTASH_PORT: ${LOGSTASH_PORT}
       BACKUP_CRON: "0 */12 * * *"
       CLEANUP_CRON: "0 3 * * *"
     volumes:
@@ -196,44 +152,6 @@ services:
       rabbitmq:
         condition: service_healthy
 
-  prometheus:
-    image: prom/prometheus:v3.4.2
-    container_name: prometheus
-    volumes:
-      - ../monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - prometheus_data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-    depends_on:
-      - node-exporter
-    healthcheck:
-      test: ["CMD-SHELL", "netstat -tulpn | grep -q ':9090 .*LISTEN'"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-
-
-  grafana:
-    image: grafana/grafana:12.0.2
-    container_name: grafana
-    volumes:
-      - ../monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
-      - ../monitoring/grafana/provisioning/dashboards:/var/lib/grafana/dashboards
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
-      - GF_USERS_ALLOW_SIGN_UP=false
-      - GF_SERVER_ROOT_URL=${COMPANY_WEBSITE}grafana/
-      - GF_SERVER_SERVE_FROM_SUB_PATH=true
-    depends_on:
-      - prometheus
-    healthcheck:
-      test: "bash -c 'cat < /dev/null > /dev/tcp/localhost/3000'"
-      interval: 10s
-      timeout: 5s
-      retries: 10
-
-
-
   node-exporter:
     image: prom/node-exporter:v1.9.1
     container_name: node-exporter
@@ -241,12 +159,13 @@ services:
       - '--path.rootfs=/host'
     volumes:
       - '/:/host:ro,rslave'
+    ports:
+      - "9100:9100"
     healthcheck:
       test: ["CMD-SHELL", "netstat -tulpn | grep -q ':9100 .*LISTEN'"]
       interval: 10s
       timeout: 5s
       retries: 10
-
 
   analytics:
     build:
@@ -257,6 +176,9 @@ services:
       - OLLAMA_URL=${OLLAMA_URL}
       - OLLAMA_MODEL=${OLLAMA_MODEL}
       - SENTRY_AUTH_DSN=${SENTRY_AUTH_DSN}
+      - LOGSTASH_HOST=${LOGSTASH_HOST}
+      - LOGSTASH_PORT=${LOGSTASH_PORT}
+      - ENVIRONMENT=${ENVIRONMENT}
     depends_on:
       - ollama
     healthcheck:
@@ -264,8 +186,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-
-
 
   ollama:
     image: ollama/ollama:0.1.39
@@ -294,11 +214,8 @@ services:
       timeout: 5s
       retries: 10
 
-
 volumes:
   db-data:
   caddy-data:
-  es-data:
-  prometheus_data:
   ollama-data:
   invoices:
