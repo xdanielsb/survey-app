@@ -1,0 +1,257 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "id": 1,
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "type": "timeseries",
+      "title": "HTTP Request Latency (avg in ms)",
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": { "unit": "ms" } },
+      "options": { "legend": { "displayMode": "table" } },
+      "targets": [
+        {
+          "expr": " (sum by(instance)( rate(http_server_requests_seconds_sum[5m]) ) / sum by(instance)( rate(http_server_requests_seconds_count[5m]) )) * 1000 ",
+          "legendFormat": "avg latency (ms) ({{instance}})",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "type": "timeseries",
+      "title": "Error Rate (5xx or 4xx errors/sec)",
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": { "unit": "short" } },
+      "options": { "legend": { "displayMode": "table" } },
+      "targets": [
+        {
+          "expr": "sum by (instance)( rate(http_server_requests_seconds_count{status!~\"2..|3..\"}[5m]) )",
+          "legendFormat": "errors/sec ({{instance}})",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "type": "timeseries",
+      "title": "Traffic (Requests/sec)",
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": { "unit": "reqps" } },
+      "options": { "legend": { "displayMode": "table" } },
+      "targets": [
+        {
+          "expr": "sum(rate(http_server_requests_seconds_count[1m]))",
+          "legendFormat": "Requests/sec",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "type": "timeseries",
+      "title": "Saturation (JVM CPU & Memory)",
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": { "unit": "percent" } },
+      "options": { "legend": { "displayMode": "table" } },
+      "targets": [
+        {
+          "expr": "process_cpu_usage * 100",
+          "legendFormat": "JVM CPU Usage (%)",
+          "refId": "A"
+        },
+        {
+          "expr": "(jvm_memory_used_bytes{area=\"heap\"} / jvm_memory_max_bytes{area=\"heap\"}) * 100",
+          "legendFormat": "Heap Used (%)",
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 16 },
+      "type": "stat",
+      "title": "App Ready Time (s)",
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": { "unit": "s" } },
+      "targets": [
+        {
+          "expr": "application_ready_time_seconds",
+          "legendFormat": "Ready Time",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 16 },
+      "type": "stat",
+      "title": "App Start Time (s)",
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": { "unit": "s" } },
+      "targets": [
+        {
+          "expr": "application_started_time_seconds",
+          "legendFormat": "Start Time",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
+      "type": "timeseries",
+      "title": "HikariCP Connections (Active, Idle, Max)",
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": { "unit": "short" } },
+      "options": { "legend": { "displayMode": "table" } },
+      "targets": [
+        {
+          "expr": "hikaricp_connections_active{pool=\"HikariPool-1\"}",
+          "legendFormat": "Active",
+          "refId": "A"
+        },
+        {
+          "expr": "hikaricp_connections_idle{pool=\"HikariPool-1\"}",
+          "legendFormat": "Idle",
+          "refId": "B"
+        },
+        {
+          "expr": "hikaricp_connections_max{pool=\"HikariPool-1\"}",
+          "legendFormat": "Max",
+          "refId": "C"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
+      "type": "timeseries",
+      "title": "Disk Usage (%)",
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": { "unit": "percent" } },
+      "options": { "legend": { "displayMode": "table" } },
+      "targets": [
+        {
+          "expr": "(disk_free_bytes{path=\"/app/.\"} / disk_total_bytes{path=\"/app/.\"}) * 100",
+          "legendFormat": "Disk Free (%)",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 24 },
+      "type": "timeseries",
+      "title": "JVM Heap Usage (bytes)",
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": { "unit": "bytes" } },
+      "options": { "legend": { "displayMode": "table" } },
+      "targets": [
+        {
+          "expr": "jvm_memory_used_bytes{area=\"heap\"}",
+          "legendFormat": "Heap Used",
+          "refId": "A"
+        },
+        {
+          "expr": "jvm_memory_committed_bytes{area=\"heap\"}",
+          "legendFormat": "Heap Committed",
+          "refId": "B"
+        },
+        {
+          "expr": "jvm_memory_max_bytes{area=\"heap\"}",
+          "legendFormat": "Heap Max",
+          "refId": "C"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 28 },
+      "type": "timeseries",
+      "title": "JVM Non-Heap Usage (bytes)",
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": { "unit": "bytes" } },
+      "options": { "legend": { "displayMode": "table" } },
+      "targets": [
+        {
+          "expr": "sum(jvm_memory_used_bytes{area=\"nonheap\"})",
+          "legendFormat": "Non-Heap Used",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(jvm_memory_committed_bytes{area=\"nonheap\"})",
+          "legendFormat": "Non-Heap Committed",
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 32 },
+      "type": "timeseries",
+      "title": "GC Pause Time (s)",
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": { "unit": "s" } },
+      "options": { "legend": { "displayMode": "table" } },
+      "targets": [
+        {
+          "expr": "rate(jvm_gc_pause_seconds_sum[5m])",
+          "legendFormat": "GC Pause (per 5m)",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 36 },
+      "type": "timeseries",
+      "title": "JVM Threads",
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": { "unit": "short" } },
+      "options": { "legend": { "displayMode": "table" } },
+      "targets": [
+        {
+          "expr": "jvm_threads_live_threads",
+          "legendFormat": "Live Threads",
+          "refId": "A"
+        },
+        {
+          "expr": "jvm_threads_daemon_threads",
+          "legendFormat": "Daemon Threads",
+          "refId": "B"
+        }
+      ]
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 36,
+  "style": "dark",
+  "tags": ["survey-app"],
+  "templating": { "list": [] },
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Survey-App Overview (Enhanced)",
+  "version": 5
+}

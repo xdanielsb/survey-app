@@ -73,6 +73,7 @@ Makefile
 ```
 
 ###  Dev development
+Run `make help` to view all available targets.
 
 ```bash
  # db + api + ui + elk
@@ -96,6 +97,7 @@ Makefile
 More details: [`backend/README.md`](./services/backend/README.md)
 More details: [`frontend/README.md`](./services/frontend/README.md)
 More details: [`analytics/README.md`](./services/analytics/README.md)
+More details: [`backoffice/README.md`](./services/backoffice/README.md)
 
 
 ## License

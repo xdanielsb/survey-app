@@ -14,96 +14,263 @@
   },
   "editable": true,
   "gnetId": null,
-  "graphTooltip": 0,
+  "graphTooltip": 1,
   "id": null,
   "links": [],
   "panels": [
     {
       "id": 1,
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
-      "type": "timeseries",
-      "title": "HTTP Request Latency (avg in ms)",
+      "type": "stat",
+      "title": "App Ready Time (s)",
       "datasource": "Prometheus",
-      "fieldConfig": {
-        "defaults": { "unit": "ms" },
-        "overrides": []
-      },
-      "options": {
-        "legend": { "displayMode": "table" }
-      },
+      "description": "Time taken for the application to be ready to serve requests.",
+      "gridPos": { "h": 3, "w": 6, "x": 0, "y": 0 },
+      "fieldConfig": { "defaults": { "unit": "s" } },
       "targets": [
         {
-          "expr": " (sum by(instance)( rate(http_server_requests_seconds_sum[5m]) ) / sum by(instance)( rate(http_server_requests_seconds_count[5m]) )) * 1000 ",
-          "legendFormat": "avg latency (ms) ({{instance}})",
-          "refId": "A"
+          "expr": "application_ready_time_seconds",
+          "legendFormat": "Ready Time"
         }
       ]
     },
     {
       "id": 2,
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
-      "type": "timeseries",
-      "title": "Error Rate (5xx or 4xx errors/sec)",
+      "type": "stat",
+      "title": "App Start Time (s)",
       "datasource": "Prometheus",
-      "fieldConfig": {
-        "defaults": { "unit": "short" },
-        "overrides": []
-      },
-      "options": {
-        "legend": { "displayMode": "table" }
-      },
+      "description": "Time taken to start the application.",
+      "gridPos": { "h": 3, "w": 6, "x": 6, "y": 0 },
+      "fieldConfig": { "defaults": { "unit": "s" } },
       "targets": [
         {
-          "expr": "sum by (instance)( rate(http_server_requests_seconds_count{status!~\"2..|3..\"}[5m]) )",
-          "legendFormat": "5xx/sec ({{instance}})",
-          "refId": "A"
+          "expr": "application_started_time_seconds",
+          "legendFormat": "Start Time"
         }
       ]
     },
     {
       "id": 3,
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
-      "type": "timeseries",
-      "title": "Traffic (Requests/sec)",
+      "type": "stat",
+      "title": "App Uptime",
       "datasource": "Prometheus",
-      "fieldConfig": {
-        "defaults": { "unit": "reqps" },
-        "overrides": []
-      },
-      "options": {
-        "legend": { "displayMode": "table" }
-      },
+      "description": "Time since the JVM process started.",
+      "gridPos": { "h": 3, "w": 6, "x": 12, "y": 0 },
+      "fieldConfig": { "defaults": { "unit": "s" } },
       "targets": [
         {
-          "expr": "sum(rate(http_server_requests_seconds_count[1m]))",
-          "legendFormat": "Requests/sec",
-          "refId": "A"
+          "expr": "process_uptime_seconds",
+          "legendFormat": "Uptime"
         }
       ]
     },
     {
       "id": 4,
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
       "type": "timeseries",
-      "title": "Saturation (CPU & Memory)",
+      "title": "HTTP Request Rate (by URI)",
       "datasource": "Prometheus",
-      "fieldConfig": {
-        "defaults": { "unit": "percent" },
-        "overrides": []
-      },
-      "options": {
-        "legend": { "displayMode": "table" }
-      },
+      "description": "Requests per second per URI.",
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 3 },
+      "fieldConfig": { "defaults": { "unit": "reqps" } },
+      "options": { "legend": { "displayMode": "table" } },
       "targets": [
         {
-          "expr": "100 - (avg by (instance)( irate(node_cpu_seconds_total{mode=\"idle\"}[5m]) ) * 100)",
-          "legendFormat": "CPU Usage (%) ({{instance}})",
-          "refId": "A"
+          "expr": "sum by (uri)(rate(http_server_requests_seconds_count[1m]))",
+          "legendFormat": "{{uri}}"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "HTTP Request Latency (ms, by URI)",
+      "datasource": "Prometheus",
+      "description": "Average HTTP request duration in milliseconds per URI.",
+      "gridPos": { "h": 6, "w": 12, "x": 12, "y": 3 },
+      "fieldConfig": { "defaults": { "unit": "ms" } },
+      "options": { "legend": { "displayMode": "table" } },
+      "targets": [
+        {
+          "expr": "(sum by(uri)(rate(http_server_requests_seconds_sum[5m])) / sum by(uri)(rate(http_server_requests_seconds_count[5m]))) * 1000",
+          "legendFormat": "{{uri}}"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "HTTP Error Rate (4xx/5xx by URI)",
+      "datasource": "Prometheus",
+      "description": "Rate of client and server errors, grouped by URI.",
+      "gridPos": { "h": 5, "w": 12, "x": 0, "y": 9 },
+      "fieldConfig": { "defaults": { "unit": "reqps" } },
+      "options": { "legend": { "displayMode": "table" } },
+      "targets": [
+        {
+          "expr": "sum by (uri)(rate(http_server_requests_seconds_count{status!~\"2..|3..\"}[5m]))",
+          "legendFormat": "{{uri}}"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "CPU & Heap Saturation",
+      "datasource": "Prometheus",
+      "description": "JVM process CPU usage (%) and heap usage (%).",
+      "gridPos": { "h": 5, "w": 12, "x": 12, "y": 9 },
+      "fieldConfig": { "defaults": { "unit": "percent" } },
+      "options": { "legend": { "displayMode": "table" } },
+      "targets": [
+        {
+          "expr": "process_cpu_usage * 100",
+          "legendFormat": "CPU (%)"
         },
         {
-          "expr": "node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100",
-          "legendFormat": "Memory Available (%)",
-          "refId": "B"
+          "expr": "(jvm_memory_used_bytes{area=\"heap\"}/jvm_memory_max_bytes{area=\"heap\"}) * 100",
+          "legendFormat": "Heap Used (%)"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "Disk Usage (%)",
+      "datasource": "Prometheus",
+      "description": "Free disk space percentage by path.",
+      "gridPos": { "h": 5, "w": 12, "x": 0, "y": 14 },
+      "fieldConfig": { "defaults": { "unit": "percent" } },
+      "options": { "legend": { "displayMode": "table" } },
+      "targets": [
+        {
+          "expr": "(disk_free_bytes/disk_total_bytes)*100",
+          "legendFormat": "{{path}}"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "HikariCP Connections (by Pool)",
+      "datasource": "Prometheus",
+      "description": "Database connection pool: active, idle, max (by pool).",
+      "gridPos": { "h": 5, "w": 12, "x": 12, "y": 14 },
+      "fieldConfig": { "defaults": { "unit": "short" } },
+      "options": { "legend": { "displayMode": "table" } },
+      "targets": [
+        {
+          "expr": "hikaricp_connections_active",
+          "legendFormat": "Active ({{pool}})"
+        },
+        {
+          "expr": "hikaricp_connections_idle",
+          "legendFormat": "Idle ({{pool}})"
+        },
+        {
+          "expr": "hikaricp_connections_max",
+          "legendFormat": "Max ({{pool}})"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "JVM Heap Usage (by Gen)",
+      "datasource": "Prometheus",
+      "description": "JVM heap used/committed/max by generation (Eden, Old Gen, Survivor).",
+      "gridPos": { "h": 5, "w": 12, "x": 0, "y": 19 },
+      "fieldConfig": { "defaults": { "unit": "bytes" } },
+      "options": { "legend": { "displayMode": "table" } },
+      "targets": [
+        {
+          "expr": "jvm_memory_used_bytes{area=\"heap\"}",
+          "legendFormat": "Used ({{id}})"
+        },
+        {
+          "expr": "jvm_memory_committed_bytes{area=\"heap\"}",
+          "legendFormat": "Committed ({{id}})"
+        },
+        {
+          "expr": "jvm_memory_max_bytes{area=\"heap\"}",
+          "legendFormat": "Max ({{id}})"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "JVM Non-Heap Usage",
+      "datasource": "Prometheus",
+      "description": "Non-heap memory usage by pool.",
+      "gridPos": { "h": 5, "w": 12, "x": 12, "y": 19 },
+      "fieldConfig": { "defaults": { "unit": "bytes" } },
+      "options": { "legend": { "displayMode": "table" } },
+      "targets": [
+        {
+          "expr": "jvm_memory_used_bytes{area=\"nonheap\"}",
+          "legendFormat": "Used ({{id}})"
+        },
+        {
+          "expr": "jvm_memory_committed_bytes{area=\"nonheap\"}",
+          "legendFormat": "Committed ({{id}})"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "GC Pause Time (by Cause)",
+      "datasource": "Prometheus",
+      "description": "Garbage Collection pause time, grouped by action/cause/gc.",
+      "gridPos": { "h": 5, "w": 12, "x": 0, "y": 24 },
+      "fieldConfig": { "defaults": { "unit": "s" } },
+      "options": { "legend": { "displayMode": "table" } },
+      "targets": [
+        {
+          "expr": "rate(jvm_gc_pause_seconds_sum[5m])",
+          "legendFormat": "{{action}}/{{cause}}/{{gc}}"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "type": "timeseries",
+      "title": "JVM Threads (live, daemon)",
+      "datasource": "Prometheus",
+      "description": "Live and daemon threads count in the JVM.",
+      "gridPos": { "h": 5, "w": 12, "x": 12, "y": 24 },
+      "fieldConfig": { "defaults": { "unit": "short" } },
+      "options": { "legend": { "displayMode": "table" } },
+      "targets": [
+        {
+          "expr": "jvm_threads_live_threads",
+          "legendFormat": "Live Threads"
+        },
+        {
+          "expr": "jvm_threads_daemon_threads",
+          "legendFormat": "Daemon Threads"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "type": "stat",
+      "title": "Log Events (Info, Warn, Error)",
+      "datasource": "Prometheus",
+      "description": "Log events per level since startup.",
+      "gridPos": { "h": 3, "w": 12, "x": 0, "y": 29 },
+      "fieldConfig": { "defaults": { "unit": "short" } },
+      "targets": [
+        {
+          "expr": "logback_events_total{level=\"info\"}",
+          "legendFormat": "Info"
+        },
+        {
+          "expr": "logback_events_total{level=\"warn\"}",
+          "legendFormat": "Warn"
+        },
+        {
+          "expr": "logback_events_total{level=\"error\"}",
+          "legendFormat": "Error"
         }
       ]
     }
@@ -111,16 +278,11 @@
   "refresh": "10s",
   "schemaVersion": 36,
   "style": "dark",
-  "tags": ["survey-app"],
-  "templating": {
-    "list": []
-  },
-  "time": {
-    "from": "now-1h",
-    "to": "now"
-  },
+  "tags": ["survey-app", "enlightened"],
+  "templating": { "list": [] },
+  "time": { "from": "now-1h", "to": "now" },
   "timepicker": {},
   "timezone": "",
-  "title": "Survey-App Overview",
-  "version": 4
+  "title": "Survey-App: Enlightened Observability",
+  "version": 7
 }
