@@ -176,7 +176,7 @@ class SurveyControllerTest {
     Survey mockSurvey =
         Survey.builder()
             .id(1L)
-            .title(dto.getTitle())
+            .title(dto.title())
             .questions(
                 List.of(
                     Question.builder()

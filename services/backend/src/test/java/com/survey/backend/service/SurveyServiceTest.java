@@ -44,8 +44,8 @@ class SurveyServiceTest {
     user.setSurveyCredits(1);
 
     CreateSurveyDTO dto = new CreateSurveyDTO();
-    dto.setTitle("Test Survey");
-    dto.setQuestions(List.of(new QuestionDTO("Q1", 0), new QuestionDTO("Q2", 1)));
+    dto.title("Test Survey");
+    dto.questions(List.of(new QuestionDTO("Q1", 0), new QuestionDTO("Q2", 1)));
 
     Survey savedSurvey = new Survey();
     savedSurvey.setId(1L);
@@ -75,7 +75,7 @@ class SurveyServiceTest {
     user.setSurveyCredits(0);
 
     CreateSurveyDTO dto = new CreateSurveyDTO();
-    dto.setTitle("Blocked Survey");
+    dto.title("Blocked Survey");
 
     when(userService.getCurrentUser()).thenReturn(user);
 

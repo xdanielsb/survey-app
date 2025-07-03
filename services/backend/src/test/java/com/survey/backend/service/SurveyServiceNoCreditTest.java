@@ -44,7 +44,7 @@ class SurveyServiceNoCreditTest {
     when(userRepo.decrementCreditIfAvailable(7L)).thenReturn(0);
 
     CreateSurveyDTO dto = new CreateSurveyDTO();
-    dto.setTitle("won't matter");
+    dto.title("won't matter");
 
     // Act & Assert: should throw IllegalStateException
     assertThrows(IllegalStateException.class, () -> surveyService.createSurvey(dto));

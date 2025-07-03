@@ -62,8 +62,8 @@ public class AuthControllerTest {
   @Test
   public void testLoginSuccess() throws Exception {
     LoginRequestDTO loginRequest = new LoginRequestDTO();
-    loginRequest.setEmail("test@example.com");
-    loginRequest.setPassword("password");
+    loginRequest.email("test@example.com");
+    loginRequest.password("password");
     String email = "test@example.com";
 
     User mockUser = User.builder().email("x@test.com").isPremium(true).build();
@@ -85,8 +85,8 @@ public class AuthControllerTest {
   @Test
   public void testLoginFailsWhenKeycloakResponseIsInvalid() throws Exception {
     LoginRequestDTO loginRequest = new LoginRequestDTO();
-    loginRequest.setEmail("user@example.com");
-    loginRequest.setPassword("password");
+    loginRequest.email("user@example.com");
+    loginRequest.password("password");
 
     // Keycloak returns 200 OK but no access token (invalid credentials)
     Map<String, Object> badTokenResp = Map.of("error", "invalid_grant");
@@ -106,8 +106,8 @@ public class AuthControllerTest {
   @Test
   public void testSignupSuccess() throws Exception {
     SignupRequestDTO req = new SignupRequestDTO();
-    req.setEmail("new@example.com");
-    req.setPassword("pw");
+    req.email("new@example.com");
+    req.password("pw");
 
     mockMvc
         .perform(
@@ -124,8 +124,8 @@ public class AuthControllerTest {
   @Test
   public void testLoginFailsWhenUserNotAdminOrManager() throws Exception {
     LoginRequestDTO loginRequest = new LoginRequestDTO();
-    loginRequest.setEmail("test@example.com");
-    loginRequest.setPassword("password");
+    loginRequest.email("test@example.com");
+    loginRequest.password("password");
 
     String email = "test@example.com";
 

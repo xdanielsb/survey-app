@@ -38,8 +38,8 @@ class LoginServiceTest {
             anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(Map.class)))
         .thenReturn(new ResponseEntity<>(infoResp, HttpStatus.OK));
     LoginRequestDTO req = new LoginRequestDTO();
-    req.setEmail("test@example.com");
-    req.setPassword("pw");
+    req.email("test@example.com");
+    req.password("pw");
 
     User user = User.builder().email("test@example.com").isPremium(true).build();
     when(userService.saveUser("test@example.com")).thenReturn(user);
@@ -47,16 +47,16 @@ class LoginServiceTest {
 
     LoginResponseDTO result = loginService.login(req);
 
-    assertEquals(keycloakToken, result.getToken());
-    assertEquals(List.of("CUSTOMER"), result.getRoles());
+    assertEquals(keycloakToken, result.token());
+    assertEquals(List.of("CUSTOMER"), result.roles());
     assertTrue(result.isPremium());
   }
 
   @Test
   void login_invalidCredentials_throwsUnauthorized() {
     LoginRequestDTO req = new LoginRequestDTO();
-    req.setEmail("bad@example.com");
-    req.setPassword("wrong");
+    req.email("bad@example.com");
+    req.password("wrong");
 
     Map<String, Object> badResp = Map.of("error", "invalid_grant");
     when(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(Map.class)))

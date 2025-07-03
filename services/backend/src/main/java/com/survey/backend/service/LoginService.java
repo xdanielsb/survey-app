@@ -49,8 +49,8 @@ public class LoginService {
     form.add("grant_type", "password");
     form.add("client_id", keycloakClientId);
     form.add("client_secret", keycloakClientSecret);
-    form.add("username", request.getEmail());
-    form.add("password", request.getPassword());
+    form.add("username", request.email());
+    form.add("password", request.password());
     form.add("scope", "openid profile email");
 
     HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(form, headers);
@@ -73,7 +73,7 @@ public class LoginService {
     }
     Map info = infoResp.getBody();
     String uid = (String) info.get("sub");
-    String email = info.getOrDefault("email", request.getEmail()).toString();
+    String email = info.getOrDefault("email", request.email()).toString();
 
     User user = userService.saveUser(email);
     List<String> roles = keycloakAdminService.getUserRoles(email);
@@ -95,7 +95,7 @@ public class LoginService {
 
   public void signup(SignupRequestDTO request) {
     keycloakAdminService.createUser(
-        request.getEmail(), request.getPassword(), List.of(KeycloakRole.CUSTOMER.name()));
-    userService.saveUser(request.getEmail());
+        request.email(), request.password(), List.of(KeycloakRole.CUSTOMER.name()));
+    userService.saveUser(request.email());
   }
 }

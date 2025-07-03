@@ -1,17 +1,21 @@
 package com.survey.backend.dto;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Accessors(fluent = true)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class SurveyDTO {
   private Long id;
   private String title;
@@ -23,6 +27,7 @@ public class SurveyDTO {
   @NoArgsConstructor
   @AllArgsConstructor
   @Builder
+  @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
   public static class QuestionDTO {
     private Long id;
     private String questionText;

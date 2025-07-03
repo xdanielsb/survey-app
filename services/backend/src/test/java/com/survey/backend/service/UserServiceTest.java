@@ -90,8 +90,8 @@ class UserServiceTest {
 
     assertEquals(2, result.size());
     UserDTO dto1 = result.get(0);
-    assertEquals(1L, dto1.getId());
-    assertTrue(dto1.isPremium());
-    assertEquals(List.of("ADMIN"), dto1.getRoles());
+    assertEquals(1L, dto1.id());
+    assertTrue(dto1.premium());
+    assertEquals(List.of("ADMIN"), dto1.roles());
   }
 }

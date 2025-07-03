@@ -13,7 +13,7 @@ public class AnswerMapper {
     return Answer.builder()
         .question(question)
         .response(response)
-        .answer(LikertScale.valueOf(dto.getAnswer().toUpperCase().replace(" ", "_")))
+        .answer(LikertScale.valueOf(dto.answer().toUpperCase().replace(" ", "_")))
         .build();
   }
 }

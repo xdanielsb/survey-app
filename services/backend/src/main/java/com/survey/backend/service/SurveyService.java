@@ -87,10 +87,10 @@ public class SurveyService {
   }
 
   private List<Answer> convertDtoToAnswers(SurveyResponseDTO dto, Response response) {
-    return dto.getAnswers().stream()
+    return dto.answers().stream()
         .map(
             dtoAnswer -> {
-              Long questionId = dtoAnswer.getQuestionId();
+              Long questionId = dtoAnswer.questionId();
               Question question =
                   questionRepo
                       .findById(questionId)
@@ -164,15 +164,15 @@ public class SurveyService {
     // Sync the in-memory entity so subsequent save() persists the new credit value
     user.setSurveyCredits(user.getSurveyCredits() - 1);
 
-    Survey survey = Survey.builder().title(dto.getTitle()).build();
+    Survey survey = Survey.builder().title(dto.title()).build();
 
     List<Question> questions =
-        dto.getQuestions().stream()
+        dto.questions().stream()
             .map(
                 q ->
                     Question.builder()
-                        .questionText(q.getQuestionText())
-                        .position(q.getPosition())
+                        .questionText(q.questionText())
+                        .position(q.position())
                         .survey(survey)
                         .build())
             .collect(Collectors.toList());

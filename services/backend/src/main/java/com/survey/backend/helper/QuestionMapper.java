@@ -17,8 +17,8 @@ public class QuestionMapper {
   public static Question fromDTO(CreateSurveyDTO.QuestionDTO dto, Survey survey) {
     return Question.builder()
         .survey(survey)
-        .questionText(dto.getQuestionText())
-        .position(dto.getPosition())
+        .questionText(dto.questionText())
+        .position(dto.position())
         .build();
   }
 }
