@@ -39,6 +39,11 @@ docker compose exec db-backup /backup.sh
     java -jar app.jar --spring.profiles.active=shell
 ```
 
+### Spotbugs
+```
+./mvnw spotbugs:check
+```
+
 ##  Format the code
 ```
 ./mvnw spotless:apply
