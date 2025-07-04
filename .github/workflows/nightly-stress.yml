@@ -1,8 +1,9 @@
 name: Nightly Stress Test
 
 on:
-  schedule:
-    - cron: '0 2 * * *'
+  # Temporarily disable scheduled stress tests
+  # schedule:
+  #   - cron: '0 2 * * *'
   workflow_dispatch:
 
 jobs:
