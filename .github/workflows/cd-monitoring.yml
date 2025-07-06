@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - master
+    paths:
+      - 'infra/monitoring/**'
+      - 'infra/scripts/**'
+      - 'makefiles/monitoring.mk'
+      - '.github/workflows/cd-monitoring.yml'
   workflow_dispatch:
 
 jobs:

@@ -3,8 +3,20 @@ name: Coverage
 on:
   push:
     branches: [master]
+    paths:
+      - 'services/backend/**'
+      - 'services/frontend/**'
+      - 'services/analytics/**'
+      - 'services/backoffice/**'
+      - '.github/workflows/ci-coverage.yml'
   pull_request:
     branches: [master]
+    paths:
+      - 'services/backend/**'
+      - 'services/frontend/**'
+      - 'services/analytics/**'
+      - 'services/backoffice/**'
+      - '.github/workflows/ci-coverage.yml'
 
 permissions:
   contents: read

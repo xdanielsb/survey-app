@@ -2,6 +2,11 @@ name: Security Scan
 
 on:
   pull_request:
+    paths:
+      - 'services/backend/**'
+      - 'services/frontend/**'
+      - 'services/analytics/**'
+      - '.github/workflows/security.yml'
   schedule:
     - cron: '0 4 * * 1'
   workflow_dispatch:

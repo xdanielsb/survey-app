@@ -1,8 +1,16 @@
 on:
   push:
     branches: [master]
+    paths:
+      - 'services/backend/**'
+      - 'services/frontend/**'
+      - '.github/workflows/ci-code-vulnerabilities.yml'
   pull_request:
     branches: [master]
+    paths:
+      - 'services/backend/**'
+      - 'services/frontend/**'
+      - '.github/workflows/ci-code-vulnerabilities.yml'
   schedule:
     - cron: '0 4 * * 1'
   workflow_dispatch:
