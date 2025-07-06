@@ -51,7 +51,7 @@ services:
       retries: 10
 
   patronx-worker:
-    image: xdanielsb/patronx:2.2.0
+    image: xdanielsb/patronx:2.4.1
     entrypoint: ["patronx"]
     command: ["start"]
     restart: unless-stopped
@@ -79,6 +79,11 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "sh", "-c", "wget --spider -q http://localhost:7775/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.0.0

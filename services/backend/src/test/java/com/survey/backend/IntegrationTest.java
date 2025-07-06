@@ -18,7 +18,7 @@ public abstract class IntegrationTest {
 
   @Container
   static PostgreSQLContainer<?> postgres =
-      new PostgreSQLContainer<>("postgres:16")
+      new PostgreSQLContainer<>("postgres:17.5")
           .withDatabaseName("testdb")
           .withUsername("testuser")
           .withPassword("testpass");
