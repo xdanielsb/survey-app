@@ -21,7 +21,7 @@ uvicorn analytics.main:app --reload
 ## Tests
 
 ```bash
-pip install -e .[test]
+uv pip install --system -e .[test]
 pytest -q
 ```
 

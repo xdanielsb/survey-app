@@ -78,6 +78,19 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Cache uv
+        if: ${{ matrix.part == 'analytics' }}
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/uv
+          key: ${{ runner.os }}-uv-${{ hashFiles('services/analytics/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
+
+      - name: Install uv
+        if: ${{ matrix.part == 'analytics' }}
+        run: pip install uv
+
       - name: Install & test frontend
         if: ${{ matrix.part == 'frontend' }}
         working-directory: services/frontend
@@ -96,7 +109,7 @@ jobs:
         if: ${{ matrix.part == 'analytics' }}
         working-directory: services/analytics
         run: |
-          pip install -e .[test]
+          uv pip install --system -e .[test]
           pytest --cov=analytics --cov-report=xml --cov-report=html
 
       - name: Upload coverage to Codecov
