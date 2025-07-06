@@ -45,31 +45,49 @@ _Cloud‑native survey engine with end‑to‑end observability._
 ## Project Structure
 
 ```
-services/
-  backend/     (spring boot 3 java 17)
-  frontend/    (vuejs v3)
-  backoffice/  (angular v20)
-  analytics/   (fastapi python3.12)
+.github/workflows
+├── dependabot.yml
+└── workflows
+    ├── cd-keycloak.yml
+    ├── cd-monitoring.yml
+    ├── cd-prod.yml
+    ├── cd-staging.yml
+    ├── ci-analytics.yml
+    ├── ci-backend.yml
+    ├── ci-backoffice.yml
+    ├── ci-code-vulnerabilities.yml
+    ├── ci-coverage.yml
+    ├── ci-frontend.yml
+    ├── nightly-stress.yml
+    ├── release-changelog.yml
+    └── security.yml
+└── services
+    ├── analytics (fastapi python3.12)
+    ├── backend (spring boot 3 java 17)
+    ├── backoffice (angular v20)
+    └── frontend (vuejs v3)
 infra/
-  scripts/
-  keycloak/
-    docker-compose.yml
-    Caddyfile
-  monitoring/
-    elk/
-    grafana/
-    docker-compose.yml
-    Caddyfile
-  compose/
-    docker-compose.yml
-    docker-compose.dev.yml
-    Caddyfile
-docs/
-  data-recovery.md
-  secure-docker-deploy.md
-performance/
-  stress_tests/
-Makefile
+  ├──  kubernetes/
+  ├──  keycloak/
+       ├──   docker-compose.yml
+       ├──  Caddyfile
+  ├──  monitoring/
+       ├──  docker-compose.yml
+       ├──   elk/
+       ├──  grafana/
+       ├──  Caddyfile
+  ├── compose/
+       ├──  docker-compose.yml
+       ├──  docker-compose.dev.yml
+       ├── Caddyfile
+  ├── scripts/
+  ├── docs/
+      ├── data-recovery.md
+      ├── secure-docker.md
+      ├── deploy-keycloak.md
+      ├── monitoring-config.md
+  ├── performance/
+      ├──  stress_tests/
 ```
 
 ###  Dev development
