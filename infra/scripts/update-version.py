@@ -24,7 +24,7 @@ done
 
 # Check required inputs
 if [ -z "$PREV_VERSION" ] || [ -z "$NEXT_VERSION" ]; then
-  echo "Usage: $0 --previous-version=patronx:2.1.0 --next-version=patronx:2.4.1 [--path=./some-directory]"
+  echo "Usage: $0 --previous-version=patronx:2.1.0 --next-version=patronx:2.4.2 [--path=./some-directory]"
   exit 1
 fi
 

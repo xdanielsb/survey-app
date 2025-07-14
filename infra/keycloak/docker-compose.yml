@@ -51,7 +51,7 @@ services:
       retries: 10
 
   patronx-worker:
-    image: xdanielsb/patronx:2.4.1
+    image: xdanielsb/patronx:2.4.2
     entrypoint: ["patronx"]
     command: ["start"]
     restart: unless-stopped
@@ -70,6 +70,7 @@ services:
       AWS_DEFAULT_REGION: ${AWS_REGION}
       BACKUP_CRON: "0 */12 * * *"
       CLEANUP_CRON: "0 3 * * *"
+      ENVIRONMENT: ${ENVIRONMENT}
     volumes:
       - ../../backups:/app/backups
     depends_on:
