@@ -16,6 +16,7 @@ dependencies = [
     "httpx>=0.27",
     "python-logstash>=0.4.8",
     "sentry-sdk>=2",
+    "mcp>=1.11",
 ]
 
 [project.optional-dependencies]

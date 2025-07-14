@@ -38,6 +38,9 @@ Runtime dependencies are defined in `pyproject.toml`. To generate a
 `requirements.txt` file, install `pip-tools` and run:
 
 ```bash
-pip install pip-tools
-pip-compile --output-file=requirements.txt pyproject.toml
+uv pip install pip-tools
+```
+
+```bash
+uv pip compile pyproject.toml -o requirements.txt
 ```
