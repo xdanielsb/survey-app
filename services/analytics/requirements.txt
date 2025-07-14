@@ -91,7 +91,7 @@ typing-inspection==0.4.1
     #   pydantic-settings
 urllib3==2.4.0
     # via sentry-sdk
-uvicorn==0.34.3
+uvicorn==0.35.0
     # via
     #   analytics (pyproject.toml)
     #   mcp
