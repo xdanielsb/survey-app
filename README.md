@@ -33,7 +33,7 @@ _Cloud‑native survey engine with end‑to‑end observability._
 -  **Monitoring** | Prometheus + Grafana (Latency, Error Rate, Traffic, Saturation) 
 -  **Unit/Integration Test** | Vitest + JaCoCo + Codecov + TestContainers
 -  **Stress tests** with k6 (nightly via GitHub Actions)
--  **LLMs** | analytics service exposes an AI chat endpoint to talk about the surveys.
+-  **MCP** | analytics service with MCP connected to an LLM (feature available for premium users).
 -  **Delivery** GitHub Actions · Docker · Caddy reverse‑proxy
 
 
@@ -48,16 +48,10 @@ _Cloud‑native survey engine with end‑to‑end observability._
 .github/workflows
 ├── dependabot.yml
 └── workflows
-    ├── cd-keycloak.yml
-    ├── cd-monitoring.yml
-    ├── cd-prod.yml
-    ├── cd-staging.yml
-    ├── ci-analytics.yml
-    ├── ci-backend.yml
-    ├── ci-backoffice.yml
-    ├── ci-code-vulnerabilities.yml
-    ├── ci-coverage.yml
-    ├── ci-frontend.yml
+    ├── cd
+        ├── ...
+    ├── ci
+        ├── ...
     ├── nightly-stress.yml
     ├── release-changelog.yml
     └── security.yml
