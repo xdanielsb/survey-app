@@ -1,4 +1,4 @@
-FROM node:18-alpine AS builder
+FROM node:25-alpine AS builder
 WORKDIR /app
 COPY . .
 
@@ -26,7 +26,7 @@ ENV VITE_KEYCLOAK_REALM=$VITE_KEYCLOAK_REALM
 RUN npm install
 RUN npm run build
 
-FROM node:18-alpine AS runner
+FROM node:25-alpine AS runner
 WORKDIR /app
 COPY --from=builder /app /app
 RUN npm install -g serve
