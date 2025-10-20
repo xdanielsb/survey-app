@@ -1,4 +1,4 @@
-FROM node:20.19.0-alpine AS builder
+FROM node:25.0.0-alpine AS builder
 
 WORKDIR /app
 COPY . .
@@ -11,7 +11,7 @@ RUN npm install
 RUN npm run build -- --base-href=$BASE_HREF
 
 # Use same compatible Node version for runtime
-FROM node:20.19.0-alpine AS runner
+FROM node:25.0.0-alpine AS runner
 
 WORKDIR /app
 COPY --from=builder /app /app
